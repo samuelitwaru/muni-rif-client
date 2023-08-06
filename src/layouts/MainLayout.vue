@@ -2,13 +2,16 @@
   <q-layout view="hhr LpR lFf">
     <q-header reveal bordered class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-
+        <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" /> -->
         <q-toolbar-title>
-          <q-avatar>
-            <img src="~assets/logo.jpeg" />
-          </q-avatar>
-          MuniRIF
+          <router-link to="/" style="">
+            <div>
+              <q-avatar>
+                <img src="~assets/logo.jpeg" />
+              </q-avatar>
+              <label class="q-pa-md text-white">MuniRIF</label>
+            </div>
+          </router-link>
         </q-toolbar-title>
 
         <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
@@ -18,7 +21,7 @@
     <q-drawer v-model="leftDrawerOpen" side="left" overlay bordered> </q-drawer>
 
     <q-drawer v-model="rightDrawerOpen" side="right" overlay bordered>
-      <developer-menu />
+      <developer-menu-2 />
     </q-drawer>
 
     <q-page-container>
