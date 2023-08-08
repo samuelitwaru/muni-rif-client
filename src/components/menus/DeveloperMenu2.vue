@@ -30,6 +30,24 @@
         </q-item>
       </router-link>
 
+      <router-link to="/account/profile">
+        <q-item clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon color="primary" name="arrow_forward" />
+          </q-item-section>
+          <q-item-section>Profile</q-item-section>
+        </q-item>
+      </router-link>
+
+      <router-link to="/account/password">
+        <q-item clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon color="primary" name="arrow_forward" />
+          </q-item-section>
+          <q-item-section>Change Password</q-item-section>
+        </q-item>
+      </router-link>
+
       <router-link to="/grant/create">
         <q-item clickable v-ripple>
           <q-item-section avatar>
@@ -39,6 +57,9 @@
         </q-item>
       </router-link>
     </q-list>
+    <div class="flex q-pa-sm">
+      <user-logout />
+    </div>
   </div>
 </template>
 <script>

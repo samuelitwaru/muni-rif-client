@@ -14,11 +14,11 @@
 
 <script>
 export default {
-  name: "SelectionField",
+  name: "OptionsField",
   props: {
     value: {
       type: String,
-      required: true,
+      // required: true,
     },
     options: {
       type: Array,

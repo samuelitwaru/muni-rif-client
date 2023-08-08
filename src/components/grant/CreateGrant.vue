@@ -31,12 +31,7 @@
 
     <!-- Scrollable column -->
     <div class="scrollable-column">
-      <h2 class="text-h6">
-        <q-avatar>
-          <img src="~assets/logo.jpeg" />
-        </q-avatar>
-        Grant Proposal Form
-      </h2>
+      <h2 class="text-h6">Grant Proposal Form</h2>
       <q-form @submit="submitForm">
         <q-input
           outlined
@@ -73,7 +68,7 @@
           <label>Budget Summary</label>
           <q-editor v-model="formData.budget" min-height="20rem" />
         </div>
-        <div>
+        <div id="attachments">
           <h5 class="q-my-sm">Attachments</h5>
           <div class="row">
             <div class="col q-py-sm q-mr-sm">

@@ -15,22 +15,26 @@ const routes = [
         children: [],
       },
       {
-        path: "account",
-        component: () => import("components/account/UserAccount.vue"),
-        children: [
-          {
-            path: "signup",
-            component: () => import("components/account/UserSignup.vue"),
-          },
-          {
-            path: "signin",
-            component: () => import("components/account/UserSignin.vue"),
-          },
-          {
-            path: "password-reset",
-            component: () => import("components/account/PasswordReset.vue"),
-          },
-        ],
+        path: "account/signup",
+        component: () => import("components/account/UserSignup.vue"),
+      },
+      {
+        path: "account/signin",
+        component: () => import("components/account/UserSignin.vue"),
+      },
+      {
+        path: "account/password-reset",
+        component: () => import("components/account/PasswordReset.vue"),
+      },
+
+      {
+        path: "account/profile",
+        component: () => import("components/account/UserProfile.vue"),
+      },
+
+      {
+        path: "account/password",
+        component: () => import("components/account/ChangePassword.vue"),
       },
     ],
   },

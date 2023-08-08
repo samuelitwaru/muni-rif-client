@@ -1,8 +1,9 @@
 <template>
   <div align="center">
+    <loading-component :loading="loading" />
     <q-card class="q-ma-md" style="max-width: 22rem">
       <q-card-section>
-        <q-form @submit="submitForm">
+        <q-form @submit="login">
           <h2 class="text-h6">
             <q-avatar>
               <img src="~assets/logo.jpeg" />
@@ -49,9 +50,10 @@
 export default {
   data() {
     return {
+      loading: false,
       formData: {
-        email: "",
-        password: "",
+        email: "samuelitwaru@gmail.com",
+        password: "bratz123",
       },
       emailRules: [
         (v) => !!v || "Email is required",
@@ -61,9 +63,23 @@ export default {
     };
   },
   methods: {
-    submitForm() {
-      // Handle form submission here
-      console.log("Form submitted:", this.formData);
+    login() {
+      this.loading = true;
+      this.formData["username"] = this.formData["email"];
+      this.$api
+        .post(`/accounts/login/`, this.formData)
+        .then((res) => {
+          const token = res.data.token;
+          const user = res.data.user;
+          console.log(user);
+          this.$authStore.setUserAndToken(user, token);
+          this.loading = false;
+          this.$router.push("/");
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loading = false;
+        });
     },
   },
 };

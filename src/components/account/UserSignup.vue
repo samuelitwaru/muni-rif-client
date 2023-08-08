@@ -1,5 +1,6 @@
 <template>
   <div align="center">
+    <loading-component :loading="loading" />
     <q-card class="q-ma-sm q-pa-md" style="max-width: 22rem">
       <h2 class="text-h6">
         <q-avatar>
@@ -7,7 +8,7 @@
         </q-avatar>
         Signup Form
       </h2>
-      <q-form @submit="submitForm">
+      <q-form @submit="signup">
         <q-input
           outlined
           dense
@@ -118,9 +119,11 @@
 </template>
 
 <script>
+import { inject } from "vue";
 export default {
   data() {
     return {
+      loading: false,
       formData: {
         email: "",
         first_name: "",
@@ -161,9 +164,22 @@ export default {
     };
   },
   methods: {
-    submitForm() {
+    signup() {
       // Handle form submission here
-      console.log("Form submitted:", this.formData);
+      this.loading = true;
+      this.formData["username"] = this.formData["email"];
+      this.$api
+        .post("accounts/signup/", this.formData)
+        .then((res) => {
+          this.loading = false;
+          this.$router.push("/account/signin");
+        })
+        .catch((err) => {
+          alert(err);
+          console.log(err);
+          this.loading = false;
+        });
+      // console.log("Form submitted:", this.formData);
     },
 
     signUpWithGoogle() {},
