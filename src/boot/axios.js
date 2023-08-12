@@ -8,6 +8,7 @@ import axios from "axios";
 // "export default () => {}" function below (which runs individually
 // for each client)
 
+// const baseURL = "https://munirif.pythonanywhere.com/api";
 const baseURL = "http://127.0.0.1:8000/api";
 const api = axios.create({ baseURL: baseURL });
 

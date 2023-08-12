@@ -56,9 +56,19 @@
           <q-item-section>New Grant Application</q-item-section>
         </q-item>
       </router-link>
+
+      <router-link to="/proposals/create">
+        <q-item clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon color="primary" name="arrow_forward" />
+          </q-item-section>
+          <q-item-section>Proposal</q-item-section>
+        </q-item>
+      </router-link>
     </q-list>
     <div class="flex q-pa-sm">
       <user-logout />
+      <create-proposal-dialog />
     </div>
   </div>
 </template>

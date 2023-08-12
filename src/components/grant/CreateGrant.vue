@@ -7,7 +7,7 @@
         <q-list>
           <a href="#problem">
             <q-item clickable v-ripple>
-              <q-item-section>Problem Statment</q-item-section>
+              <q-item-section>The Problem Statment</q-item-section>
             </q-item>
           </a>
           <a href="#solution">

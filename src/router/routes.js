@@ -39,6 +39,17 @@ const routes = [
     ],
   },
 
+  {
+    path: "/proposals",
+    component: () => import("components/proposal/ProposalLayout.vue"),
+    children: [
+      {
+        path: ":id/edit",
+        component: () => import("components/proposal/ProposalEditor.vue"),
+      },
+    ],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

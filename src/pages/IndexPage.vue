@@ -4,7 +4,7 @@
       <img
         alt="Quasar logo"
         src="~assets/logo.jpeg"
-        style="width: 200px; height: 200px"
+        style="width: 100px; height: 100px"
       />
       <h3>MuniRIF</h3>
     </div>
