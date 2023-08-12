@@ -11,6 +11,20 @@ import axios from "axios";
 const baseURL = "http://127.0.0.1:8000/api";
 const api = axios.create({ baseURL: baseURL });
 
+// Add a request interceptor to add the token to all requests
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token"); // Replace with your token key
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 

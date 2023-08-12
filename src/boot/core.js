@@ -1,6 +1,7 @@
 import { boot } from "quasar/wrappers";
-import { useAuthStore } from "stores/auth";
+import { authStore } from "stores/auth";
 
 export default boot(({ app }) => {
-  app.config.globalProperties.$authStore = useAuthStore();
+  const useAuthStore = authStore();
+  app.config.globalProperties.$authStore = useAuthStore;
 });

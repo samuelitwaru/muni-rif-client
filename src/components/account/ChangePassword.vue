@@ -5,19 +5,19 @@
       <q-card-section>
         <q-form @submit="changePassword">
           <q-input
-            v-model="oldPassword"
-            label="Old Password"
+            v-model="formData.old_password"
+            label="Current Password"
             type="password"
             required
           />
           <q-input
-            v-model="newPassword"
+            v-model="formData.new_password"
             label="New Password"
             type="password"
             required
           />
           <q-input
-            v-model="confirmNewPassword"
+            v-model="formData.confirm_password"
             label="Confirm New Password"
             type="password"
             required
@@ -27,7 +27,6 @@
             type="submit"
             color="primary"
             label="Change Password"
-            :disable="isSubmitting"
           />
         </q-form>
       </q-card-section>
@@ -39,48 +38,21 @@
 export default {
   data() {
     return {
-      oldPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-      isSubmitting: false,
+      loading: false,
+      formData: {
+        old_password: "",
+        new_password: "",
+        confirm_password: "",
+      },
     };
   },
   methods: {
-    async changePassword() {
-      if (this.newPassword !== this.confirmNewPassword) {
-        this.$q.notify({
-          message: "New passwords do not match.",
-          type: "negative",
-        });
-        return;
-      }
-
-      this.isSubmitting = true;
-
-      try {
-        // Perform your password change logic here
-        // For example, call an API to change the password
-        // After the password is changed, reset the form and show a success notification
-        // You can also emit an event to notify a parent component
-        // this.$emit('passwordChanged');
-        // this.resetForm();
-        this.$q.notify({
-          message: "Password changed successfully.",
-          type: "positive",
-        });
-      } catch (error) {
-        this.$q.notify({
-          message: "An error occurred while changing the password.",
-          type: "negative",
-        });
-      } finally {
-        this.isSubmitting = false;
-      }
-    },
-    resetForm() {
-      this.oldPassword = "";
-      this.newPassword = "";
-      this.confirmNewPassword = "";
+    changePassword() {
+      this.loading = true;
+      this.$api.post("accounts/change-password/", this.formData).then((res) => {
+        this.loading = false;
+        this.$router.push("/account/profile");
+      });
     },
   },
 };

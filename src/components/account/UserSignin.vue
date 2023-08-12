@@ -71,7 +71,6 @@ export default {
         .then((res) => {
           const token = res.data.token;
           const user = res.data.user;
-          console.log(user);
           this.$authStore.setUserAndToken(user, token);
           this.loading = false;
           this.$router.push("/");

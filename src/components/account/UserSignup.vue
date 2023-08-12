@@ -1,7 +1,7 @@
 <template>
   <div align="center">
     <loading-component :loading="loading" />
-    <q-card class="q-ma-sm q-pa-md" style="max-width: 22rem">
+    <q-card class="q-ma-sm q-pa-md" style="max-width: 40rem">
       <h2 class="text-h6">
         <q-avatar>
           <img src="~assets/logo.jpeg" />
@@ -9,43 +9,53 @@
         Signup Form
       </h2>
       <q-form @submit="signup">
-        <q-input
-          outlined
-          dense
-          v-model="formData.email"
-          label="Email"
-          type="email"
-          :rules="emailRules"
-          required
-        ></q-input>
+        <div class="row q-col-gutter-xs">
+          <div class="col">
+            <q-input
+              outlined
+              dense
+              v-model="formData.first_name"
+              label="First Name"
+              :rules="nameRules"
+              required
+            ></q-input>
+          </div>
+          <div class="col">
+            <q-input
+              outlined
+              dense
+              v-model="formData.last_name"
+              label="Last Name"
+              :rules="nameRules"
+              required
+            ></q-input>
+          </div>
+        </div>
 
-        <q-input
-          outlined
-          dense
-          v-model="formData.first_name"
-          label="First Name"
-          :rules="nameRules"
-          required
-        ></q-input>
-
-        <q-input
-          outlined
-          dense
-          v-model="formData.last_name"
-          label="Last Name"
-          :rules="nameRules"
-          required
-        ></q-input>
-
-        <q-input
-          outlined
-          dense
-          v-model="formData.telephone_number"
-          label="Telephone Number"
-          type="tel"
-          :rules="phoneRules"
-          required
-        ></q-input>
+        <div class="row q-col-gutter-xs">
+          <div class="col">
+            <q-input
+              outlined
+              dense
+              v-model="formData.email"
+              label="Email"
+              type="email"
+              :rules="emailRules"
+              required
+            ></q-input>
+          </div>
+          <div class="col">
+            <q-input
+              outlined
+              dense
+              v-model="formData.phone"
+              label="Telephone Number"
+              type="tel"
+              :rules="phoneRules"
+              required
+            ></q-input>
+          </div>
+        </div>
 
         <radio-field
           align="left"
@@ -58,26 +68,63 @@
           ]"
         />
 
-        <options-field
-          label="Department"
-          :options="departments"
-          @input="formData.department = $event.value"
-        />
+        <div class="row q-col-gutter-xs q-my-sm">
+          <div class="col">
+            <q-select
+              outlined
+              dense
+              v-model="formData.faculty"
+              :options="faculties"
+              option-value="id"
+              option-label="name"
+              label="Faculty"
+              emit-value
+              map-options
+            />
+          </div>
+          <div class="col">
+            <q-select
+              outlined
+              dense
+              v-model="formData.department"
+              :options="
+                this.faculties.find((f) => f.id === this.formData.faculty)
+                  ?.departments
+              "
+              option-value="id"
+              option-label="name"
+              label="Department"
+              emit-value
+              map-options
+            />
+          </div>
+        </div>
 
-        <options-field
-          label="Your Hight Qualification"
-          :options="qualifications"
-          @input="formData.qualification = $event.value"
-        />
-
-        <q-input
-          outlined
-          dense
-          v-model="formData.first_name"
-          label="Your Designation"
-          :rules="nameRules"
-          required
-        ></q-input>
+        <div class="row q-col-gutter-xs">
+          <div class="col">
+            <q-select
+              dense
+              outlined
+              v-model="formData.qualification"
+              :options="qualifications"
+              label="Qualification"
+              option-value="id"
+              option-label="name"
+              map-options
+              emit-value
+            />
+          </div>
+          <div class="col">
+            <q-input
+              outlined
+              dense
+              v-model="formData.first_name"
+              label="Your Designation"
+              :rules="nameRules"
+              required
+            ></q-input>
+          </div>
+        </div>
 
         <q-input
           outlined
@@ -119,31 +166,25 @@
 </template>
 
 <script>
-import { inject } from "vue";
 export default {
   data() {
     return {
       loading: false,
+      faculties: [],
+      departments: [],
+      qualifications: [],
       formData: {
-        email: "",
-        first_name: "",
-        last_name: "",
-        telephone_number: "",
-        gender: "",
-        department: "",
-        password: "",
-        confirm_password: "",
+        email: "samuel@gmail.com",
+        first_name: "Samuel",
+        last_name: "Itwaru",
+        phone: "0781902516",
+        gender: "Male",
+        faculty: null,
+        department: null,
+        qualification: null,
+        password: "bratz123",
+        confirm_password: "bratz123",
       },
-      departments: [
-        { value: 1, label: "Technoscience" },
-        { value: 2, label: "Education" },
-        { value: 3, label: "Nursing Science" },
-        { value: 4, label: "Business" },
-      ],
-      qualifications: [
-        { value: 1, label: "PhD" },
-        { value: 2, label: "Maters" },
-      ],
       emailRules: [
         (v) => !!v || "Email is required",
         (v) => /.+@.+\..+/.test(v) || "Email must be valid",
@@ -163,6 +204,11 @@ export default {
       ],
     };
   },
+
+  created() {
+    this.getFaculties();
+    this.getQualifications();
+  },
   methods: {
     signup() {
       // Handle form submission here
@@ -180,6 +226,19 @@ export default {
           this.loading = false;
         });
       // console.log("Form submitted:", this.formData);
+    },
+
+    getFaculties() {
+      this.$api.get("faculties/").then((res) => {
+        this.faculties = res.data;
+        console.log(this.faculties);
+      });
+    },
+
+    getQualifications() {
+      this.$api.get("qualifications/").then((res) => {
+        this.qualifications = res.data;
+      });
     },
 
     signUpWithGoogle() {},
