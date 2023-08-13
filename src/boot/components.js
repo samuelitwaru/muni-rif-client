@@ -3,6 +3,7 @@ import developerMenu from "components/menus/DeveloperMenu.vue";
 import developerMenu2 from "components/menus/DeveloperMenu2.vue";
 import userLogout from "components/account/UserLogout.vue";
 import createProposalDialog from "components/proposal/CreateProposalDialog.vue";
+import problemEditor from "components/proposal/ProblemEditor.vue";
 import loadingComponent from "components/utils/LoadingComponent.vue";
 import radioField from "components/widgets/RadioField.vue";
 import optionsField from "components/widgets/OptionsField.vue";
@@ -15,6 +16,7 @@ const components = {
   "developer-menu-2": developerMenu2,
   "user-logout": userLogout,
   "create-proposal-dialog": createProposalDialog,
+  "problem-editor": problemEditor,
   "loading-component": loadingComponent,
   "radio-field": radioField,
   "options-field": optionsField,

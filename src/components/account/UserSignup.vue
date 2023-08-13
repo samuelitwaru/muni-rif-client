@@ -221,7 +221,6 @@ export default {
           this.$router.push("/account/signin");
         })
         .catch((err) => {
-          alert(err);
           console.log(err);
           this.loading = false;
         });
