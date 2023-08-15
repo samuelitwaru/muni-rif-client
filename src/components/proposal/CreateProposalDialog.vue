@@ -2,7 +2,7 @@
   <div>
     <loading-component :loading="loading" />
     <q-btn
-      label="Create New Proposal"
+      label="Start New Proposal"
       color="primary"
       @click="showDialog = true"
     />
@@ -10,9 +10,13 @@
       <q-dialog v-model="showDialog" persistent>
         <q-card style="width: 500px">
           <q-card-section>
-            <div class="text-h6">New Proposal</div>
+            <div class="text-h6">Start New Proposal</div>
           </q-card-section>
+          <q-separator />
           <q-card-section class="q-pt-lg q-pb-md">
+            <label>Name your proposal</label>
+            <br />
+            <br />
             <q-input
               v-model="formData.title"
               label="Title of your proposal"
@@ -38,9 +42,12 @@ export default {
       loading: false,
       showDialog: false,
       formData: {
-        title: "Muni RIF Management System",
+        title: "",
       },
     };
+  },
+  created() {
+    if (process.env.DEBUG) this.setFormData();
   },
   methods: {
     createProposal() {
@@ -54,6 +61,12 @@ export default {
     cancelCreate() {
       // Cancel the creation and close the dialog.
       this.showDialog = false;
+    },
+
+    setFormData() {
+      this.formData = {
+        title: "Muni RIF Management System",
+      };
     },
   },
 };

@@ -5,6 +5,8 @@ import userLogout from "components/account/UserLogout.vue";
 import createProposalDialog from "components/proposal/CreateProposalDialog.vue";
 import problemEditor from "components/proposal/ProblemEditor.vue";
 import loadingComponent from "components/utils/LoadingComponent.vue";
+import messageBox from "components/utils/MessageBox.vue";
+import errorMessageModal from "components/utils/ErrorMessageModal.vue";
 import radioField from "components/widgets/RadioField.vue";
 import optionsField from "components/widgets/OptionsField.vue";
 import tinyMCE from "components/widgets/TinyMCE.vue";
@@ -18,6 +20,8 @@ const components = {
   "create-proposal-dialog": createProposalDialog,
   "problem-editor": problemEditor,
   "loading-component": loadingComponent,
+  "message-box": messageBox,
+  "error-message-modal": errorMessageModal,
   "radio-field": radioField,
   "options-field": optionsField,
   "tiny-mce": tinyMCE,

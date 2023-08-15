@@ -1,6 +1,8 @@
 <template>
   <div align="center">
     <loading-component :loading="loading" />
+    <error-message-modal :errorResponse="errorResponse" />
+
     <q-card class="q-ma-md" style="max-width: 22rem">
       <q-card-section>
         <q-form @submit="login">
@@ -52,15 +54,20 @@ export default {
     return {
       loading: false,
       formData: {
-        email: "samuelitwaru@gmail.com",
-        password: "bratz123",
+        email: "",
+        password: "",
       },
       emailRules: [
         (v) => !!v || "Email is required",
         (v) => /.+@.+\..+/.test(v) || "Email must be valid",
       ],
       passwordRules: [(v) => !!v || "Password is required"],
+      errorResponse: {},
     };
+  },
+  created() {
+    if (process.env.DEBUG) this.setFormData();
+    // console.log(process.env.API_URL);
   },
   methods: {
     login() {
@@ -76,9 +83,12 @@ export default {
           this.$router.push("/");
         })
         .catch((err) => {
-          console.log(err);
           this.loading = false;
+          this.errorResponse = err.response;
         });
+    },
+    setFormData() {
+      this.formData = { email: "samuelitwaru@gmail.com", password: "bratz123" };
     },
   },
 };

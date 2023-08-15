@@ -1,6 +1,7 @@
 <template>
   <div align="center">
     <loading-component :loading="loading" />
+    <error-message-modal :errorResponse="errorResponse" />
     <q-card class="q-ma-sm q-pa-md" style="max-width: 40rem">
       <h2 class="text-h6">
         <q-avatar>
@@ -151,7 +152,7 @@
         </div>
       </q-form>
 
-      <div class="flex flex-center">or</div>
+      <!-- <div class="flex flex-center">or</div>
 
       <q-card-actions class="flex flex-center">
         <q-btn type="button" @click="signUpWithGoogle">
@@ -160,7 +161,7 @@
           </q-avatar>
           Join with google
         </q-btn>
-      </q-card-actions>
+      </q-card-actions> -->
     </q-card>
   </div>
 </template>
@@ -174,16 +175,16 @@ export default {
       departments: [],
       qualifications: [],
       formData: {
-        email: "samuel@gmail.com",
-        first_name: "Samuel",
-        last_name: "Itwaru",
-        phone: "0781902516",
-        gender: "Male",
+        email: "",
+        first_name: "",
+        last_name: "",
+        phone: "",
+        gender: "",
         faculty: null,
         department: null,
         qualification: null,
-        password: "bratz123",
-        confirm_password: "bratz123",
+        password: "",
+        confirm_password: "",
       },
       emailRules: [
         (v) => !!v || "Email is required",
@@ -202,10 +203,12 @@ export default {
         (v) => !!v || "Confirm Password is required",
         (v) => v === this.formData.password || "Passwords do not match",
       ],
+      errorResponse: {},
     };
   },
 
   created() {
+    // this.setFormData();
     this.getFaculties();
     this.getQualifications();
   },
@@ -221,8 +224,8 @@ export default {
           this.$router.push("/account/signin");
         })
         .catch((err) => {
-          console.log(err);
           this.loading = false;
+          this.errorResponse = err.response;
         });
       // console.log("Form submitted:", this.formData);
     },
@@ -241,6 +244,21 @@ export default {
     },
 
     signUpWithGoogle() {},
+
+    setFormData() {
+      this.formData = {
+        email: "samuel@gmail.com",
+        first_name: "Samuel",
+        last_name: "Itwaru",
+        phone: "0781902516",
+        gender: "Male",
+        faculty: null,
+        department: null,
+        qualification: null,
+        password: "bratz123",
+        confirm_password: "bratz123",
+      };
+    },
   },
 };
 </script>
