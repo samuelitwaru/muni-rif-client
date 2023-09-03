@@ -3,26 +3,34 @@
     <loading-component :loading="loading" />
     <q-btn dense flat color="primary" icon="edit" @click="showDialog = true" />
 
-    <q-form @submit="updateProblem" class="q-gutter-md">
-      <q-dialog v-model="showDialog" persistent full-width>
+    <q-form @submit="updateSection" class="q-gutter-md">
+      <q-dialog v-model="showDialog" persistent full-width full-height>
         <q-card style="width: 500px">
-          <q-card-section>
+          <q-card-section class="flex justify-between">
             <div class="text-h6">{{ section.title }}</div>
+            <q-btn
+              color="primary"
+              flat
+              dense
+              icon="close"
+              @click="cancelCreate"
+            />
           </q-card-section>
           <q-separator />
-          <q-card-section style="max-height: 60vh" class="scroll">
+          <q-card-section class="scroll">
             <!-- <q-editor v-model="editor" min-height="5rem" flat /> -->
             <q-editor
               v-model="formData[section.name]"
               label="Title of your proposal"
               outlined
               required
+              min-height="65vh"
             />
           </q-card-section>
           <q-separator spaced />
           <q-card-actions align="right">
             <q-btn flat color="primary" label="Cancel" @click="cancelCreate" />
-            <q-btn color="primary" label="Save" @click="updateProblem" />
+            <q-btn color="primary" label="Save" @click="updateSection" />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -50,7 +58,7 @@ export default {
     };
   },
   methods: {
-    updateProblem() {
+    updateSection() {
       this.loading = true;
       this.$api
         .patch(`proposals/${this.$route.params.id}/`, this.formData)
@@ -65,9 +73,12 @@ export default {
       this.showDialog = false;
     },
   },
+  mounted() {
+    this.formData[this.section.name] = this.proposal[this.section.name] || "";
+  },
   watch: {
     proposal(newVal) {
-      this.formData[this.section.name] = newVal[this.section.name];
+      this.formData[this.section.name] = newVal[this.section.name] || "";
     },
   },
 };

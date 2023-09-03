@@ -3,9 +3,15 @@ import developerMenu from "components/menus/DeveloperMenu.vue";
 import developerMenu2 from "components/menus/DeveloperMenu2.vue";
 import userLogout from "components/account/UserLogout.vue";
 import createProposalDialog from "components/proposal/CreateProposalDialog.vue";
-import problemEditor from "components/proposal/ProblemEditor.vue";
+import proposalFileAttachment from "components/proposal/ProposalFileAttachment.vue";
+import submitProposal from "components/proposal/SubmitProposal.vue";
+import sectionEditor from "components/proposal/SectionEditor.vue";
+import scoreEditor from "components/proposal/ScoreEditor.vue";
+import scoreSheet from "components/proposal/ScoreSheet.vue";
+import proposalScoreSheets from "components/proposal/ProposalScoreSheets.vue";
 import loadingComponent from "components/utils/LoadingComponent.vue";
 import messageBox from "components/utils/MessageBox.vue";
+import alertMsg from "components/utils/AlertMsg.vue";
 import errorMessageModal from "components/utils/ErrorMessageModal.vue";
 import radioField from "components/widgets/RadioField.vue";
 import optionsField from "components/widgets/OptionsField.vue";
@@ -18,9 +24,15 @@ const components = {
   "developer-menu-2": developerMenu2,
   "user-logout": userLogout,
   "create-proposal-dialog": createProposalDialog,
-  "problem-editor": problemEditor,
+  "proposal-file-attachment": proposalFileAttachment,
+  "submit-proposal": submitProposal,
+  "section-editor": sectionEditor,
+  "score-editor": scoreEditor,
+  "score-sheet": scoreSheet,
+  "proposal-score-sheets": proposalScoreSheets,
   "loading-component": loadingComponent,
   "message-box": messageBox,
+  "alert-msg": alertMsg,
   "error-message-modal": errorMessageModal,
   "radio-field": radioField,
   "options-field": optionsField,

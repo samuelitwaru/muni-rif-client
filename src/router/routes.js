@@ -40,6 +40,10 @@ const routes = [
         path: "account/password",
         component: () => import("components/account/ChangePassword.vue"),
       },
+      {
+        path: "account/password/set/:token",
+        component: () => import("components/account/SetPassword.vue"),
+      },
     ],
   },
 
@@ -48,8 +52,12 @@ const routes = [
     component: () => import("components/proposal/ProposalLayout.vue"),
     children: [
       {
-        path: ":id/edit",
+        path: ":id",
         component: () => import("components/proposal/ProposalEditor.vue"),
+      },
+      {
+        path: ":id/reviewers",
+        component: () => import("components/proposal/ProposalReviewers.vue"),
       },
     ],
   },

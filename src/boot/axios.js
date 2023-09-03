@@ -15,6 +15,8 @@ var baseURL = process.env.DEBUG
 
 const api = axios.create({ baseURL: baseURL });
 
+console.dir(api.getUri());
+
 // Add a request interceptor to add the token to all requests
 api.interceptors.request.use(
   (config) => {

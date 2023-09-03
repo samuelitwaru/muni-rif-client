@@ -18,7 +18,7 @@
 
     <q-list bordered>
       <router-link
-        :to="`proposals/${proposal.id}/edit`"
+        :to="`proposals/${proposal.id}`"
         v-for="proposal in proposals"
         :key="proposal.id"
       >

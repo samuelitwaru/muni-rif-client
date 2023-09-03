@@ -53,7 +53,7 @@ export default {
     createProposal() {
       this.loading = true;
       this.$api.post("proposals/", this.formData).then((res) => {
-        this.$router.push(`/proposals/${res.data.id}/edit`);
+        this.$router.push(`/proposals/${res.data.id}`);
         this.loading = false;
         this.showDialog = false;
       });
