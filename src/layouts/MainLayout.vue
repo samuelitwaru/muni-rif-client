@@ -1,5 +1,6 @@
 <template>
   <q-layout view="hhr LpR lFf">
+    <loading-component />
     <q-header reveal bordered class="bg-primary text-white">
       <q-toolbar>
         <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" /> -->

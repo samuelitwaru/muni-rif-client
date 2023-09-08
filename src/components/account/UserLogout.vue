@@ -1,6 +1,5 @@
 <template>
   <div v-if="$authStore.isLoggedIn">
-    <loading-component :loading="loading" />
     <!-- Your logout button here -->
     <q-btn flat @click="showConfirmationDialog" color="primary">Logout</q-btn>
 
@@ -37,11 +36,11 @@ export default {
       this.showDialog = false;
     },
     confirmLogout() {
-      this.loading = true;
+      this.$utilsStore.setLoading(true);
       this.$api.get(`/accounts/logout/`).then((res) => {
         this.$authStore.clearUserAndToken();
         this.$router.push("/");
-        this.loading = false;
+        this.$utilsStore.setLoading(false);
         this.cancelLogout();
       });
     },

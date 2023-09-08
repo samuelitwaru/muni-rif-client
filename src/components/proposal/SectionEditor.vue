@@ -1,6 +1,5 @@
 <template>
   <div>
-    <loading-component :loading="loading" />
     <q-btn dense flat color="primary" icon="edit" @click="showDialog = true" />
 
     <q-form @submit="updateSection" class="q-gutter-md">
@@ -59,12 +58,12 @@ export default {
   },
   methods: {
     updateSection() {
-      this.loading = true;
+      this.$utilsStore.setLoading(true);
       this.$api
         .patch(`proposals/${this.$route.params.id}/`, this.formData)
         .then((res) => {
           this.$emit("proposal-updated", res.data);
-          this.loading = false;
+          this.$utilsStore.setLoading(false);
           this.showDialog = false;
         });
     },

@@ -1,19 +1,17 @@
 <template>
   <div v-if="score">
-    <loading-component :loading="loading" />
     <q-btn
       dense
       flat
       color="primary"
-      label="Score Sheet"
-      icon="notes"
+      label="Submit Score Sheet"
       @click="startDialog"
     />
 
     <q-dialog v-model="showDialog" persistent full-width full-height>
       <q-card style="width: 500px">
         <q-card-section class="flex justify-between">
-          <div class="text-h6">Score Sheet</div>
+          <div class="text-h6">Submit Score Sheet</div>
           <q-btn
             color="primary"
             flat
@@ -124,7 +122,9 @@ export default {
     getScore() {
       this.$api
         .get(
-          `scores/?user=${this.$authStore.currentUser?.id}&proposal=${this.$route.params.id}`
+          `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
+            this.$route.params.id
+          }`
         )
         .then((res) => {
           if (res.data.length == 1) {

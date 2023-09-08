@@ -1,5 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
+    <loading-component />
     <q-header elevated>
       <q-toolbar class="bg-white text-dark">
         <q-btn
@@ -11,11 +12,21 @@
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
         <q-toolbar-title class="flex justify-between">
-          {{ $proposalStore.currentProposal?.title }}
+          <div>
+            {{ $proposalStore.currentProposal?.title }}
+
+            <q-chip
+              class="glossy"
+              size="xs"
+              :label="$proposalStore.currentProposal?.status"
+            />
+          </div>
 
           <submit-proposal
+            :proposal="$proposalStore.currentProposal"
             v-if="$proposalStore.currentProposal?.status == 'EDITING'"
           />
+
           <div class="flex">
             <score-sheet />
             <q-btn-dropdown
@@ -128,6 +139,7 @@ export default defineComponent({
     return {
       leftDrawerOpen: false,
       proposalFiles: [],
+      score: {},
       sections: [
         { id: "#problem", name: "The Problem" },
         { id: "#solution", name: "Proposed Solution" },
@@ -156,6 +168,7 @@ export default defineComponent({
   created() {
     this.getProposalFiles();
     this.getSections();
+    this.getScore();
   },
 
   methods: {
@@ -164,7 +177,20 @@ export default defineComponent({
         .get(`files/?proposal_id=${this.$route.params.id}`)
         .then((res) => {
           this.proposalFiles = res.data;
-          console.log(this.proposalFiles);
+        });
+    },
+
+    getScore() {
+      this.$api
+        .get(
+          `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
+            this.$route.params.id
+          }`
+        )
+        .then((res) => {
+          if (res.data.length == 1) {
+            this.score = res.data[0];
+          }
         });
     },
 

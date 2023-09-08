@@ -1,6 +1,7 @@
 <!-- components/Loading.vue -->
 <template>
-  <div v-if="loading" class="loading">
+  <div v-if="show" class="loading">
+    dfklkdf
     <q-dialog v-model="show">
       <q-spinner-ios color="primary" size="3rem" :thickness="5" />
     </q-dialog>
@@ -14,8 +15,12 @@ export default {
   },
   data() {
     return {
-      show: true,
+      show: this.$utilsStore.isLoading,
     };
+  },
+
+  created() {
+    this.$utilsStore.setLoading(true);
   },
 };
 </script>

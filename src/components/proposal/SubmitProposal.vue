@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="proposal?.status == 'EDITING'">
     <q-btn
       color="primary"
       icon="send"
@@ -8,9 +8,7 @@
     />
     <q-dialog v-model="modalVisible">
       <q-card>
-        <q-card-section>
-          <div class="text-h6">Sumit Proposal</div>
-        </q-card-section>
+        <q-card-section> </q-card-section>
         <q-separator />
 
         <q-card-section>
@@ -37,6 +35,9 @@
 
 <script>
 export default {
+  props: {
+    proposal: { type: Object, required: true },
+  },
   data() {
     return {
       modalVisible: false,

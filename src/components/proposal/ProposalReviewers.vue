@@ -83,6 +83,7 @@ export default {
     return {
       scores: [],
       reviewers: [],
+      loading: false,
       formData: {
         user: null,
         email: null,
@@ -110,18 +111,22 @@ export default {
     },
 
     createScore() {
+      this.$utilsStore.setLoading(true);
       this.$api.post("scores/", this.formData).then((res) => {
         if (res.status == 201) {
           this.getScores();
+          this.$utilsStore.setLoading(false);
         }
       });
     },
 
     deleteScore(id) {
       if (confirm("Are you sure you would like to delete this reviewer?")) {
+        this.$utilsStore.setLoading(true);
         this.$api.delete(`scores/${id}/`).then((res) => {
           if (res.status == 204) {
             this.getScores();
+            this.$utilsStore.setLoading(false);
           }
         });
       }

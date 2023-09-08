@@ -1,6 +1,5 @@
 <template>
   <div align="center">
-    <loading-component :loading="loading" />
     <q-card class="q-ma-md" style="max-width: 22rem">
       <q-card-section>
         <q-form @submit="changePassword">
@@ -48,9 +47,9 @@ export default {
   },
   methods: {
     changePassword() {
-      this.loading = true;
+      this.$utilsStore.setLoading(true);
       this.$api.post("accounts/change-password/", this.formData).then((res) => {
-        this.loading = false;
+        this.$utilsStore.setLoading(false);
         this.$router.push("/account/profile");
       });
     },

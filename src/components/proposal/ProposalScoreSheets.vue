@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="scores.length">
     <q-toolbar-title>Score Sheet</q-toolbar-title>
 
     <q-markup-table flat dense bordered separator="vertical">

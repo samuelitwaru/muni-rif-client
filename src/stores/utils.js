@@ -6,17 +6,21 @@ export const utilsStore = defineStore({
   id: "utils",
   state: () => ({
     errorMessageDialog: JSON.parse(localStorage.getItem("errorMessageDialog")),
+    loading: Boolean(parseInt(localStorage.getItem("loading"))),
   }),
   getters: {
     errorMessageDialog: (state) => state.errorMessageDialog,
+    isLoading: (state) => state.loading,
   },
   actions: {
-    setProposal(errorMessageDialog) {
-      this.errorMessageDialog = errorMessageDialog;
-      localStorage.setItem(
-        "errorMessageDialog",
-        JSON.stringify(errorMessageDialog)
-      );
+    setLoading(isLoading) {
+      let value = 1;
+      if (isLoading === true) {
+        this.loading = isLoading;
+      } else if (isLoading === false) {
+        value = 0;
+      }
+      localStorage.setItem("loading", value);
     },
   },
 });

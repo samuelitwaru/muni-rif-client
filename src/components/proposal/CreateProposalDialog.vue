@@ -1,6 +1,5 @@
 <template>
   <div>
-    <loading-component :loading="loading" />
     <q-btn
       label="Start New Proposal"
       color="primary"
@@ -51,10 +50,10 @@ export default {
   },
   methods: {
     createProposal() {
-      this.loading = true;
+      this.$utilsStore.setLoading(true);
       this.$api.post("proposals/", this.formData).then((res) => {
         this.$router.push(`/proposals/${res.data.id}`);
-        this.loading = false;
+        this.$utilsStore.setLoading(false);
         this.showDialog = false;
       });
     },

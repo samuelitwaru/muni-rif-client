@@ -44,6 +44,11 @@ const routes = [
         path: "account/password/set/:token",
         component: () => import("components/account/SetPassword.vue"),
       },
+
+      {
+        path: "account/:token/complete-signup",
+        component: () => import("components/account/CompleteSignup.vue"),
+      },
     ],
   },
 

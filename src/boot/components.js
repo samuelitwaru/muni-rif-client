@@ -5,6 +5,7 @@ import userLogout from "components/account/UserLogout.vue";
 import createProposalDialog from "components/proposal/CreateProposalDialog.vue";
 import proposalFileAttachment from "components/proposal/ProposalFileAttachment.vue";
 import submitProposal from "components/proposal/SubmitProposal.vue";
+import acceptReview from "components/proposal/AcceptReview.vue";
 import sectionEditor from "components/proposal/SectionEditor.vue";
 import scoreEditor from "components/proposal/ScoreEditor.vue";
 import scoreSheet from "components/proposal/ScoreSheet.vue";
@@ -26,6 +27,7 @@ const components = {
   "create-proposal-dialog": createProposalDialog,
   "proposal-file-attachment": proposalFileAttachment,
   "submit-proposal": submitProposal,
+  "accept-review": acceptReview,
   "section-editor": sectionEditor,
   "score-editor": scoreEditor,
   "score-sheet": scoreSheet,

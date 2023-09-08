@@ -40,6 +40,7 @@
 export default {
   data() {
     return {
+      loading: false,
       proposals: [],
       search_query: "",
     };
@@ -51,9 +52,11 @@ export default {
 
   methods: {
     getProposals() {
+      this.$utilsStore.setLoading(true);
       var query = this.search_query ? `?search=${this.search_query}` : "";
       this.$api.get(`proposals${query}`).then((res) => {
         this.proposals = res.data;
+        this.$utilsStore.setLoading(false);
       });
     },
   },

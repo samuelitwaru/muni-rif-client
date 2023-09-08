@@ -1,5 +1,6 @@
 <template lang="">
   <div>
+    <accept-review :proposal="proposal" :score="score" />
     <div v-for="section in sections" :key="section.id">
       <hr :id="section.name" class="section-separator" />
       <div class="q-pa-sm">
@@ -27,6 +28,7 @@
           :max="10"
           :proposal="proposal"
           :section="section"
+          :score="score"
         />
       </div>
     </div>
@@ -40,13 +42,8 @@ export default {
     return {
       sections: [],
       proposal: {},
+      score: null,
       content: `
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Obcaecati
-        natus animi, et itaque ea tempora, exercitationem nemo nobis eos quos
-        corrupti quasi cupiditate recusandae magnam, quis dicta facere dolore
-        blanditiis.
-      </p>
       <p>
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Obcaecati
         natus animi, et itaque ea tempora, exercitationem nemo nobis eos quos
@@ -66,7 +63,23 @@ export default {
       this.$api.get(`proposals/${this.$route.params.id}/`).then((res) => {
         this.proposal = res.data;
         this.$proposalStore.setProposal(this.proposal);
+        this.getScore();
       });
+    },
+
+    getScore() {
+      console.log(this.$authStore.currentUser?.id || 0);
+      this.$api
+        .get(
+          `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
+            this.$route.params.id
+          }`
+        )
+        .then((res) => {
+          if (res.data.length == 1) {
+            this.score = res.data[0];
+          }
+        });
     },
 
     getSections() {

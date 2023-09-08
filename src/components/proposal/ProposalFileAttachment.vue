@@ -64,7 +64,6 @@ export default {
       formData.append("file", file);
       formData.append("name", file.name);
       formData.append("proposal", this.$route.params["id"]);
-      console.log(formData);
 
       // You might want to add more data to the formData if needed
 

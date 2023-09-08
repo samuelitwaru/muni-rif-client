@@ -1,6 +1,5 @@
 <template>
   <div align="center">
-    <loading-component :loading="loading" />
     <error-message-modal :errorResponse="errorResponse" />
 
     <q-card class="q-ma-md" style="max-width: 22rem">
@@ -71,21 +70,24 @@ export default {
   },
   methods: {
     login() {
-      this.loading = true;
-      this.formData["username"] = this.formData["email"];
-      this.$api
-        .post(`/accounts/login/`, this.formData)
-        .then((res) => {
-          const token = res.data.token;
-          const user = res.data.user;
-          this.$authStore.setUserAndToken(user, token);
-          this.loading = false;
-          this.$router.push("/");
-        })
-        .catch((err) => {
-          this.loading = false;
-          this.errorResponse = err.response;
-        });
+      console.log("doing");
+      this.$utilsStore.setLoading(true);
+
+      // this.formData["username"] = this.formData["email"];
+      // this.$api
+      //   .post(`/accounts/login/`, this.formData)
+      //   .then((res) => {
+      //     const token = res.data.token;
+      //     const user = res.data.user;
+      //     this.$authStore.setUserAndToken(user, token);
+      //     // this.$utilsStore.setLoading(false);
+      //     var _next = this.$route.query._next || "/";
+      //     this.$router.push(_next);
+      //   })
+      //   .catch((err) => {
+      //     // this.$utilsStore.setLoading(false);
+      //     this.errorResponse = err.response;
+      //   });
     },
     setFormData() {
       this.formData = { email: "samuelitwaru@gmail.com", password: "bratz123" };

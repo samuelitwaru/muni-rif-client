@@ -1,6 +1,5 @@
 <template>
   <div align="center">
-    <loading-component :loading="loading" />
     <message-box :message="this.message" @close="this.message = ''" />
     <error-message-modal :errorResponse="errorResponse" />
     <q-card class="q-ma-md" style="max-width: 500px">
@@ -48,17 +47,17 @@ export default {
   },
   methods: {
     resetPassword() {
-      this.loading = true;
+      this.$utilsStore.setLoading(true);
       this.$api
         .post("accounts/reset-password/", this.formData)
         .then((res) => {
           console.log(res.data);
-          this.loading = false;
+          this.$utilsStore.setLoading(false);
           this.message = res.data.detail;
         })
         .catch((err) => {
           console.log(err.response);
-          this.loading = false;
+          this.$utilsStore.setLoading(false);
           this.errorResponse = err.response;
         });
     },

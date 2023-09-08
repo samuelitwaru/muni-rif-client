@@ -1,7 +1,5 @@
 <template>
   <div align="center">
-    <loading-component :loading="loading" />
-
     <q-card class="q-ma-md" style="max-width: 22rem">
       <q-card-section>
         <q-form @submit="setPassword">
@@ -43,10 +41,10 @@ export default {
   },
   methods: {
     setPassword() {
-      this.loading = true;
+      this.$utilsStore.setLoading(true);
       console.log(this.formData);
       this.$api.post("accounts/set-password/", this.formData).then((res) => {
-        this.loading = false;
+        this.$utilsStore.setLoading(false);
         // this.$router.push("/account/profile");
       });
     },
