@@ -45,12 +45,13 @@ export default {
   },
   methods: {
     submitProposal() {
+      this.$utilsStore.setLoading(true);
       this.$api
         .patch(`/proposals/${this.$route.params.id}/`, {
           status: "SUBMITTED",
         })
         .then((res) => {
-          console.log(res);
+          this.$utilsStore.setLoading(false);
           location.reload();
         });
     },

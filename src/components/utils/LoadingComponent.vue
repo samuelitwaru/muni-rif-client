@@ -1,8 +1,7 @@
 <!-- components/Loading.vue -->
 <template>
   <div v-if="show" class="loading">
-    dfklkdf
-    <q-dialog v-model="show">
+    <q-dialog v-model="show" persistent>
       <q-spinner-ios color="primary" size="3rem" :thickness="5" />
     </q-dialog>
   </div>
@@ -15,12 +14,18 @@ export default {
   },
   data() {
     return {
-      show: this.$utilsStore.isLoading,
+      // show: this.$utilsStore.isLoading,
     };
   },
 
+  computed: {
+    show() {
+      return this.$utilsStore.isLoading;
+    },
+  },
+
   created() {
-    this.$utilsStore.setLoading(true);
+    this.$utilsStore.setLoading(false);
   },
 };
 </script>

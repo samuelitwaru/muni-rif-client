@@ -66,28 +66,26 @@ export default {
   },
   created() {
     if (process.env.DEBUG) this.setFormData();
-    // console.log(process.env.API_URL);
   },
   methods: {
     login() {
-      console.log("doing");
       this.$utilsStore.setLoading(true);
 
-      // this.formData["username"] = this.formData["email"];
-      // this.$api
-      //   .post(`/accounts/login/`, this.formData)
-      //   .then((res) => {
-      //     const token = res.data.token;
-      //     const user = res.data.user;
-      //     this.$authStore.setUserAndToken(user, token);
-      //     // this.$utilsStore.setLoading(false);
-      //     var _next = this.$route.query._next || "/";
-      //     this.$router.push(_next);
-      //   })
-      //   .catch((err) => {
-      //     // this.$utilsStore.setLoading(false);
-      //     this.errorResponse = err.response;
-      //   });
+      this.formData["username"] = this.formData["email"];
+      this.$api
+        .post(`/accounts/login/`, this.formData)
+        .then((res) => {
+          const token = res.data.token;
+          const user = res.data.user;
+          this.$authStore.setUserAndToken(user, token);
+          this.$utilsStore.setLoading(false);
+          var _next = this.$route.query._next || "/";
+          this.$router.push(_next);
+        })
+        .catch((err) => {
+          this.$utilsStore.setLoading(false);
+          this.errorResponse = err.response;
+        });
     },
     setFormData() {
       this.formData = { email: "samuelitwaru@gmail.com", password: "bratz123" };

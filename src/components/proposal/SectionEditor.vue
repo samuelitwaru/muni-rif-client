@@ -6,7 +6,9 @@
       <q-dialog v-model="showDialog" persistent full-width full-height>
         <q-card style="width: 500px">
           <q-card-section class="flex justify-between">
-            <div class="text-h6">{{ section.title }}</div>
+            <div class="text-h6">
+              {{ section.title }} <small>({{ numWords }} words)</small>
+            </div>
             <q-btn
               color="primary"
               flat
@@ -38,6 +40,7 @@
 </template>
 
 <script>
+import wordCount from "html-word-count";
 export default {
   props: {
     proposal: {
@@ -56,9 +59,17 @@ export default {
       formData: {},
     };
   },
+  computed: {
+    numWords() {
+      return wordCount(this.formData[this.section.name]);
+    },
+  },
   methods: {
     updateSection() {
       this.$utilsStore.setLoading(true);
+
+      console.log(this.formData);
+      console.log(wordCount(this.formData[this.section.name]));
       this.$api
         .patch(`proposals/${this.$route.params.id}/`, this.formData)
         .then((res) => {

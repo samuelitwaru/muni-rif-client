@@ -152,11 +152,12 @@ export default {
           "This action is irreversible. Please confirm submission of your score sheet"
         )
       ) {
+        this.$utilsStore.setLoading(true);
         this.$api
           .patch(`scores/${this.score.id}/`, this.formData)
           .then((res) => {
             this.score = res.data;
-            location.reload();
+            location.href = "reviewers";
           });
       }
     },

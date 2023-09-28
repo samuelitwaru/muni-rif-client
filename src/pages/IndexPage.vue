@@ -14,8 +14,14 @@
 
 <script>
 import { defineComponent } from "vue";
+import wordCount from "html-word-count";
 
 export default defineComponent({
   name: "IndexPage",
+
+  created() {
+    console.log(wordCount);
+    console.log(wordCount("<p>Hello <b>world!</b></p>"));
+  },
 });
 </script>

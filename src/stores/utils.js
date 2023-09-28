@@ -5,19 +5,18 @@ import { defineStore } from "pinia";
 export const utilsStore = defineStore({
   id: "utils",
   state: () => ({
-    errorMessageDialog: JSON.parse(localStorage.getItem("errorMessageDialog")),
+    // errorMessageDialog: JSON.parse(localStorage.getItem("errorMessageDialog")),
     loading: Boolean(parseInt(localStorage.getItem("loading"))),
   }),
   getters: {
-    errorMessageDialog: (state) => state.errorMessageDialog,
+    // errorMessageDialog: (state) => state.errorMessageDialog,
     isLoading: (state) => state.loading,
   },
   actions: {
     setLoading(isLoading) {
       let value = 1;
-      if (isLoading === true) {
-        this.loading = isLoading;
-      } else if (isLoading === false) {
+      this.loading = isLoading;
+      if (isLoading === false) {
         value = 0;
       }
       localStorage.setItem("loading", value);
