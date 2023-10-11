@@ -1,6 +1,7 @@
 // const createSerie = import('components/CreateSerieModal.vue');
 import developerMenu from "components/menus/DeveloperMenu.vue";
 import developerMenu2 from "components/menus/DeveloperMenu2.vue";
+import userMenu from "components/menus/UserMenu.vue";
 import userLogout from "components/account/UserLogout.vue";
 import createProposalDialog from "components/proposal/CreateProposalDialog.vue";
 import proposalFileAttachment from "components/proposal/ProposalFileAttachment.vue";
@@ -23,6 +24,7 @@ import tinyMCE from "components/widgets/TinyMCE.vue";
 const components = {
   "developer-menu": developerMenu,
   "developer-menu-2": developerMenu2,
+  "user-menu": userMenu,
   "user-logout": userLogout,
   "create-proposal-dialog": createProposalDialog,
   "proposal-file-attachment": proposalFileAttachment,

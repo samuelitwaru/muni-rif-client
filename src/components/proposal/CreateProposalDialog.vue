@@ -51,8 +51,9 @@ export default {
   methods: {
     createProposal() {
       this.$utilsStore.setLoading(true);
+      this.formData["user"] = this.$authStore.currentUser.id;
       this.$api.post("proposals/", this.formData).then((res) => {
-        this.$router.push(`/proposals/${res.data.id}`);
+        this.$router.push(`/applicant/proposals/${res.data.id}`);
         this.$utilsStore.setLoading(false);
         this.showDialog = false;
       });

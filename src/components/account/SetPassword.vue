@@ -44,7 +44,8 @@ export default {
       this.$utilsStore.setLoading(true);
       this.$api.post("accounts/set-password/", this.formData).then((res) => {
         this.$utilsStore.setLoading(false);
-        this.$router.push("/account/profile");
+        console.log(res.data);
+        // this.$router.push("/index/account/signin");
       });
     },
   },

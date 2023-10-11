@@ -2,8 +2,9 @@
   <div v-if="proposal?.status == 'EDITING'">
     <q-btn
       color="primary"
-      icon="send"
       label="Submit"
+      dense
+      flat
       @click="modalVisible = true"
     />
     <q-dialog v-model="modalVisible">

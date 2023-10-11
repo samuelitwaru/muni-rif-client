@@ -10,6 +10,15 @@ const routes = [
         component: () => import("components/proposal/ProposalList.vue"),
       },
       {
+        path: "applicant/proposals",
+        component: () =>
+          import("components/proposal/ApplicantProposalList.vue"),
+      },
+      {
+        path: "proposal-reviews",
+        component: () => import("components/proposal/ReviewProposalList.vue"),
+      },
+      {
         path: "grant/create",
         component: () => import("components/grant/CreateGrant.vue"),
       },
@@ -17,18 +26,6 @@ const routes = [
         path: "grant",
         component: () => import("pages/IndexPage.vue"),
         children: [],
-      },
-      {
-        path: "account/signup",
-        component: () => import("components/account/UserSignup.vue"),
-      },
-      {
-        path: "account/signin",
-        component: () => import("components/account/UserSignin.vue"),
-      },
-      {
-        path: "account/password-reset",
-        component: () => import("components/account/PasswordReset.vue"),
       },
 
       {
@@ -39,10 +36,6 @@ const routes = [
       {
         path: "account/password",
         component: () => import("components/account/ChangePassword.vue"),
-      },
-      {
-        path: "account/password/set/:token",
-        component: () => import("components/account/SetPassword.vue"),
       },
 
       {
@@ -63,6 +56,60 @@ const routes = [
       {
         path: ":id/reviewers",
         component: () => import("components/proposal/ProposalReviewers.vue"),
+      },
+    ],
+  },
+
+  {
+    path: "/applicant/proposals",
+    component: () => import("components/proposal/ApplicantProposalLayout.vue"),
+    children: [
+      {
+        path: ":id",
+        component: () => import("components/proposal/ApplicantProposal.vue"),
+      },
+      {
+        path: ":id/reviews",
+        component: () => import("components/proposal/ProposalReviews.vue"),
+      },
+    ],
+  },
+
+  {
+    path: "/proposal-reviews",
+    component: () => import("components/proposal/ReviewProposalLayout.vue"),
+    children: [
+      {
+        path: ":id",
+        component: () => import("components/proposal/ReviewProposal.vue"),
+      },
+      {
+        path: ":id/reviews",
+        component: () => import("components/proposal/ProposalReviews.vue"),
+      },
+    ],
+  },
+
+  {
+    path: "/index",
+    component: () => import("layouts/IndexLayout.vue"),
+    children: [
+      {
+        path: "account/signup",
+        component: () => import("components/account/UserSignup.vue"),
+      },
+      {
+        path: "account/signin",
+        component: () => import("components/account/UserSignin.vue"),
+      },
+      {
+        path: "account/password-reset",
+        component: () => import("components/account/PasswordReset.vue"),
+      },
+
+      {
+        path: "account/password/set/:token",
+        component: () => import("components/account/SetPassword.vue"),
       },
     ],
   },

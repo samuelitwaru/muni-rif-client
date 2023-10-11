@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="$proposalStore.currentProposal?.status == 'EDITING'">
     <q-btn
       color="primary"
       icon="attachment"

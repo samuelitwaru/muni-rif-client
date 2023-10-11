@@ -31,23 +31,14 @@
             <score-sheet />
             <q-btn-dropdown flat dense dropdown-icon="more_vert">
               <q-list class="q-py-sm">
-                <router-link :to="`/proposals/${$route.params.id}/`">
+                <router-link
+                  :to="`/proposal-reviews/${$route.params.id}/reviews`"
+                >
                   <q-item dense clickable v-close-popup>
                     <q-item-section>
                       <q-item-label>
-                        <q-icon name="book" />
-                        Sections
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </router-link>
-
-                <router-link :to="`/proposals/${$route.params.id}/reviewers`">
-                  <q-item dense clickable v-close-popup>
-                    <q-item-section>
-                      <q-item-label>
-                        <q-icon name="people" />
-                        Reviewers
+                        <q-icon name="list" />
+                        REVIEWS & SCORES
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -67,14 +58,14 @@
       :width="220"
     >
       <q-card flat class="q-py-sm">
-        <router-link to="/proposals">
+        <router-link to="/proposal-reviews">
           <q-btn
             class="q-mx-sm"
             block
             color="primary"
             flat
             icon="arrow_back"
-            label="All Proposals"
+            label="Proposal Reviews"
           />
         </router-link>
       </q-card>
@@ -83,7 +74,7 @@
         <a
           v-for="(section, index) in sections"
           :key="section.id"
-          :href="`/proposals/${$route.params.id}${section.ref}`"
+          :href="`/proposal-reviews/${$route.params.id}${section.ref}`"
         >
           <q-item clickable v-ripple>
             <div class="q-px-sm border q-my-auto q-mr-sm">

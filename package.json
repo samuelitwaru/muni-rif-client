@@ -17,6 +17,7 @@
     "@quasar/extras": "^1.16.4",
     "@tinymce/tinymce-vue": "^5.1.0",
     "axios": "^1.2.1",
+    "cheerio": "^1.0.0-rc.12",
     "firebase": "^10.1.0",
     "html-word-count": "^2.0.0",
     "pinia": "^2.0.11",

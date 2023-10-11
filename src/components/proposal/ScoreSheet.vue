@@ -4,14 +4,14 @@
       dense
       flat
       color="primary"
-      label="Submit Score Sheet"
+      label="Submit Review"
       @click="startDialog"
     />
 
     <q-dialog v-model="showDialog" persistent full-width full-height>
       <q-card style="width: 500px">
         <q-card-section class="flex justify-between">
-          <div class="text-h6">Submit Score Sheet</div>
+          <div class="text-h6">Submit Review</div>
           <q-btn
             color="primary"
             flat
@@ -34,7 +34,7 @@
               <tr
                 :class="{
                   'bg-green-2': score[section.name] > 5,
-                  'bg-red-2': score[section.name] <= 5,
+                  'bg-red-1': score[section.name] <= 5,
                 }"
                 v-for="section in sections"
                 :key="section.id"
@@ -157,7 +157,10 @@ export default {
           .patch(`scores/${this.score.id}/`, this.formData)
           .then((res) => {
             this.score = res.data;
-            location.href = "reviewers";
+            console.log(this.$router);
+            this.$utilsStore.setLoading(false);
+            this.showDialog = false;
+            location.reload();
           });
       }
     },

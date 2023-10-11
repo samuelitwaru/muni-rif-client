@@ -1,6 +1,10 @@
 <template lang="">
   <q-card
-    v-if="score && score.status == 'IN PROGRESS'"
+    v-if="
+      score &&
+      score.status == 'IN PROGRESS' &&
+      this.$userHasAnyGroups(['reviewer'])
+    "
     flat
     bordered
     class="q-mt-sm q-pa-sm"
@@ -57,6 +61,14 @@ export default {
     },
   },
 
+  watch: {
+    score(newValue, oldValue) {
+      // This function will run whenever myProp changes
+      this.mark = this.score[this.section["name"]];
+      this.comment = this.score[`${this.section["name"]}_comment`];
+    },
+  },
+
   data() {
     return {
       comment: null,
@@ -67,38 +79,7 @@ export default {
     };
   },
 
-  created() {
-    // this.getScore();
-  },
-
-  mounted() {
-    if (this.score) {
-      this.mark = this.score[this.section["name"]];
-      this.comment = this.score[`${this.section["name"]}_comment`];
-    }
-  },
-
   methods: {
-    // getScore() {
-    //   console.log(
-    //     `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
-    //       this.$route.params.id
-    //     }`
-    //   );
-    //   this.$api
-    //     .get(
-    //       `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
-    //         this.$route.params.id
-    //       }`
-    //     )
-    //     .then((res) => {
-    //       if (res.data.length == 1) {
-    //         this.score = res.data[0];
-    //         this.mark = this.score[this.section["name"]];
-    //         this.comment = this.score[`${this.section["name"]}_comment`];
-    //       }
-    //     });
-    // },
     updateSectionScore(scoreId) {
       this.formData[this.section["name"]] = this.mark;
       this.$api.patch(`scores/${scoreId}/`, this.formData).then((res) => {

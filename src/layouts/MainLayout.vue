@@ -1,28 +1,42 @@
 <template>
-  <q-layout view="hhr LpR lFf">
+  <q-layout view="lHh Lpr lFf">
     <loading-component />
-    <q-header reveal bordered class="bg-primary text-white">
+    <q-header elevated>
       <q-toolbar>
-        <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" /> -->
-        <q-toolbar-title>
-          <router-link to="/" style="">
-            <div>
-              <q-avatar>
-                <img src="~assets/logo.jpeg" />
-              </q-avatar>
-              <label class="q-pa-md text-white">MuniRIF</label>
-            </div>
-          </router-link>
-        </q-toolbar-title>
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+        />
 
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+        <q-toolbar-title>MuniRIF</q-toolbar-title>
+
+        <div class="text-orange-3 q-px-xs">
+          <router-link to="/account/profile">
+            <q-chip
+              class="glossy"
+              icon="person"
+              :label="$authStore.currentUser.username"
+            />
+          </router-link>
+          <!-- {{ $getState("user")?.name }} -->
+        </div>
+        <user-logout />
+        <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" overlay bordered> </q-drawer>
-
-    <q-drawer v-model="rightDrawerOpen" side="right" overlay bordered>
-      <developer-menu-2 />
+    <q-drawer
+      v-model="leftDrawerOpen"
+      class="bg-grey-2"
+      show-if-above
+      bordered
+      :width="220"
+    >
+      <user-menu />
     </q-drawer>
 
     <q-page-container>
@@ -32,24 +46,39 @@
 </template>
 
 <script>
-import { ref } from "vue";
-
 export default {
-  setup() {
-    const leftDrawerOpen = ref(false);
-    const rightDrawerOpen = ref(false);
-
+  data() {
     return {
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
-
-      rightDrawerOpen,
-      toggleRightDrawer() {
-        rightDrawerOpen.value = !rightDrawerOpen.value;
-      },
+      leftDrawerOpen: false,
     };
+  },
+
+  created() {
+    if (!this.$authStore.currentUser) {
+      location.href = "index/account/signin";
+    }
+  },
+
+  methods: {
+    toggleLeftDrawer() {
+      this.leftDrawerOpen = !this.leftDrawerOpen;
+    },
+
+    logout() {
+      this.$utilsStore.setLoading(true);
+      this.$api.get(`/accounts/logout/`).then((res) => {
+        this.$authStore.clearUserAndToken();
+        this.$router.push("/login");
+        // location.href = "/login";
+        this.$utilsStore.setLoading(false);
+      });
+    },
   },
 };
 </script>
+
+<style>
+a {
+  text-decoration: none;
+}
+</style>

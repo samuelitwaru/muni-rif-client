@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="proposal.status == 'EDITING'">
     <q-btn dense flat color="primary" icon="edit" @click="showDialog = true" />
 
     <q-form @submit="updateSection" class="q-gutter-md">
@@ -40,7 +40,8 @@
 </template>
 
 <script>
-import wordCount from "html-word-count";
+// import wordCount from "html-word-count";
+import cheerio from "cheerio";
 export default {
   props: {
     proposal: {
@@ -61,15 +62,15 @@ export default {
   },
   computed: {
     numWords() {
-      return wordCount(this.formData[this.section.name]);
+      return this.countWordsInHtml(this.formData[this.section.name]);
+      // return wordCount(this.formData[this.section.name]);
+      return 0;
     },
   },
   methods: {
     updateSection() {
       this.$utilsStore.setLoading(true);
 
-      console.log(this.formData);
-      console.log(wordCount(this.formData[this.section.name]));
       this.$api
         .patch(`proposals/${this.$route.params.id}/`, this.formData)
         .then((res) => {
@@ -81,6 +82,19 @@ export default {
     cancelCreate() {
       // Cancel the creation and close the dialog.
       this.showDialog = false;
+    },
+
+    countWordsInHtml(htmlString) {
+      const $ = cheerio.load(htmlString);
+
+      // Get the text content without HTML tags
+      const cleanText = $("body").text();
+
+      // Split the text into words and count them
+      const words = cleanText.split(/\s+/);
+      const numWords = words.length;
+
+      return numWords - 1;
     },
   },
   mounted() {

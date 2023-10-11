@@ -1,6 +1,5 @@
 import { boot } from "quasar/wrappers";
 import axios from "axios";
-import { Notify } from "quasar";
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -14,8 +13,6 @@ var baseURL = process.env.DEBUG
   : "https://munirif.pythonanywhere.com/api";
 
 const api = axios.create({ baseURL: baseURL });
-
-console.dir(api.getUri());
 
 // Add a request interceptor to add the token to all requests
 api.interceptors.request.use(
@@ -39,7 +36,6 @@ api.interceptors.response.use(
   (error) => {
     // Handle response errors globally
 
-    console.log(error.response);
     if (error.response.status === 500) {
       error.response.data = { error: ["Internal Server Error"] };
     }

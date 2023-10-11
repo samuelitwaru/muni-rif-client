@@ -149,6 +149,15 @@
         <div class="flex flex-center">
           <q-btn type="submit" color="primary" label="Sign Up"></q-btn>
         </div>
+
+        <div align="center" class="flex justify-between">
+          <div class="col"><hr /></div>
+          <span class="col">or</span>
+          <div class="col"><hr /></div>
+        </div>
+        <router-link to="/index/account/signin">
+          <q-btn type="submit" flat color="primary" label="Sign in"></q-btn>
+        </router-link>
       </q-form>
 
       <!-- <div class="flex flex-center">or</div>

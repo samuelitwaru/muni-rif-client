@@ -10,8 +10,9 @@
           type="text"
           label="Search"
           class="q-mr-sm"
-          @input="getProposals()"
+          @input="getCurrentUserProposals()"
         />
+        <create-proposal-dialog />
       </div>
     </h2>
 
@@ -26,7 +27,6 @@
             <q-icon color="" name="book" />
           </q-item-section>
           <q-item-section>{{ proposal.title }}</q-item-section>
-          <q-chip dense :label="proposal.status" />
         </q-item>
       </router-link>
     </q-list>
@@ -47,21 +47,27 @@ export default {
   },
 
   created() {
-    this.getProposals();
+    if (this.$userHasAnyGroups(["applicant"])) {
+      this.getCurrentUserProposals();
+    }
   },
 
   methods: {
-    getProposals() {
-      var query = this.search_query ? `?search=${this.search_query}` : "";
-      this.$api.get(`proposals${query}`).then((res) => {
-        this.proposals = res.data;
-      });
+    getCurrentUserProposals() {
+      // this.$utilsStore.setLoading(true);
+      var query = this.search_query ? `&search=${this.search_query}` : "";
+      this.$api
+        .get(`proposals?user=${this.$authStore.currentUser.id}${query}`)
+        .then((res) => {
+          this.proposals = res.data;
+          // this.$utilsStore.setLoading(false);
+        });
     },
   },
 
   watch: {
     search_query(newVal) {
-      this.getProposals();
+      this.getCurrentUserProposals();
     },
   },
 };

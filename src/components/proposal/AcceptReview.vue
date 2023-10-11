@@ -1,7 +1,10 @@
 <template>
   <div
     v-if="
-      score && score?.status != 'IN PROGRESS' && score?.status != 'COMPLETED'
+      score &&
+      score?.status != 'IN PROGRESS' &&
+      score?.status != 'COMPLETED' &&
+      this.$userHasAnyGroups(['reviewer'])
     "
   >
     <q-dialog v-model="modalVisible" persistent>

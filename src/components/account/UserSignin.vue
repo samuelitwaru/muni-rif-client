@@ -37,8 +37,16 @@
               <span class="col">or</span>
               <div class="col"><hr /></div>
             </div>
-            <router-link to="/account/signup">
+            <router-link to="/index/account/signup">
               <q-btn type="submit" flat color="primary" label="Sign up"></q-btn>
+            </router-link>
+            <router-link to="/index/account/password-reset">
+              <q-btn
+                type="submit"
+                flat
+                color="primary"
+                label="Forgot Password"
+              ></q-btn>
             </router-link>
           </div>
         </q-form>
