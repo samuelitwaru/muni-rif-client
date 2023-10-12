@@ -44,7 +44,6 @@ export default {
             route: "/applicant/proposals",
           },
           { name: "Profile", icon: "arrow_right", route: "/account/profile" },
-          { name: "Team", icon: "arrow_right", route: "" },
         ];
       } else if (this.$userHasAnyGroups(["reviewer"])) {
         return [

@@ -22,11 +22,6 @@
             />
           </div>
 
-          <submit-proposal
-            :proposal="$proposalStore.currentProposal"
-            v-if="$proposalStore.currentProposal?.status == 'EDITING'"
-          />
-
           <div class="flex">
             <score-sheet />
             <q-btn-dropdown flat dense dropdown-icon="more_vert">

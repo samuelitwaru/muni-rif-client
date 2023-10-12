@@ -19,12 +19,11 @@
             <q-chip
               class="glossy"
               icon="person"
-              :label="$authStore.currentUser.username"
+              :label="$authStore.currentUser?.username"
             />
           </router-link>
           <!-- {{ $getState("user")?.name }} -->
         </div>
-        <user-logout />
         <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>

@@ -27,6 +27,7 @@
             <q-icon color="" name="book" />
           </q-item-section>
           <q-item-section>{{ proposal.title }}</q-item-section>
+          <q-chip class="glossy" dense :label="proposal.status" />
         </q-item>
       </router-link>
     </q-list>

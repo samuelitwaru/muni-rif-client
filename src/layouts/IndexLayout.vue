@@ -26,7 +26,12 @@
 <script>
 import { ref, onMounted } from "vue";
 import { authStore } from "src/stores/auth";
+import router from "src/router";
 export default {
-  setup() {},
+  setup() {
+    if (authStore().isLoggedIn) {
+      window.location.href = "/";
+    }
+  },
 };
 </script>

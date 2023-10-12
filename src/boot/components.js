@@ -3,6 +3,8 @@ import developerMenu from "components/menus/DeveloperMenu.vue";
 import developerMenu2 from "components/menus/DeveloperMenu2.vue";
 import userMenu from "components/menus/UserMenu.vue";
 import userLogout from "components/account/UserLogout.vue";
+import updateUser from "components/account/UpdateUser.vue";
+import changePassword from "components/account/ChangePassword.vue";
 import createProposalDialog from "components/proposal/CreateProposalDialog.vue";
 import proposalFileAttachment from "components/proposal/ProposalFileAttachment.vue";
 import submitProposal from "components/proposal/SubmitProposal.vue";
@@ -26,6 +28,8 @@ const components = {
   "developer-menu-2": developerMenu2,
   "user-menu": userMenu,
   "user-logout": userLogout,
+  "update-user": updateUser,
+  "change-password": changePassword,
   "create-proposal-dialog": createProposalDialog,
   "proposal-file-attachment": proposalFileAttachment,
   "submit-proposal": submitProposal,

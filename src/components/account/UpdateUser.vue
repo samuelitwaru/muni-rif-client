@@ -1,14 +1,8 @@
 <template>
   <div align="center">
-    <error-message-modal :errorResponse="errorResponse" />
+    <h4 class="text-h6 q-my-sm">Update Profile</h4>
     <q-card class="q-ma-sm q-pa-md" style="max-width: 40rem">
-      <h2 class="text-h6">
-        <q-avatar>
-          <img src="~assets/logo.jpeg" />
-        </q-avatar>
-        Signup Form
-      </h2>
-      <q-form @submit="signup">
+      <q-form @submit="updateUserProfile">
         <div class="row q-col-gutter-xs">
           <div class="col">
             <q-input
@@ -56,17 +50,6 @@
             ></q-input>
           </div>
         </div>
-
-        <radio-field
-          align="left"
-          label="Gender"
-          @input="formData.gender = $event"
-          v-model="formData.gender"
-          :options="[
-            { label: 'Male', value: 'Male' },
-            { label: 'Female', value: 'Female' },
-          ]"
-        />
 
         <div class="row q-col-gutter-xs q-my-sm">
           <div class="col">
@@ -126,50 +109,10 @@
           </div>
         </div>
 
-        <q-input
-          outlined
-          dense
-          v-model="formData.password"
-          label="Password"
-          type="password"
-          :rules="passwordRules"
-          required
-        ></q-input>
-
-        <q-input
-          outlined
-          dense
-          v-model="formData.confirm_password"
-          label="Confirm Password"
-          type="password"
-          :rules="confirmPasswordRules"
-          required
-        ></q-input>
-
         <div class="flex flex-center">
-          <q-btn type="submit" color="primary" label="Sign Up"></q-btn>
+          <q-btn type="submit" color="primary" label="Update Profile"></q-btn>
         </div>
-
-        <div align="center" class="flex justify-between">
-          <div class="col"><hr /></div>
-          <span class="col">or</span>
-          <div class="col"><hr /></div>
-        </div>
-        <router-link to="/index/account/signin">
-          <q-btn type="submit" flat color="primary" label="Sign in"></q-btn>
-        </router-link>
       </q-form>
-
-      <!-- <div class="flex flex-center">or</div>
-
-      <q-card-actions class="flex flex-center">
-        <q-btn type="button" @click="signUpWithGoogle">
-          <q-avatar size="sm">
-            <img src="~assets/google.jpg" />
-          </q-avatar>
-          Join with google
-        </q-btn>
-      </q-card-actions> -->
     </q-card>
   </div>
 </template>
@@ -178,6 +121,7 @@
 export default {
   data() {
     return {
+      user: this.$authStore.currentUser,
       loading: false,
       faculties: [],
       departments: [],
@@ -188,7 +132,6 @@ export default {
         last_name: "",
         phone: "",
         gender: "",
-        designation: "",
         faculty: null,
         department: null,
         qualification: null,
@@ -217,32 +160,33 @@ export default {
   },
 
   created() {
-    // this.setFormData();
+    this.setFormData();
     this.getFaculties();
     this.getQualifications();
   },
   methods: {
-    signup() {
+    updateUserProfile() {
       // Handle form submission here
       this.$utilsStore.setLoading(true);
       this.formData["username"] = this.formData["email"];
+      this.formData["token"] = this.$authStore.token;
       this.$api
-        .post("accounts/signup/", this.formData)
+        .post("accounts/update-user/", this.formData)
         .then((res) => {
+          const token = res.data.token;
+          const user = res.data.user;
+          this.$authStore.setUserAndToken(user, token);
           this.$utilsStore.setLoading(false);
-          this.$router.push("/index/account/signin");
         })
         .catch((err) => {
           this.$utilsStore.setLoading(false);
           this.errorResponse = err.response;
         });
-      // console.log("Form submitted:", this.formData);
     },
 
     getFaculties() {
       this.$api.get("faculties/").then((res) => {
         this.faculties = res.data;
-        console.log(this.faculties);
       });
     },
 
@@ -252,21 +196,16 @@ export default {
       });
     },
 
-    signUpWithGoogle() {},
-
     setFormData() {
       this.formData = {
-        email: "samuel@gmail.com",
-        first_name: "Samuel",
-        last_name: "Itwaru",
-        phone: "0781902516",
-        gender: "Male",
-        designation: "",
-        faculty: null,
-        department: null,
-        qualification: null,
-        password: "bratz123",
-        confirm_password: "bratz123",
+        email: this.user.email,
+        first_name: this.user.first_name,
+        last_name: this.user.last_name,
+        phone: this.user.profile.phone,
+        faculty: this.user.profile.faculty.id,
+        department: this.user.profile.department.id,
+        qualification: this.user.profile.qualification.id,
+        designation: this.user.profile.designation,
       };
     },
   },

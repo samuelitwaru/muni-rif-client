@@ -1,7 +1,9 @@
 <template>
   <div v-if="$authStore.isLoggedIn">
     <!-- Your logout button here -->
-    <q-btn @click="showConfirmationDialog" color="primary">Logout</q-btn>
+    <q-btn @click="showConfirmationDialog" dense flat color="primary"
+      >Logout</q-btn
+    >
 
     <!-- Confirmation Dialog -->
     <q-dialog v-model="showDialog">

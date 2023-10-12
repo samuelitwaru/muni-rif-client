@@ -1,15 +1,11 @@
 <template>
   <div>
-    <q-btn
-      label="Start New Proposal"
-      color="primary"
-      @click="showDialog = true"
-    />
+    <q-btn label="New Proposal" color="primary" @click="showDialog = true" />
     <q-form @submit="createProposal" class="q-gutter-md">
       <q-dialog v-model="showDialog" persistent>
         <q-card style="width: 500px">
           <q-card-section>
-            <div class="text-h6">Start New Proposal</div>
+            <div class="text-h6">New Proposal</div>
           </q-card-section>
           <q-separator />
           <q-card-section class="q-pt-lg q-pb-md">

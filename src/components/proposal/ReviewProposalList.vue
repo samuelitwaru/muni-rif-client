@@ -4,7 +4,7 @@
 
     <q-list bordered>
       <router-link
-        :to="`proposal-reviews/${score.proposal.id}`"
+        :to="`proposal-reviews/${score.proposal_detail.id}`"
         v-for="score in proposals"
         :key="score.id"
       >
@@ -12,7 +12,7 @@
           <q-item-section avatar>
             <q-icon color="" name="book" />
           </q-item-section>
-          <q-item-section>{{ score.proposal.title }}</q-item-section>
+          <q-item-section>{{ score.proposal_detail.title }}</q-item-section>
           <q-chip dense class="glossy" :label="score.status" />
         </q-item>
       </router-link>
@@ -47,6 +47,7 @@ export default {
         .get(`scores?user=${this.$authStore.currentUser.id}${query}`)
         .then((res) => {
           this.proposals = res.data;
+          console.log(this.proposals);
           // this.$utilsStore.setLoading(false);
         });
     },

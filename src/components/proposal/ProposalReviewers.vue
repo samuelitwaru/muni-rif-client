@@ -62,7 +62,6 @@
             <td class="text-left">
               <q-btn
                 color="primary"
-                icon="add"
                 label="Add Reviewer"
                 @click="createScore"
               />
@@ -112,7 +111,6 @@ export default {
 
     createScore() {
       this.$utilsStore.setLoading(true);
-      console.log(this.formData);
       this.$api.post("scores/", this.formData).then((res) => {
         if (res.status == 201) {
           this.getScores();
