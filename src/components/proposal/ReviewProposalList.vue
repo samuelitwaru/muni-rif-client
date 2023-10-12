@@ -1,5 +1,14 @@
 <template lang="">
   <div>
+    <div class="q-ma-md">
+      <q-breadcrumbs>
+        <q-breadcrumbs-el icon="home" to="/" label="Home" />
+
+        <q-breadcrumbs-el label="Proposal Reviews" icon="note" />
+      </q-breadcrumbs>
+    </div>
+    <q-separator spaced />
+
     <h2 class="flex justify-between text-h6 q-px-md">Proposal Reviews</h2>
 
     <q-list bordered>

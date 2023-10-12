@@ -21,36 +21,35 @@
               :label="$proposalStore.currentProposal?.status"
             />
           </div>
-
-          <div class="flex">
-            <score-sheet />
-            <q-btn-dropdown flat dense dropdown-icon="more_vert">
-              <q-list class="q-py-sm">
-                <router-link :to="`/proposals/${$route.params.id}/`">
-                  <q-item dense clickable v-close-popup>
-                    <q-item-section>
-                      <q-item-label>
-                        <q-icon name="book" />
-                        Sections
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </router-link>
-
-                <router-link :to="`/proposals/${$route.params.id}/reviewers`">
-                  <q-item dense clickable v-close-popup>
-                    <q-item-section>
-                      <q-item-label>
-                        <q-icon name="people" />
-                        Reviewers
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </router-link>
-              </q-list>
-            </q-btn-dropdown>
-          </div>
         </q-toolbar-title>
+        <div class="flex">
+          <score-sheet />
+          <q-btn-dropdown flat dense dropdown-icon="more_vert">
+            <q-list class="q-py-sm">
+              <router-link :to="`/proposals/${$route.params.id}/`">
+                <q-item dense clickable v-close-popup>
+                  <q-item-section>
+                    <q-item-label>
+                      <q-icon name="book" />
+                      Sections
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </router-link>
+
+              <router-link :to="`/proposals/${$route.params.id}/reviewers`">
+                <q-item dense clickable v-close-popup>
+                  <q-item-section>
+                    <q-item-label>
+                      <q-icon name="people" />
+                      Reviewers
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </router-link>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
       </q-toolbar>
     </q-header>
 

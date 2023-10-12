@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div class="q-ma-md">
+      <q-breadcrumbs>
+        <q-breadcrumbs-el icon="home" to="/" label="Home" />
+
+        <q-breadcrumbs-el label="My Profile" icon="person" />
+      </q-breadcrumbs>
+    </div>
+    <q-separator spaced />
     <div v-if="user">
       <q-card class="my-card q-ma-md" flat bordered>
         <q-card-section horizontal>

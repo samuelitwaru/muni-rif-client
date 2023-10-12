@@ -1,7 +1,16 @@
 <template lang="">
   <div>
+    <div class="q-ma-md">
+      <q-breadcrumbs>
+        <q-breadcrumbs-el icon="home" to="/" label="Home" />
+
+        <q-breadcrumbs-el label="My Proposals" icon="note" />
+      </q-breadcrumbs>
+    </div>
+
+    <q-separator spaced />
     <h2 class="flex justify-between text-h6 q-px-md">
-      Proposals
+      My Proposals
       <div class="flex">
         <q-input
           dense

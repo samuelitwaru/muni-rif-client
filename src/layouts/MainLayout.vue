@@ -35,6 +35,18 @@
       bordered
       :width="220"
     >
+      <q-img
+        src="~assets/logo.jpeg"
+        spinner-color="primary"
+        spinner-size="72px"
+      />
+      <div>
+        <router-link to="/" block>
+          <q-btn color="black" class="full-width" align="left" icon="home" flat>
+            <span class="q-px-md">Home</span>
+          </q-btn>
+        </router-link>
+      </div>
       <user-menu />
     </q-drawer>
 

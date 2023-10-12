@@ -26,27 +26,26 @@
             :proposal="$proposalStore.currentProposal"
             v-if="$proposalStore.currentProposal?.status == 'EDITING'"
           />
-
-          <div class="flex">
-            <score-sheet />
-            <q-btn-dropdown flat dense dropdown-icon="more_vert">
-              <q-list class="q-py-sm">
-                <router-link
-                  :to="`/proposal-reviews/${$route.params.id}/reviews`"
-                >
-                  <q-item dense clickable v-close-popup>
-                    <q-item-section>
-                      <q-item-label>
-                        <q-icon name="list" />
-                        REVIEWS & SCORES
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </router-link>
-              </q-list>
-            </q-btn-dropdown>
-          </div>
         </q-toolbar-title>
+        <div class="flex">
+          <score-sheet />
+          <q-btn-dropdown flat dense dropdown-icon="more_vert">
+            <q-list class="q-py-sm">
+              <router-link
+                :to="`/proposal-reviews/${$route.params.id}/reviews`"
+              >
+                <q-item dense clickable v-close-popup>
+                  <q-item-section>
+                    <q-item-label>
+                      <q-icon name="list" />
+                      REVIEWS & SCORES
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </router-link>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
       </q-toolbar>
     </q-header>
 

@@ -13,62 +13,63 @@
             <td class="text-left flex">
               <q-btn
                 color="primary"
-                icon="delete"
+                icon="close"
                 flat
                 dense
                 @click="deleteScore(score.id)"
               />
             </td>
           </tr>
-          <tr>
-            <td class="text-left flex">
-              <q-btn-dropdown
-                flat
-                class="q-mx-sm"
-                label="Select existing reviewer"
-                color="primary"
-              >
-                <q-list>
-                  <q-item
-                    v-for="user in reviewers"
-                    :key="user.id"
-                    clickable
-                    v-close-popup
-                    @click="
-                      this.formData.email = user.username;
-                      this.formData.user = user.id;
-                    "
-                  >
-                    <q-item-section>
-                      <q-item-label>
-                        <div>
-                          {{ user.first_name }}
-                          {{ user.last_name }}
-                        </div>
-                        {{ user.username }}
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-              <q-input
-                outlined
-                dense
-                v-model="formData.email"
-                type="email"
-                label="Enter Email Address"
-              />
-            </td>
-            <td class="text-left">
-              <q-btn
-                color="primary"
-                label="Add Reviewer"
-                @click="createScore"
-              />
-            </td>
-          </tr>
         </tbody>
       </q-markup-table>
+      <q-card flat bordered class="my-card q-my-sm">
+        <label class="text-h6 q-pa-sm">Add Reviewer</label>
+        <div class="row">
+          <div class="col-6 q-pa-sm">
+            <q-btn-dropdown
+              flat
+              class="q-mx-sm"
+              label="Select reviewer"
+              color="primary"
+            >
+              <q-list>
+                <q-item
+                  v-for="user in reviewers"
+                  :key="user.id"
+                  clickable
+                  v-close-popup
+                  @click="
+                    this.formData.email = user.username;
+                    this.formData.user = user.id;
+                  "
+                >
+                  <q-item-section>
+                    <q-item-label>
+                      <div>
+                        {{ user.first_name }}
+                        {{ user.last_name }}
+                      </div>
+                      {{ user.username }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
+          <div class="col-4 q-pa-sm">
+            <q-input
+              outlined
+              dense
+              v-model="formData.email"
+              type="email"
+              label="Enter Email Address"
+            />
+          </div>
+          <div class="col-2 q-pa-sm">
+            <q-btn color="primary" label="Add" @click="createScore" />
+          </div>
+        </div>
+      </q-card>
 
       <q-separator spaced />
 

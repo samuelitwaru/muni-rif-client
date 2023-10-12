@@ -104,7 +104,7 @@
             <q-input
               outlined
               dense
-              v-model="formData.first_name"
+              v-model="formData.designation"
               label="Your Designation"
               :rules="nameRules"
               required
@@ -159,6 +159,7 @@ export default {
         last_name: "",
         phone: "",
         gender: "",
+        designation: "",
         faculty: null,
         department: null,
         qualification: null,
