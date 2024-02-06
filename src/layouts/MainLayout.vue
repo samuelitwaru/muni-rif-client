@@ -66,7 +66,7 @@ export default {
 
   created() {
     if (!this.$authStore.currentUser) {
-      location.href = "index/account/signin";
+      location.href = "/index/account/signin";
     }
   },
 

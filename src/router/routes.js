@@ -4,7 +4,6 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [
       { path: "", component: () => import("pages/IndexPage.vue") },
-      { path: "test", component: () => import("pages/TestPage.vue") },
       {
         path: "proposals",
         component: () => import("components/proposal/ProposalList.vue"),
@@ -52,6 +51,10 @@ const routes = [
         path: ":id/reviewers",
         component: () => import("components/proposal/ProposalReviewers.vue"),
       },
+      {
+        path: ":id/team",
+        component: () => import("components/proposal/ProposalTeam.vue"),
+      },
     ],
   },
 
@@ -67,6 +70,10 @@ const routes = [
         path: ":id/reviews",
         component: () => import("components/proposal/ProposalReviews.vue"),
       },
+      {
+        path: ":id/team",
+        component: () => import("components/proposal/ProposalTeam.vue"),
+      },
     ],
   },
 
@@ -81,6 +88,10 @@ const routes = [
       {
         path: ":id/reviews",
         component: () => import("components/proposal/ProposalReviews.vue"),
+      },
+      {
+        path: ":id/team",
+        component: () => import("components/proposal/ProposalTeam.vue"),
       },
     ],
   },
@@ -118,6 +129,17 @@ const routes = [
   {
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),
+  },
+
+  {
+    path: "/test",
+    component: () => import("layouts/TestLayout.vue"),
+    children: [
+      {
+        path: "1",
+        component: () => import("pages/TestPage.vue"),
+      },
+    ],
   },
 ];
 

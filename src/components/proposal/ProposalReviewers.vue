@@ -1,5 +1,6 @@
 <template lang="">
   <div>
+    <proposal-score-sheets />
     <div class="q-pa-sm">
       <q-toolbar-title>Reviewers</q-toolbar-title>
       <q-markup-table flat bordered>
@@ -70,10 +71,6 @@
           </div>
         </div>
       </q-card>
-
-      <q-separator spaced />
-
-      <proposal-score-sheets />
     </div>
   </div>
 </template>
@@ -99,14 +96,12 @@ export default {
     getScores() {
       this.$api.get(`scores/?proposal=${this.$route.params.id}`).then((res) => {
         this.scores = res.data;
-        console.log(this.scores);
       });
     },
 
     getReviewers() {
       this.$api.get("users/?groups__name__in=reviewer").then((res) => {
         this.reviewers = res.data;
-        console.log(res.data);
       });
     },
 

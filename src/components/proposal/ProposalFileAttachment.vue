@@ -1,5 +1,10 @@
 <template>
-  <div v-if="$proposalStore.currentProposal?.status == 'EDITING'">
+  <div
+    v-if="
+      $proposalStore.currentProposal?.status == 'EDITING' &&
+      $authStore.currentUser.id == $proposalStore.currentProposal?.user
+    "
+  >
     <q-btn
       color="primary"
       icon="attachment"

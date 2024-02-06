@@ -16,6 +16,7 @@
             {{ $proposalStore.currentProposal?.title }}
 
             <q-chip
+              color="secondary"
               class="glossy"
               size="xs"
               :label="$proposalStore.currentProposal?.status"
@@ -24,31 +25,7 @@
         </q-toolbar-title>
         <div class="flex">
           <score-sheet />
-          <q-btn-dropdown flat dense dropdown-icon="more_vert">
-            <q-list class="q-py-sm">
-              <router-link :to="`/proposals/${$route.params.id}/`">
-                <q-item dense clickable v-close-popup>
-                  <q-item-section>
-                    <q-item-label>
-                      <q-icon name="book" />
-                      Sections
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </router-link>
-
-              <router-link :to="`/proposals/${$route.params.id}/reviewers`">
-                <q-item dense clickable v-close-popup>
-                  <q-item-section>
-                    <q-item-label>
-                      <q-icon name="people" />
-                      Reviewers
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </router-link>
-            </q-list>
-          </q-btn-dropdown>
+          <proposal-options />
         </div>
       </q-toolbar>
     </q-header>
@@ -96,7 +73,6 @@
 
     <q-footer elevated>
       <q-toolbar class="bg-white text-dark flex justify-between">
-        <!-- <q-toolbar-title> -->
         <div>Attachments</div>
         <div>
           <q-chip
@@ -114,8 +90,6 @@
             @click="openFile(file.file)"
           />
         </div>
-        <proposal-file-attachment @file-uploaded="getProposalFiles" />
-        <!-- </q-toolbar-title> -->
       </q-toolbar>
     </q-footer>
   </q-layout>
@@ -132,28 +106,7 @@ export default defineComponent({
       leftDrawerOpen: false,
       proposalFiles: [],
       score: {},
-      sections: [
-        { id: "#problem", name: "The Problem" },
-        { id: "#solution", name: "Proposed Solution" },
-        { id: "#outputs", name: "Outputs, Outcomes and Impact" },
-        { id: "#team", name: "Team Composition" },
-        {
-          id: "#capacity_development",
-          name: "Provision for Capacity Development",
-        },
-        {
-          id: "#scalability",
-          name: "Dissemination, Scalabilty and Sustainability",
-        },
-        {
-          id: "#ethical_implications",
-          name: "Ethical Implications and Enviromental Impact",
-        },
-        { id: "#conflict_of_interest", name: "Conflict of Interest" },
-        { id: "#summary_budget", name: "Summary Budget" },
-        { id: "#detailed_budget", name: "Detailed Budget" },
-        { id: "#workplan", name: "Workplan" },
-      ],
+      sections: [],
     };
   },
 

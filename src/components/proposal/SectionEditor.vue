@@ -1,13 +1,21 @@
 <template>
-  <div v-if="proposal.status == 'EDITING'">
+  <div
+    v-if="
+      proposal?.status == 'EDITING' &&
+      $authStore.currentUser.id == proposal?.user
+    "
+  >
     <q-btn dense flat color="primary" icon="edit" @click="showDialog = true" />
-
+    <small v-if="numWords > section.word_limit" class="text-red text-caption">
+      Exceeded word limit ({{ numWords }}/{{ section.word_limit }})
+    </small>
     <q-form @submit="updateSection" class="q-gutter-md">
       <q-dialog v-model="showDialog" persistent full-width full-height>
         <q-card style="width: 500px">
           <q-card-section class="flex justify-between">
             <div class="text-h6">
-              {{ section.title }} <small>({{ numWords }} words)</small>
+              {{ section.title }}
+              <small>({{ numWords }} / {{ section.word_limit }} words)</small>
             </div>
             <q-btn
               color="primary"
@@ -20,6 +28,12 @@
           <q-separator />
           <q-card-section class="scroll">
             <!-- <q-editor v-model="editor" min-height="5rem" flat /> -->
+            <small
+              v-if="numWords > section.word_limit"
+              class="text-red text-caption"
+            >
+              Exceeded word limit ({{ numWords }}/{{ section.word_limit }})
+            </small>
             <q-editor
               v-model="formData[section.name]"
               label="Title of your proposal"
@@ -27,11 +41,24 @@
               required
               min-height="65vh"
             />
+            <div align="right">
+              <small
+                v-if="numWords > section.word_limit"
+                class="text-red text-caption"
+              >
+                Exceeded word limit ({{ numWords }}/{{ section.word_limit }})
+              </small>
+            </div>
           </q-card-section>
           <q-separator spaced />
           <q-card-actions align="right">
             <q-btn flat color="primary" label="Cancel" @click="cancelCreate" />
-            <q-btn color="primary" label="Save" @click="updateSection" />
+            <q-btn
+              :disabled="numWords > section.word_limit"
+              color="primary"
+              label="Save"
+              @click="updateSection"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -62,7 +89,7 @@ export default {
   },
   computed: {
     numWords() {
-      return this.countWordsInHtml(this.formData[this.section.name]);
+      return this.countWordsInHtml(this.formData[this.section.name] || "");
       // return wordCount(this.formData[this.section.name]);
       return 0;
     },

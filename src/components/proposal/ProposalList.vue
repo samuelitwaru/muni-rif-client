@@ -8,7 +8,7 @@
       </q-breadcrumbs>
     </div>
     <q-separator spaced />
-    <h2 class="flex justify-between text-h6 q-px-md">
+    <h2 class="flex justify-between text-h6 q-px-sm">
       All Proposals
       <div class="flex">
         <q-input
@@ -23,7 +23,7 @@
       </div>
     </h2>
 
-    <q-list bordered>
+    <q-list bordered class="q-ma-sm">
       <router-link
         :to="`proposals/${proposal.id}`"
         v-for="proposal in proposals"
@@ -34,7 +34,7 @@
             <q-icon color="" name="book" />
           </q-item-section>
           <q-item-section>{{ proposal.title }}</q-item-section>
-          <q-chip dense :label="proposal.status" />
+          <q-chip color="secondary" dense :label="proposal.status" />
         </q-item>
       </router-link>
     </q-list>

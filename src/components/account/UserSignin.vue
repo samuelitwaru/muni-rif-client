@@ -1,57 +1,65 @@
 <template>
   <div align="center">
-    <error-message-modal :errorResponse="errorResponse" />
+    <div class="flex justify-center">
+      <q-card class="q-mt-l" style="min-width: 23rem">
+        <q-card-section>
+          <q-form @submit="login" ref="form" @reset="resetForm">
+            <h2 class="text-h6">Login</h2>
 
-    <q-card class="q-ma-md" style="max-width: 22rem">
-      <q-card-section>
-        <q-form @submit="login">
-          <h2 class="text-h6">
-            <q-avatar>
-              <img src="~assets/logo.jpeg" />
-            </q-avatar>
-            Login Form
-          </h2>
-          <q-input
-            outlined
-            dense
-            v-model="formData.email"
-            label="Email"
-            type="email"
-            :rules="emailRules"
-            required
-          ></q-input>
-
-          <q-input
-            outlined
-            dense
-            v-model="formData.password"
-            label="Password"
-            type="password"
-            :rules="passwordRules"
-            required
-          ></q-input>
-          <div class="">
-            <q-btn type="submit" color="primary" label="Login"></q-btn>
-            <div align="center" class="flex justify-between">
-              <div class="col"><hr /></div>
-              <span class="col">or</span>
-              <div class="col"><hr /></div>
+            <div>
+              <small class="text-caption text-red"
+                ><strong>{{ formErrors.email }}</strong></small
+              >
             </div>
-            <router-link to="/index/account/signup">
-              <q-btn type="submit" flat color="primary" label="Sign up"></q-btn>
+
+            <q-input
+              outlined
+              dense
+              v-model="formData.email"
+              label="Email"
+              type="email"
+              :rules="emailRules"
+              required
+            ></q-input>
+
+            <q-input
+              outlined
+              dense
+              v-model="formData.password"
+              label="Password"
+              type="password"
+              :rules="passwordRules"
+              required
+            ></q-input>
+
+            <small class="text-caption text-red">
+              {{ formErrors.password }}
+            </small>
+            <div class="">
+              <div class="flex justify-between">
+                <div></div>
+                <q-btn type="submit" color="primary" label="Login"></q-btn>
+              </div>
+
+              <q-separator spaced />
+              Don't have an account?
+              <router-link to="/index/account/signup">
+                <q-btn
+                  type="submit"
+                  flat
+                  color="primary"
+                  label="Sign up"
+                ></q-btn>
+              </router-link>
+            </div>
+            <q-separator spaced style="width: 40%" />
+            <router-link to="/index/account/password-reset" class="q-my-auto">
+              <small>FORGOT PASSWORD</small>
             </router-link>
-            <router-link to="/index/account/password-reset">
-              <q-btn
-                type="submit"
-                flat
-                color="primary"
-                label="Forgot Password"
-              ></q-btn>
-            </router-link>
-          </div>
-        </q-form>
-      </q-card-section>
-    </q-card>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </div>
   </div>
 </template>
 
@@ -64,12 +72,15 @@ export default {
         email: "",
         password: "",
       },
+      formErrors: {
+        email: "",
+        password: "",
+      },
       emailRules: [
         (v) => !!v || "Email is required",
         (v) => /.+@.+\..+/.test(v) || "Email must be valid",
       ],
       passwordRules: [(v) => !!v || "Password is required"],
-      errorResponse: {},
     };
   },
   created() {
@@ -77,8 +88,8 @@ export default {
   },
   methods: {
     login() {
+      this.formErrors = {};
       this.$utilsStore.setLoading(true);
-
       this.formData["username"] = this.formData["email"];
       this.$api
         .post(`/accounts/login/`, this.formData)
@@ -89,14 +100,22 @@ export default {
           this.$utilsStore.setLoading(false);
           var _next = this.$route.query._next || "/";
           this.$router.push(_next);
+          this.$utilsStore.setLoading(false);
         })
         .catch((err) => {
           this.$utilsStore.setLoading(false);
-          this.errorResponse = err.response;
+          this.formErrors.email = err.response.data.error;
         });
     },
     setFormData() {
       this.formData = { email: "samuelitwaru@gmail.com", password: "bratz123" };
+    },
+
+    resetForm() {
+      this.formData = {
+        email: this.formData.email,
+        password: "",
+      };
     },
   },
 };

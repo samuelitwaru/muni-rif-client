@@ -11,7 +11,7 @@
 
     <h2 class="flex justify-between text-h6 q-px-md">Proposal Reviews</h2>
 
-    <q-list bordered>
+    <q-list bordered class="q-ma-sm">
       <router-link
         :to="`proposal-reviews/${score.proposal_detail.id}`"
         v-for="score in proposals"
@@ -22,7 +22,12 @@
             <q-icon color="" name="book" />
           </q-item-section>
           <q-item-section>{{ score.proposal_detail.title }}</q-item-section>
-          <q-chip dense class="glossy" :label="score.status" />
+          <q-chip
+            color="secondary"
+            dense
+            class="glossy"
+            :label="score.status"
+          />
         </q-item>
       </router-link>
     </q-list>
@@ -56,8 +61,6 @@ export default {
         .get(`scores?user=${this.$authStore.currentUser.id}${query}`)
         .then((res) => {
           this.proposals = res.data;
-          console.log(this.proposals);
-          // this.$utilsStore.setLoading(false);
         });
     },
   },

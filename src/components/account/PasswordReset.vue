@@ -2,9 +2,9 @@
   <div align="center">
     <message-box :message="this.message" @close="this.message = ''" />
     <error-message-modal :errorResponse="errorResponse" />
-    <q-card class="q-ma-md" style="max-width: 500px">
+    <q-card class="q-my-lg" style="min-width: 23rem">
       <q-card-section>
-        <h2 class="text-h6">Password Reset</h2>
+        <h3 class="text-h6">Password Reset</h3>
       </q-card-section>
 
       <q-card-section>
@@ -20,6 +20,15 @@
           ></q-input>
 
           <q-btn type="submit" color="primary" label="Reset Password"></q-btn>
+
+          <br />
+          <br />
+
+          <q-separator spaced />
+
+          <router-link to="/index/account/signin">
+            <q-btn flat color="primary" label="Sign in"></q-btn>
+          </router-link>
         </q-form>
       </q-card-section>
     </q-card>
@@ -43,7 +52,9 @@ export default {
     };
   },
   created() {
-    this.setFormData();
+    if (process.env.DEBUG) {
+      this.setFormData();
+    }
   },
   methods: {
     resetPassword() {
@@ -51,12 +62,10 @@ export default {
       this.$api
         .post("accounts/reset-password/", this.formData)
         .then((res) => {
-          console.log(res.data);
           this.$utilsStore.setLoading(false);
           this.message = res.data.detail;
         })
         .catch((err) => {
-          console.log(err.response);
           this.$utilsStore.setLoading(false);
           this.errorResponse = err.response;
         });

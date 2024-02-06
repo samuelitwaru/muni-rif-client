@@ -11,7 +11,7 @@
 export default {
   data() {
     return {
-      messages: ["Creating new ideas...", "Transforming Lives"],
+      messages: ["Creating new ideas...", "Transforming Lives..."],
       currentMessageIndex: 0,
       currentText: "",
       currentIndex: 0,

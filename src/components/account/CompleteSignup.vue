@@ -209,7 +209,6 @@ export default {
           this.$utilsStore.setLoading(false);
           this.errorResponse = err.response;
         });
-      // console.log("Form submitted:", this.formData);
     },
 
     getFaculties() {

@@ -1,7 +1,5 @@
 <template lang="">
   <div>
-    <accept-review :proposal="proposal" :score="score" />
-
     <div v-for="section in sections" :key="section.id">
       <hr :id="section.name" class="section-separator" />
       <div class="q-pa-sm">
@@ -11,26 +9,21 @@
             <section-editor
               :proposal="proposal"
               :section="section"
-              @proposal-updated="proposal = $event"
+              @proposal-updated="
+                proposal = $event;
+                $proposalStore.setProposal($event);
+              "
             />
           </div>
         </q-toolbar-title>
         <q-card flat bordered class="bg-grey-2 q-pa-sm">
           <div>
             <div
-              style="overflow: auto"
-              v-html="proposal?.[section['name']] || content"
+              style="overflow: auto; min-height: 5rem"
+              v-html="proposal?.[section['name']] || ''"
             ></div>
           </div>
         </q-card>
-
-        <score-editor
-          :min="0"
-          :max="10"
-          :proposal="proposal"
-          :section="section"
-          :score="score"
-        />
       </div>
     </div>
 
@@ -69,7 +62,6 @@ export default {
     },
 
     getScore() {
-      console.log(this.$authStore.currentUser?.id || 0);
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${

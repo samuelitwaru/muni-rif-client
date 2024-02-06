@@ -1,14 +1,18 @@
 <template>
-  <div class="flex justify-ceter">
-    <div v-for="item in menuItems" :key="item" class="q-ma-sm">
-      <router-link :to="item.route">
-        <q-btn padding="lg" color="primary" outline :icon="item.icon" />
-        <div class="text-center">
-          <label>{{ item.name }}</label>
-        </div>
-      </router-link>
+  <q-card class="my-card q-pa-sm" flat bordered>
+    <div class="flex justify-cente">
+      <div v-for="item in menuItems" :key="item" class="q-m-sm text-center">
+        <router-link :to="item.route">
+          <q-btn color="primary" flat outline>
+            <q-icon :name="item.icon" />
+            <!-- <div> -->
+            <label class="q-pl-sm">{{ item.name.toUpperCase() }}</label>
+            <!-- </div> -->
+          </q-btn>
+        </router-link>
+      </div>
     </div>
-  </div>
+  </q-card>
 </template>
 
 <script>

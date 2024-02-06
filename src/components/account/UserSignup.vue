@@ -1,13 +1,8 @@
 <template>
   <div align="center">
     <error-message-modal :errorResponse="errorResponse" />
-    <q-card class="q-ma-sm q-pa-md" style="max-width: 40rem">
-      <h2 class="text-h6">
-        <q-avatar>
-          <img src="~assets/logo.jpeg" />
-        </q-avatar>
-        Signup Form
-      </h2>
+    <q-card class="q-pa-md" style="max-width: 40rem">
+      <h2 class="text-h6">Signup</h2>
       <q-form @submit="signup">
         <div class="row q-col-gutter-xs">
           <div class="col">
@@ -146,30 +141,20 @@
           required
         ></q-input>
 
-        <div class="flex flex-center">
+        <div class="flex flex-center q-mb-sm">
           <q-btn type="submit" color="primary" label="Sign Up"></q-btn>
         </div>
 
         <div align="center" class="flex justify-between">
-          <div class="col"><hr /></div>
+          <div class="col"><q-separator spaced /></div>
           <span class="col">or</span>
-          <div class="col"><hr /></div>
+          <div class="col"><q-separator spaced /></div>
         </div>
+        Already have an account?
         <router-link to="/index/account/signin">
           <q-btn type="submit" flat color="primary" label="Sign in"></q-btn>
         </router-link>
       </q-form>
-
-      <!-- <div class="flex flex-center">or</div>
-
-      <q-card-actions class="flex flex-center">
-        <q-btn type="button" @click="signUpWithGoogle">
-          <q-avatar size="sm">
-            <img src="~assets/google.jpg" />
-          </q-avatar>
-          Join with google
-        </q-btn>
-      </q-card-actions> -->
     </q-card>
   </div>
 </template>
@@ -236,13 +221,11 @@ export default {
           this.$utilsStore.setLoading(false);
           this.errorResponse = err.response;
         });
-      // console.log("Form submitted:", this.formData);
     },
 
     getFaculties() {
       this.$api.get("faculties/").then((res) => {
         this.faculties = res.data;
-        console.log(this.faculties);
       });
     },
 

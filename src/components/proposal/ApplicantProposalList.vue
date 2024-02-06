@@ -25,7 +25,7 @@
       </div>
     </h2>
 
-    <q-list bordered>
+    <q-list bordered class="q-ma-sm">
       <router-link
         :to="`proposals/${proposal.id}`"
         v-for="proposal in proposals"
@@ -36,7 +36,12 @@
             <q-icon color="" name="book" />
           </q-item-section>
           <q-item-section>{{ proposal.title }}</q-item-section>
-          <q-chip class="glossy" dense :label="proposal.status" />
+          <q-chip
+            color="secondary"
+            class="glossy"
+            dense
+            :label="proposal.status"
+          />
         </q-item>
       </router-link>
     </q-list>
@@ -44,6 +49,27 @@
     <div v-if="proposals.length == 0" align="center" style="margin-top: 10rem">
       <p>No proposals found</p>
     </div>
+
+    <q-list bordered class="q-ma-sm">
+      <router-link
+        :to="`proposals/${proposal.id}`"
+        v-for="proposal in teamProposals"
+        :key="proposal.id"
+      >
+        <q-item clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon color="" name="book" />
+          </q-item-section>
+          <q-item-section>{{ proposal.title }}</q-item-section>
+          <q-chip
+            color="secondary"
+            class="glossy"
+            dense
+            :label="proposal.status"
+          />
+        </q-item>
+      </router-link>
+    </q-list>
   </div>
 </template>
 <script>
@@ -52,6 +78,7 @@ export default {
     return {
       loading: false,
       proposals: [],
+      teamProposals: [],
       search_query: "",
     };
   },
@@ -59,6 +86,7 @@ export default {
   created() {
     if (this.$userHasAnyGroups(["applicant"])) {
       this.getCurrentUserProposals();
+      this.getCurrentUserTeamProposals();
     }
   },
 
@@ -71,6 +99,16 @@ export default {
         .then((res) => {
           this.proposals = res.data;
           // this.$utilsStore.setLoading(false);
+        });
+    },
+    getCurrentUserTeamProposals() {
+      // this.$utilsStore.setLoading(true);
+      var query = this.search_query ? `&search=${this.search_query}` : "";
+      this.$api
+        .get(`proposals?team__id=${this.$authStore.currentUser.id}${query}`)
+        .then((res) => {
+          this.teamProposals = res.data;
+          console.log(this.teamProposals);
         });
     },
   },

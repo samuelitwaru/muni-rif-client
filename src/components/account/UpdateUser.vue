@@ -1,7 +1,7 @@
 <template>
   <div align="center">
     <h4 class="text-h6 q-my-sm">Update Profile</h4>
-    <q-card class="q-ma-sm q-pa-md" style="max-width: 40rem">
+    <q-card class="q-ma-sm q-pa-md" style="min-width: 20rem">
       <q-form @submit="updateUserProfile">
         <div class="row q-col-gutter-xs">
           <div class="col">
@@ -201,11 +201,11 @@ export default {
         email: this.user.email,
         first_name: this.user.first_name,
         last_name: this.user.last_name,
-        phone: this.user.profile.phone,
-        faculty: this.user.profile.faculty.id,
-        department: this.user.profile.department.id,
-        qualification: this.user.profile.qualification.id,
-        designation: this.user.profile.designation,
+        phone: this.user.profile?.phone,
+        faculty: this.user.profile?.faculty?.id,
+        department: this.user.profile?.department?.id,
+        qualification: this.user.profile?.qualification?.id,
+        designation: this.user.profile?.designation,
       };
     },
   },

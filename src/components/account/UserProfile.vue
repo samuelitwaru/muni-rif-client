@@ -11,42 +11,39 @@
     <div v-if="user">
       <q-card class="my-card q-ma-md" flat bordered>
         <q-card-section horizontal>
-          <q-card-section class="col-2 flex flex-center">
+          <q-card-section class="col-3 flex flex-center">
             <q-icon name="person" size="xl" />
-            <!-- <q-img
-              class="rounded-borders"
-              src="https://cdn.quasar.dev/img/parallax2.jpg"
-            /> -->
           </q-card-section>
-          <q-card-section class="q-pt-xs">
+          <q-card-section class="col q-pt-xs">
             <div class="text-h5 q-mt-sm q-mb-xs">
               {{ user.first_name }} {{ user.last_name }}
             </div>
             <div class="text-overline">{{ user.groups }}</div>
             <div class="text-caption text-grey">
-              {{ user.profile.designation }}
+              {{ user.profile?.designation }}
             </div>
 
             <q-markup-table flat bordered>
               <tbody>
                 <tr>
-                  <td class="text-left"><strong>Faculty</strong></td>
-                  <td class="text-left">{{ user.profile?.faculty.name }}</td>
-                </tr>
-                <tr>
-                  <td class="text-left"><strong>Department</strong></td>
                   <td class="text-left">
-                    {{ user.profile?.department.name }}
+                    <strong>Faculty</strong>
+                    <div>{{ user.profile?.faculty?.name }}</div>
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-left"><strong>Qualification</strong></td>
                   <td class="text-left">
-                    {{ user.profile?.qualification.name }}
+                    <strong>Department</strong>
+                    <div>{{ user.profile?.department?.name }}</div>
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-left"></td>
+                  <td class="text-left">
+                    <strong>Qualification</strong>
+                    <div>{{ user.profile?.qualification?.name }}</div>
+                  </td>
+                </tr>
+                <tr>
                   <td class="text-right">
                     <user-logout />
                   </td>
@@ -60,10 +57,10 @@
       </q-card>
     </div>
     <div class="row">
-      <div class="col-md-7" align="center">
+      <div class="col-md-6" align="center">
         <update-user />
       </div>
-      <div class="col-md-5">
+      <div class="col-md-4 col-sm-6">
         <change-password />
       </div>
     </div>

@@ -9,10 +9,12 @@ import axios from "axios";
 // for each client)
 
 var baseURL = process.env.DEBUG
-  ? "http://127.0.0.1:8000/api"
-  : "https://munirif.pythonanywhere.com/api";
+  ? "http://127.0.0.1:8000"
+  : "https://munirif.pythonanywhere.com";
 
-const api = axios.create({ baseURL: baseURL });
+var apiURL = `${baseURL}/api`;
+
+const api = axios.create({ baseURL: apiURL });
 
 // Add a request interceptor to add the token to all requests
 api.interceptors.request.use(
@@ -63,6 +65,7 @@ export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios;
+  app.config.globalProperties.$baseURL = baseURL;
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 

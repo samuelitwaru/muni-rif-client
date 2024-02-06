@@ -1,5 +1,5 @@
 <template>
-  <div v-if="score">
+  <div v-if="score && score.status == 'IN PROGRESS'">
     <q-btn
       dense
       flat
@@ -157,7 +157,6 @@ export default {
           .patch(`scores/${this.score.id}/`, this.formData)
           .then((res) => {
             this.score = res.data;
-            console.log(this.$router);
             this.$utilsStore.setLoading(false);
             this.showDialog = false;
             location.reload();

@@ -3,6 +3,9 @@ import developerMenu from "components/menus/DeveloperMenu.vue";
 import developerMenu2 from "components/menus/DeveloperMenu2.vue";
 import userMenu from "components/menus/UserMenu.vue";
 import userMenu2 from "components/menus/UserMenu2.vue";
+import proposalOptions from "components/proposal/ProposalOptions.vue";
+import usefulDocs from "components/UsefulDocs.vue";
+import tagLines from "components/TagLines.vue";
 import userLogout from "components/account/UserLogout.vue";
 import updateUser from "components/account/UpdateUser.vue";
 import changePassword from "components/account/ChangePassword.vue";
@@ -29,6 +32,9 @@ const components = {
   "developer-menu-2": developerMenu2,
   "user-menu": userMenu,
   "user-menu-2": userMenu2,
+  "proposal-options": proposalOptions,
+  "useful-docs": usefulDocs,
+  taglines: tagLines,
   "user-logout": userLogout,
   "update-user": updateUser,
   "change-password": changePassword,

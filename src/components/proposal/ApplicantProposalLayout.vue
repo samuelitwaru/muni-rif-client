@@ -16,17 +16,20 @@
             {{ $proposalStore.currentProposal?.title }}
 
             <q-chip
+              color="secondary"
               class="glossy"
               size="xs"
               :label="$proposalStore.currentProposal?.status"
             />
           </div>
-
+        </q-toolbar-title>
+        <div class="flex">
           <submit-proposal
             :proposal="$proposalStore.currentProposal"
             v-if="$proposalStore.currentProposal?.status == 'EDITING'"
           />
-        </q-toolbar-title>
+          <proposal-options />
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -84,7 +87,9 @@
             :label="file.name"
             :removable="
               $userHasAnyGroups(['applicant']) &&
-              $authStore.currentUser.id == $proposalStore.currentProposal.user
+              $authStore.currentUser.id ==
+                $proposalStore.currentProposal.user &&
+              $proposalStore.currentProposal.status == 'EDITING'
             "
             clickable
             @remove="deleteFile(file.id)"

@@ -7,18 +7,13 @@
         <q-toolbar-title class="flex justify-between">
           <div class="flex">
             {{ section.title }}
-            <section-editor
-              :proposal="proposal"
-              :section="section"
-              @proposal-updated="proposal = $event"
-            />
           </div>
         </q-toolbar-title>
         <q-card flat bordered class="bg-grey-2 q-pa-sm">
           <div>
             <div
-              style="overflow: auto"
-              v-html="proposal?.[section['name']] || content"
+              style="overflow: auto; min-height: 5rem"
+              v-html="proposal?.[section['name']] || ''"
             ></div>
           </div>
         </q-card>

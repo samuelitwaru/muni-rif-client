@@ -105,7 +105,6 @@ export default {
   methods: {
     submitForm() {
       // Here you can handle the form submission logic, for example, sending the data to a backend server.
-      console.log("Form data submitted:", this.formData);
 
       // After form submission, you can clear the form fields if needed.
       this.formData.name = "";
