@@ -1,6 +1,15 @@
 <template>
   <div v-if="scores.length" class="q-pa-sm">
-    <q-toolbar-title>Score Sheet</q-toolbar-title>
+    <div class="flex q-py-xs">
+      <q-toolbar-title>Score Sheet</q-toolbar-title>
+      <q-btn
+        color="primary"
+        icon="download"
+        dense
+        label="export"
+        @click="downloadScoreSheet"
+      />
+    </div>
 
     <q-markup-table flat dense bordered separator="vertical">
       <!-- <thead>
@@ -96,6 +105,17 @@ export default {
       this.$api.get(`sections/`).then((res) => {
         this.sections = res.data;
       });
+    },
+
+    downloadScoreSheet() {
+      this.$api
+        .get(`proposals/${this.$route.params.id}/score-sheet/download/`)
+        .then((res) => {
+          if (res.status == 200) {
+            console.log(res.data);
+            window.open(res.data.file_url, "_blank");
+          }
+        });
     },
   },
 };
