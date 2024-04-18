@@ -11,16 +11,18 @@
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
-        <q-toolbar-title class="flex justify-between">
-          <div>
-            {{ $proposalStore.currentProposal?.title }}
-
-            <q-chip
-              color="secondary"
-              class="glossy"
-              size="xs"
-              :label="$proposalStore.currentProposal?.status"
-            />
+        <q-toolbar-title class="flex justify-between items-center">
+          <div class="flex justify-between items-center">
+            <div class="q-my-xs">
+              <q-input style="min-width: 20rem;" v-if="editMode && $proposalStore.currentProposal?.status == 'EDITING'" @blur="editProposalTitle" v-model="formData.title" type="text" outlined dense />
+              <span @click='editMode=true' v-else>{{ $proposalStore.currentProposal?.title }}</span>
+            </div>
+              <q-chip
+                color="secondary"
+                class="text-white"
+                size="md"
+                :label="$proposalStore.currentProposal?.status"
+              />
           </div>
         </q-toolbar-title>
         <div class="flex">
@@ -111,6 +113,10 @@ export default defineComponent({
 
   data() {
     return {
+      formData: {
+        title: this.$proposalStore.currentProposal?.title
+      },
+      editMode: false,
       leftDrawerOpen: false,
       proposalFiles: [],
       score: {},
@@ -165,6 +171,15 @@ export default defineComponent({
           if (res.data.length == 1) {
             this.score = res.data[0];
           }
+        });
+    },
+
+    editProposalTitle(){
+      this.$api
+        .patch(`/proposals/${this.$route.params.id}/`, this.formData)
+        .then((res) => {
+          this.$proposalStore.setProposal(res.data)
+          this.editMode = false
         });
     },
 

@@ -56,6 +56,7 @@ export default {
       this.$api
         .patch(`/scores/${this.score.id}/`, {
           status: "IN PROGRESS",
+          accepted_at: new Date(Date.UTC()),
         })
         .then((res) => {
           location.reload();

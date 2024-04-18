@@ -17,8 +17,8 @@
 
             <q-chip
               color="secondary"
-              class="glossy"
-              size="xs"
+              class="text-white"
+              size="md"
               :label="$proposalStore.currentProposal?.status"
             />
           </div>

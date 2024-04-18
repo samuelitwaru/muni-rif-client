@@ -33,6 +33,23 @@
                 >
                   Drag and drop files here
                 </div>
+
+                <div
+                  class="text-center"
+                  style="background-color: #ffffff; color: #000000"
+                >
+                  or
+                  <br />
+                  <br />
+                  <input
+                    @change="onBrowse"
+                    type="file"
+                    id="files"
+                    class="hidden"
+                    multiple
+                  />
+                  <label for="files" class="button-label"> Browse </label>
+                </div>
               </template>
 
               <template v-slot:list>
@@ -99,11 +116,16 @@ export default {
   },
   methods: {
     onFileAdded(files) {
-      var file = files[0];
+      console.log(files);
       files.forEach((file) => {
         this.uploadFile(file);
       });
       this.filesToUpload = [...this.filesToUpload, ...files];
+    },
+    onBrowse(event) {
+      var files = Array.from(event.target.files);
+      console.log(files);
+      this.onFileAdded(files);
     },
     uploadFile(file) {
       const formData = new FormData();
@@ -138,3 +160,23 @@ export default {
   },
 };
 </script>
+
+<style>
+.button-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff; /* Button background color */
+  color: #fff; /* Text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  /* Add any other styles you desire */
+}
+
+/* Hover effect */
+.button-label:hover {
+  background-color: #0056b3; /* Darker shade of the button color */
+}
+</style>

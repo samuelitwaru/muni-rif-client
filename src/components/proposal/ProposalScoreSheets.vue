@@ -96,9 +96,13 @@ export default {
   },
   methods: {
     getScores() {
-      this.$api.get(`scores/?proposal=${this.$route.params.id}`).then((res) => {
-        this.scores = res.data;
-      });
+      this.$api
+        .get(
+          `scores/?proposal=${this.$route.params.id}&status_includes=IN PROGRESS|COMPLETED`
+        )
+        .then((res) => {
+          this.scores = res.data;
+        });
     },
 
     getSections() {

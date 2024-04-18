@@ -45,12 +45,15 @@
         </q-item>
       </router-link>
     </q-list>
+    <q-inner-loading :showing="loading">
+      <q-spinner-ios size="50px" color="primary" />
+    </q-inner-loading>
 
     <div v-if="proposals.length == 0" align="center" style="margin-top: 10rem">
       <p>No proposals found</p>
     </div>
 
-    <q-list bordered class="q-ma-sm">
+    <q-list bordered class="q-ma-sm" v-if="teamProposals.length">
       <router-link
         :to="`proposals/${proposal.id}`"
         v-for="proposal in teamProposals"
@@ -92,13 +95,13 @@ export default {
 
   methods: {
     getCurrentUserProposals() {
-      // this.$utilsStore.setLoading(true);
+      this.loading = true;
       var query = this.search_query ? `&search=${this.search_query}` : "";
       this.$api
         .get(`proposals?user=${this.$authStore.currentUser.id}${query}`)
         .then((res) => {
           this.proposals = res.data;
-          // this.$utilsStore.setLoading(false);
+          this.loading = false;
         });
     },
     getCurrentUserTeamProposals() {

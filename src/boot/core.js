@@ -3,6 +3,8 @@ import { proposalStore } from "src/stores/proposal";
 import { authStore } from "stores/auth";
 import { utilsStore } from "stores/utils";
 
+console.dir(authStore().currentUser);
+
 export default boot(({ app }) => {
   const useAuthStore = authStore();
   const useProposalStore = proposalStore();

@@ -39,6 +39,10 @@
       </router-link>
     </q-list>
 
+    <q-inner-loading :showing="loading">
+      <q-spinner-ios size="50px" color="primary" />
+    </q-inner-loading>
+
     <div v-if="proposals.length == 0" align="center" style="margin-top: 10rem">
       <p>No proposals found</p>
     </div>
@@ -60,9 +64,11 @@ export default {
 
   methods: {
     getProposals() {
+      this.loading = true;
       var query = this.search_query ? `?search=${this.search_query}` : "";
       this.$api.get(`proposals${query}`).then((res) => {
         this.proposals = res.data;
+        this.loading = false;
       });
     },
   },

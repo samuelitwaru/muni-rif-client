@@ -54,7 +54,7 @@
           </div>
         </div>
 
-        <div class="row q-col-gutter-xs q-my-sm">
+        <!-- <div class="row q-col-gutter-xs q-my-sm">
           <div class="col">
             <q-select
               outlined
@@ -84,7 +84,7 @@
               map-options
             />
           </div>
-        </div>
+        </div> -->
 
         <div class="row q-col-gutter-xs">
           <div class="col">
