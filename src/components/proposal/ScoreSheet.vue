@@ -84,6 +84,11 @@
             />
           </div>
         </div>
+        <div class="q-pa-md">
+          <p>Do you recommend this proposal for funding?</p>
+          <q-radio v-model="formData.is_recommended" :val="true" label="Yes" />
+          <q-radio v-model="formData.is_recommended" :val="false" label="No" />
+        </div>
         <q-separator spaced />
         <q-card-section align="right">
           <q-btn
@@ -111,6 +116,7 @@ export default {
         strengths: null,
         weaknesses: null,
         status: "COMPLETED",
+        is_recommended: null,
       },
     };
   },

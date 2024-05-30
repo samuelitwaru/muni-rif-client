@@ -140,12 +140,21 @@ export default defineComponent({
   },
 
   created() {
-    this.getProposalFiles();
-    this.getSections();
-    this.getScore();
+    this.getProposal();
   },
 
   methods: {
+    getProposal() {
+      this.$utilsStore.setLoading(true);
+      this.$api.get(`proposals/${this.$route.params.id}/`).then((res) => {
+        this.proposal = res.data;
+        this.$proposalStore.setProposal(this.proposal);
+        this.getProposalFiles();
+        this.getSections();
+        this.getScore();
+        this.$utilsStore.setLoading(false);
+      });
+    },
     getProposalFiles() {
       this.$api
         .get(`files/?proposal_id=${this.$route.params.id}`)

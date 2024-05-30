@@ -3,6 +3,7 @@ import developerMenu from "components/menus/DeveloperMenu.vue";
 import developerMenu2 from "components/menus/DeveloperMenu2.vue";
 import userMenu from "components/menus/UserMenu.vue";
 import userMenu2 from "components/menus/UserMenu2.vue";
+import mainMenu from "components/menus/MainMenu.vue";
 import proposalOptions from "components/proposal/ProposalOptions.vue";
 import usefulDocs from "components/UsefulDocs.vue";
 import tagLines from "components/TagLines.vue";
@@ -32,6 +33,7 @@ const components = {
   "developer-menu-2": developerMenu2,
   "user-menu": userMenu,
   "user-menu-2": userMenu2,
+  "main-menu": mainMenu,
   "proposal-options": proposalOptions,
   "useful-docs": usefulDocs,
   taglines: tagLines,

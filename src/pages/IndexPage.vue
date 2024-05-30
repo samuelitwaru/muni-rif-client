@@ -8,10 +8,9 @@
       </q-breadcrumbs>
     </div>
     <q-separator spaced />
+    <main-menu />
 
-    <user-menu-2 class="my-card q-ma-sm" />
-
-    <useful-docs />
+    <!-- <user-menu-2 class="my-card q-ma-sm" /> -->
 
     <!-- <developer-menu-2></developer-menu-2> -->
   </q-page>

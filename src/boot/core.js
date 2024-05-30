@@ -19,6 +19,16 @@ export default boot(({ app }) => {
     return groups.some((group) => userGroups.includes(group));
   };
 
+  app.config.globalProperties.$buildURLQuery = (obj) => {
+    return Object.entries(obj)
+      .map((pair) => {
+        if (pair[1]) {
+          return pair.map(encodeURIComponent).join("=");
+        }
+      })
+      .join("&");
+  };
+
   app.config.globalProperties.$authStore = useAuthStore;
   app.config.globalProperties.$proposalStore = useProposalStore;
   app.config.globalProperties.$utilsStore = useUtilsStore;

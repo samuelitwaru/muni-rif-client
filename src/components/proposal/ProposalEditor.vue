@@ -41,6 +41,7 @@ export default {
   },
 
   created() {
+    alert();
     this.getProposal();
     this.getSections();
   },

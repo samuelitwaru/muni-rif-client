@@ -1,6 +1,11 @@
 <template>
   <div>
-    <q-btn label="New Proposal" color="primary" @click="showDialog = true" />
+    <q-btn
+      v-if="showButton"
+      label="New Proposal"
+      color="primary"
+      @click="showDialog = true"
+    />
     <q-form @submit="createProposal" class="q-gutter-md">
       <q-dialog v-model="showDialog" persistent>
         <q-card style="width: 500px">
@@ -32,6 +37,18 @@
 
 <script>
 export default {
+  props: {
+    showButton: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    showPopup: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
   data() {
     return {
       loading: false,
@@ -63,6 +80,15 @@ export default {
       this.formData = {
         title: "Muni RIF Management System",
       };
+    },
+  },
+
+  watch: {
+    showPopup(newValue, oldValue) {
+      this.showDialog = newValue;
+    },
+    showDialog(newValue, oldValue) {
+      this.$emit("showPopupChanged", newValue);
     },
   },
 };

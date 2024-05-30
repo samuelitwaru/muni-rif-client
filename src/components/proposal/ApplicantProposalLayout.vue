@@ -14,15 +14,28 @@
         <q-toolbar-title class="flex justify-between items-center">
           <div class="flex justify-between items-center">
             <div class="q-my-xs">
-              <q-input style="min-width: 20rem;" v-if="editMode && $proposalStore.currentProposal?.status == 'EDITING'" @blur="editProposalTitle" v-model="formData.title" type="text" outlined dense />
-              <span @click='editMode=true' v-else>{{ $proposalStore.currentProposal?.title }}</span>
-            </div>
-              <q-chip
-                color="secondary"
-                class="text-white"
-                size="md"
-                :label="$proposalStore.currentProposal?.status"
+              <q-input
+                style="min-width: 20rem"
+                v-if="
+                  editMode &&
+                  $proposalStore.currentProposal?.status == 'EDITING'
+                "
+                @blur="editProposalTitle"
+                v-model="formData.title"
+                type="text"
+                outlined
+                dense
               />
+              <span @click="editMode = true" v-else>{{
+                $proposalStore.currentProposal?.title
+              }}</span>
+            </div>
+            <q-chip
+              color="secondary"
+              class="text-white"
+              size="md"
+              :label="$proposalStore.currentProposal?.status"
+            />
           </div>
         </q-toolbar-title>
         <div class="flex">
@@ -114,7 +127,7 @@ export default defineComponent({
   data() {
     return {
       formData: {
-        title: this.$proposalStore.currentProposal?.title
+        title: this.$proposalStore.currentProposal?.title,
       },
       editMode: false,
       leftDrawerOpen: false,
@@ -146,12 +159,21 @@ export default defineComponent({
   },
 
   created() {
-    this.getProposalFiles();
-    this.getSections();
-    this.getScore();
+    this.getProposal();
   },
 
   methods: {
+    getProposal() {
+      this.$utilsStore.setLoading(true);
+      this.$api.get(`proposals/${this.$route.params.id}/`).then((res) => {
+        this.proposal = res.data;
+        this.$proposalStore.setProposal(this.proposal);
+        this.getProposalFiles();
+        this.getSections();
+        this.getScore();
+        this.$utilsStore.setLoading(false);
+      });
+    },
     getProposalFiles() {
       this.$api
         .get(`files/?proposal_id=${this.$route.params.id}`)
@@ -174,12 +196,12 @@ export default defineComponent({
         });
     },
 
-    editProposalTitle(){
+    editProposalTitle() {
       this.$api
         .patch(`/proposals/${this.$route.params.id}/`, this.formData)
         .then((res) => {
-          this.$proposalStore.setProposal(res.data)
-          this.editMode = false
+          this.$proposalStore.setProposal(res.data);
+          this.editMode = false;
         });
     },
 

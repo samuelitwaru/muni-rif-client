@@ -108,7 +108,7 @@ export default {
       // this.$utilsStore.setLoading(true);
       var query = this.search_query ? `&search=${this.search_query}` : "";
       this.$api
-        .get(`proposals?team__id=${this.$authStore.currentUser.id}${query}`)
+        .get(`proposals?team__has=${this.$authStore.currentUser.id}${query}`)
         .then((res) => {
           this.teamProposals = res.data;
           console.log(this.teamProposals);
