@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
     <loading-component />
     <q-header elevated>
       <q-toolbar>
@@ -12,14 +12,22 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>MuniRIF</q-toolbar-title>
+        <q-toolbar-title> MuniRIF </q-toolbar-title>
 
         <div class="text-orange-3 q-px-xs">
           <router-link to="/account/profile">
             <q-chip
-              class="glossy"
+              class="md"
               icon="person"
               :label="$authStore.currentUser?.username"
+            />
+            <q-btn
+              color="white"
+              dense
+              text-color="dark"
+              class="xs"
+              round
+              icon="person"
             />
           </router-link>
           <!-- {{ $getState("user")?.name }} -->
@@ -40,16 +48,15 @@
         spinner-color="primary"
         spinner-size="72px"
       />
-      <div>
+      <!-- <div>
         <router-link to="/" block>
           <q-btn color="black" class="full-width" align="left" icon="home" flat>
             <span class="q-px-md">Home</span>
           </q-btn>
         </router-link>
-      </div>
-      <user-menu />
+      </div> -->
+      <CallMenu />
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -57,22 +64,56 @@
 </template>
 
 <script>
+import { getCalls } from "src/utils/api";
+import CallMenu from "src/components/call/CallMenu.vue";
+
 export default {
+  name: "MainLayout",
+  components: { CallMenu },
   data() {
     return {
       leftDrawerOpen: false,
+      calls: [],
+      currentCall: null,
     };
+  },
+
+  computed: {
+    otherCalls() {
+      if (this.currentCall)
+        return this.calls.filter((call) => call.id != this.currentCall.id);
+      return [];
+    },
   },
 
   created() {
     if (!this.$authStore.currentUser) {
       location.href = "/index/account/signin";
     }
+    getCalls().then((res) => {
+      this.calls = res;
+      if (this.calls.length) {
+        var lastCall = this.calls[0];
+        this.setCurrentCall(this.$dataStore.currentCall || lastCall);
+      } else {
+        this.setCurrentCall({ title: "No Call Found" });
+      }
+    });
   },
 
   methods: {
     toggleLeftDrawer() {
       this.leftDrawerOpen = !this.leftDrawerOpen;
+    },
+
+    changeCurrentCall(call) {
+      this.setCurrentCall(call);
+      window.location.reload();
+    },
+
+    setCurrentCall(call) {
+      this.currentCall = call;
+      this.$dataStore.setCall(this.currentCall);
     },
 
     logout() {

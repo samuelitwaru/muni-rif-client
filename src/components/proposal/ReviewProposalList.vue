@@ -38,6 +38,7 @@
   </div>
 </template>
 <script>
+import { protectFile } from "src/utils/helpers";
 export default {
   data() {
     return {
@@ -48,6 +49,8 @@ export default {
   },
 
   created() {
+    console.log(this.$options.__name);
+    protectFile(this.$options.__file);
     if (this.$userHasAnyGroups(["reviewer"])) {
       this.getCurrentUserScoreSheets();
     }

@@ -99,7 +99,7 @@ export default {
       this.$utilsStore.setLoading(true);
 
       this.$api
-        .patch(`proposals/${this.$route.params.id}/`, this.formData)
+        .patch(`proposals/${this.$route.params.proposal_id}/`, this.formData)
         .then((res) => {
           this.$emit("proposal-updated", res.data);
           this.$utilsStore.setLoading(false);

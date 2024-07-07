@@ -1,5 +1,6 @@
 import { boot } from "quasar/wrappers";
 import { proposalStore } from "src/stores/proposal";
+import { dataStore } from "src/stores/data";
 import { authStore } from "stores/auth";
 import { utilsStore } from "stores/utils";
 
@@ -8,6 +9,7 @@ console.dir(authStore().currentUser);
 export default boot(({ app }) => {
   const useAuthStore = authStore();
   const useProposalStore = proposalStore();
+  const useDataStore = dataStore();
   const useUtilsStore = utilsStore();
 
   const userHasGroups = (groups) => {
@@ -30,6 +32,7 @@ export default boot(({ app }) => {
   };
 
   app.config.globalProperties.$authStore = useAuthStore;
+  app.config.globalProperties.$dataStore = useDataStore;
   app.config.globalProperties.$proposalStore = useProposalStore;
   app.config.globalProperties.$utilsStore = useUtilsStore;
 });

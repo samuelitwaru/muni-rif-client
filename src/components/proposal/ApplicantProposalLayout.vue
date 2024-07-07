@@ -26,7 +26,7 @@
                 outlined
                 dense
               />
-              <span @click="editMode = true" v-else>{{
+              <span style="cursor: pointer" @click="editMode = true" v-else>{{
                 $proposalStore.currentProposal?.title
               }}</span>
             </div>
@@ -39,10 +39,6 @@
           </div>
         </q-toolbar-title>
         <div class="flex">
-          <submit-proposal
-            :proposal="$proposalStore.currentProposal"
-            v-if="$proposalStore.currentProposal?.status == 'EDITING'"
-          />
           <proposal-options />
         </div>
       </q-toolbar>
@@ -70,14 +66,21 @@
       <q-separator />
       <q-list>
         <a
-          v-for="(section, index) in sections"
+          v-for="section in sections"
           :key="section.id"
-          :href="`/applicant/proposals/${$route.params.id}${section.ref}`"
+          :href="`/applicant/proposals/${$route.params.proposal_id}${section.ref}`"
         >
           <q-item clickable v-ripple>
-            <div class="q-px-sm border q-my-auto q-mr-sm">
-              {{ index + 1 }}
+            <div class="text-caption q-px-sm q-my-auto q-mr-sm">
+              <q-icon
+                v-if="validateSection(section)"
+                size="sm"
+                color="green"
+                name="check_circle_outline"
+              />
+              <q-icon v-else size="sm" color="red" name="dangerous" />
             </div>
+
             <q-item-section>{{ section.title }}</q-item-section>
           </q-item>
           <q-separator />
@@ -87,39 +90,22 @@
 
     <q-page-container>
       <router-view></router-view>
-    </q-page-container>
 
-    <q-footer elevated>
-      <q-toolbar class="bg-white text-dark flex justify-between">
-        <!-- <q-toolbar-title> -->
-        <div>Attachments</div>
-        <div>
-          <q-chip
-            v-for="file in proposalFiles"
-            :key="file.id"
-            class="glossy"
-            icon="attachment"
-            :label="file.name"
-            :removable="
-              $userHasAnyGroups(['applicant']) &&
-              $authStore.currentUser.id ==
-                $proposalStore.currentProposal.user &&
-              $proposalStore.currentProposal.status == 'EDITING'
-            "
-            clickable
-            @remove="deleteFile(file.id)"
-            @click="openFile(file.file)"
-          />
-        </div>
-        <proposal-file-attachment @file-uploaded="getProposalFiles" />
-        <!-- </q-toolbar-title> -->
-      </q-toolbar>
-    </q-footer>
+      <div align="center" class="q-mb-lg">
+        <submit-proposal
+          :disabled="!isProposalValid"
+          :proposal="$proposalStore.currentProposal"
+          v-if="$proposalStore.currentProposal?.status == 'EDITING'"
+        />
+      </div>
+    </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
+import { protectFile } from "src/utils/helpers";
+import cheerio from "cheerio";
 
 export default defineComponent({
   name: "ProposalLayout",
@@ -127,58 +113,95 @@ export default defineComponent({
   data() {
     return {
       formData: {
-        title: this.$proposalStore.currentProposal?.title,
+        title: "",
       },
+      proposal: null,
       editMode: false,
       leftDrawerOpen: false,
-      proposalFiles: [],
       score: {},
-      sections: [
-        { id: "#problem", name: "The Problem" },
-        { id: "#solution", name: "Proposed Solution" },
-        { id: "#outputs", name: "Outputs, Outcomes and Impact" },
-        { id: "#team", name: "Team Composition" },
-        {
-          id: "#capacity_development",
-          name: "Provision for Capacity Development",
-        },
-        {
-          id: "#scalability",
-          name: "Dissemination, Scalabilty and Sustainability",
-        },
-        {
-          id: "#ethical_implications",
-          name: "Ethical Implications and Enviromental Impact",
-        },
-        { id: "#conflict_of_interest", name: "Conflict of Interest" },
-        { id: "#summary_budget", name: "Summary Budget" },
-        { id: "#detailed_budget", name: "Detailed Budget" },
-        { id: "#workplan", name: "Workplan" },
-      ],
+      sections: [],
+      isAttachmentsValid: false,
+      isTeamValid: false,
+      isBudgetValid: false,
+      validity: {},
     };
   },
 
+  computed: {
+    wordCounts() {
+      let wordCountsObject = {};
+      for (let index = 0; index < this.sections.length; index++) {
+        const section = this.sections[index];
+        wordCountsObject[section.name] = this.countWordsInHtml(
+          this.proposal[section.name] || ""
+        );
+      }
+      return wordCountsObject;
+    },
+
+    isProposalValid() {
+      var isValid = true;
+      for (let key in this.validity) {
+        if (this.validity.hasOwnProperty(key)) {
+          if (this.validity[key]) continue;
+          else return false;
+        }
+      }
+      return isValid;
+    },
+  },
+
   created() {
+    protectFile(this.$options.__file);
     this.getProposal();
+    this.$bus.on("proposal-updated", (val) => {
+      this.getProposal();
+    });
+
+    this.$bus.on("attachments-updated", (val) => {
+      this.isAttachmentsValid = val;
+    });
   },
 
   methods: {
     getProposal() {
       this.$utilsStore.setLoading(true);
-      this.$api.get(`proposals/${this.$route.params.id}/`).then((res) => {
-        this.proposal = res.data;
-        this.$proposalStore.setProposal(this.proposal);
-        this.getProposalFiles();
-        this.getSections();
-        this.getScore();
-        this.$utilsStore.setLoading(false);
-      });
-    },
-    getProposalFiles() {
       this.$api
-        .get(`files/?proposal_id=${this.$route.params.id}`)
+        .get(`proposals/${this.$route.params.proposal_id}/`)
         .then((res) => {
-          this.proposalFiles = res.data;
+          this.proposal = res.data;
+          this.formData.title = this.proposal.title;
+          this.$proposalStore.setProposal(this.proposal);
+          // this.getProposalFiles();
+          this.getSections();
+          this.getScore();
+          this.getTeam();
+          this.getBudget();
+          this.$utilsStore.setLoading(false);
+        });
+    },
+
+    getTeam() {
+      this.$api
+        .get(`teams/?proposal=${this.$route.params.proposal_id}`)
+        .then((res) => {
+          if (res.data.length) {
+            this.isTeamValid = true;
+          } else {
+            this.isTeamValid = false;
+          }
+        });
+    },
+
+    getBudget() {
+      this.$api
+        .get(`budgets/?proposal=${this.$route.params.proposal_id}`)
+        .then((res) => {
+          if (res.data.length) {
+            this.isBudgetValid = true;
+          } else {
+            this.isBudgetValid = false;
+          }
         });
     },
 
@@ -186,7 +209,7 @@ export default defineComponent({
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
-            this.$route.params.id
+            this.$route.params.proposal_id
           }`
         )
         .then((res) => {
@@ -198,7 +221,7 @@ export default defineComponent({
 
     editProposalTitle() {
       this.$api
-        .patch(`/proposals/${this.$route.params.id}/`, this.formData)
+        .patch(`/proposals/${this.$route.params.proposal_id}/`, this.formData)
         .then((res) => {
           this.$proposalStore.setProposal(res.data);
           this.editMode = false;
@@ -221,6 +244,41 @@ export default defineComponent({
 
     openFile(fileURL) {
       window.open(fileURL);
+    },
+
+    countWordsInHtml(htmlString) {
+      const $ = cheerio.load(htmlString);
+
+      // Get the text content without HTML tags
+      const cleanText = $("body").text();
+
+      // Split the text into words and count them
+      const words = cleanText.split(/\s+/);
+      const numWords = words.length;
+
+      return numWords;
+    },
+
+    validateSection(section) {
+      let isValid = false;
+      if (section.name == "attachments") {
+        isValid = this.isAttachmentsValid;
+        this.validity[section.name] = isValid;
+        return isValid;
+      } else if (section.name == "detailed_budget") {
+        isValid = this.isBudgetValid;
+        this.validity[section.name] = isValid;
+        return isValid;
+      } else if (section.name == "team") {
+        isValid = this.isTeamValid;
+        this.validity[section.name] = isValid;
+        return isValid;
+      }
+      isValid =
+        this.wordCounts[section.name] >= section.lower_limit &&
+        this.wordCounts[section.name] <= section.word_limit;
+      this.validity[section.name] = isValid;
+      return isValid;
     },
   },
 });

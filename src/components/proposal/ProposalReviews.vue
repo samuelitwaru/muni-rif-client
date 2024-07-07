@@ -30,7 +30,7 @@ export default {
       formData: {
         user: null,
         email: null,
-        proposal: this.$route.params.id,
+        proposal: this.$route.params.proposal_id,
       },
     };
   },
@@ -40,9 +40,11 @@ export default {
   },
   methods: {
     getScores() {
-      this.$api.get(`scores/?proposal=${this.$route.params.id}`).then((res) => {
-        this.scores = res.data;
-      });
+      this.$api
+        .get(`scores/?proposal=${this.$route.params.proposal_id}`)
+        .then((res) => {
+          this.scores = res.data;
+        });
     },
 
     getReviewers() {

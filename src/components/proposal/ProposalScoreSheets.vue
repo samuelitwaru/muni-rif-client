@@ -98,7 +98,7 @@ export default {
     getScores() {
       this.$api
         .get(
-          `scores/?proposal=${this.$route.params.id}&status_includes=IN PROGRESS|COMPLETED`
+          `scores/?proposal=${this.$route.params.proposal_id}&status_includes=IN PROGRESS|COMPLETED`
         )
         .then((res) => {
           this.scores = res.data;
@@ -113,7 +113,9 @@ export default {
 
     downloadScoreSheet() {
       this.$api
-        .get(`proposals/${this.$route.params.id}/score-sheet/download/`)
+        .get(
+          `proposals/${this.$route.params.proposal_id}/score-sheet/download/`
+        )
         .then((res) => {
           if (res.status == 200) {
             console.log(res.data);

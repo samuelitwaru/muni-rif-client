@@ -4,7 +4,8 @@
       <q-breadcrumbs>
         <!-- <q-breadcrumbs-el icon="home" to="/" label="Home" /> -->
 
-        <q-breadcrumbs-el label="Home" icon="home" />
+        <q-breadcrumbs-el text-color="black" label="Home" icon="home" />
+        <q-breadcrumbs-el :label="call.title" icon="campaign" />
       </q-breadcrumbs>
     </div>
     <q-separator spaced />
@@ -21,5 +22,14 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "IndexPage",
+  data() {
+    return {
+      call: this.$dataStore.currentCall,
+    };
+  },
+  created() {
+    console.log(this.$dataStore.currentCall);
+  },
+  methods: {},
 });
 </script>

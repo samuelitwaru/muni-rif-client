@@ -30,6 +30,7 @@ export default {
       showDialog: false,
     };
   },
+
   methods: {
     showConfirmationDialog() {
       this.showDialog = true;

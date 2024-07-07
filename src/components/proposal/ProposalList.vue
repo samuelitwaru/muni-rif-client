@@ -18,11 +18,13 @@
           toggle-color="primary"
           :options="[
             { label: 'All', value: null },
-            { label: 'Submitted', value: 'SUBMITTED' },
-            { label: 'Reviewing', value: 'SCORING' },
+            { label: 'Pending', value: 'PENDING' },
+            // { label: 'Reviewing', value: 'REVIEWING' },
             { label: 'Reviewed', value: 'REVIEWED' },
+            { label: 'Selected', value: 'SELECTED' },
           ]"
-          class="q-mx-sm">
+          class="q-mx-sm"
+        >
         </q-btn-toggle>
         <q-input
           dense
@@ -31,7 +33,8 @@
           type="text"
           label="Search"
           class="q-mr-sm"
-          @input="getProposals()" />
+          @input="getProposals()"
+        />
       </div>
     </h2>
 
@@ -39,7 +42,8 @@
       <q-item
         class="flex justify-between items-center"
         v-for="proposal in proposals"
-        :key="proposal.id">
+        :key="proposal.id"
+      >
         <q-item-section avatar>
           <q-icon color name="book" />
         </q-item-section>
@@ -54,23 +58,26 @@
             dense
             outline
             label="Go To Reviews"
-            @click="$router.push(`/proposals/${proposal.id}/reviewers`)" />
+            @click="$router.push(`/proposals/${proposal.id}/reviewers`)"
+          />
 
-          <q-btn
+          <!-- <q-btn
             color="secondary"
             class="q-mx-sm"
             dense
             outline
-            icon='people'
+            icon="people"
             label="Team Members"
-            @click="$router.push(`/proposals/${proposal.id}/team`)" />
+            @click="$router.push(`/proposals/${proposal.id}/team`)"
+          /> -->
         </div>
         <div style="width: 100px">
           <q-chip
             color="secondary"
             class="text-center"
             dense
-            :label="proposal.status" />
+            :label="proposal.status"
+          />
         </div>
       </q-item>
     </q-list>
@@ -84,6 +91,7 @@
   </div>
 </template>
 <script>
+import { protectFile } from "src/utils/helpers";
 export default {
   data() {
     return {
@@ -96,7 +104,8 @@ export default {
   },
 
   created() {
-    this.status_query = this.stateData.ProposalList_status_query
+    protectFile(this.$options.__file);
+    this.status_query = this.stateData.ProposalList_status_query;
     this.getProposals();
   },
 
@@ -104,7 +113,7 @@ export default {
     getProposals() {
       this.loading = true;
       var args = {
-        exclude__status: "EDITING"
+        exclude__status: "EDITING",
       };
       // var query = this.search_query ? `?search=${this.search_query}` : "";
       if (this.search_query.length) args.search = this.search_query;
@@ -122,7 +131,7 @@ export default {
       this.getProposals();
     },
     status_query(newVal) {
-      this.$utilsStore.setStateData('ProposalList_status_query', newVal);
+      this.$utilsStore.setStateData("ProposalList_status_query", newVal);
     },
   },
 };

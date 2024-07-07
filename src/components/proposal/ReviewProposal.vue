@@ -1,6 +1,7 @@
-<template lang="">
+<template lang>
   <div>
     <accept-review :proposal="proposal" :score="score" />
+
     <div v-for="section in sections" :key="section.id">
       <hr :id="section.name" class="section-separator" />
       <div class="q-pa-sm">
@@ -9,12 +10,14 @@
             {{ section.title }}
           </div>
         </q-toolbar-title>
-        <q-card flat bordered class="bg-grey-2 q-pa-sm">
+
+        <proposalattachments v-if="section.name == 'attachments'" />
+
+        <q-card v-else flat bordered class="bg-grey-2 q-pa-sm">
           <div>
             <div
               style="overflow: auto; min-height: 5rem"
-              v-html="proposal?.[section['name']] || ''"
-            ></div>
+              v-html="proposal?.[section['name']] || ''"></div>
           </div>
         </q-card>
 
@@ -23,8 +26,7 @@
           :max="10"
           :proposal="proposal"
           :section="section"
-          :score="score"
-        />
+          :score="score" />
       </div>
     </div>
 
@@ -32,9 +34,13 @@
   </div>
 </template>
 <script>
+import proposalattachments from "components/proposal/ProposalAttachments.vue";
+
 export default {
+  components: { proposalattachments },
   data() {
     return {
+      tab: "content",
       sections: [],
       proposal: {},
       score: null,
@@ -55,11 +61,13 @@ export default {
 
   methods: {
     getProposal() {
-      this.$api.get(`proposals/${this.$route.params.id}/`).then((res) => {
-        this.proposal = res.data;
-        this.$proposalStore.setProposal(this.proposal);
-        this.getScore();
-      });
+      this.$api
+        .get(`proposals/${this.$route.params.proposal_id}/`)
+        .then((res) => {
+          this.proposal = res.data;
+          this.$proposalStore.setProposal(this.proposal);
+          this.getScore();
+        });
     },
 
     getScore() {
@@ -67,7 +75,7 @@ export default {
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
-            this.$route.params.id
+            this.$route.params.proposal_id
           }`
         )
         .then((res) => {

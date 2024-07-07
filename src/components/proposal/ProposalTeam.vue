@@ -110,7 +110,7 @@ export default {
       formData: {
         user: null,
         email: null,
-        proposal: this.$route.params.id,
+        proposal: this.$route.params.proposal_id,
       },
     };
   },
@@ -120,9 +120,11 @@ export default {
   },
   methods: {
     getTeam() {
-      this.$api.get(`proposals/${this.$route.params.id}/team`).then((res) => {
-        this.team = res.data;
-      });
+      this.$api
+        .get(`proposals/${this.$route.params.proposal_id}/team`)
+        .then((res) => {
+          this.team = res.data;
+        });
     },
 
     getApplicants() {
@@ -134,7 +136,10 @@ export default {
     addMember() {
       this.$utilsStore.setLoading(true);
       this.$api
-        .post(`proposals/${this.$route.params.id}/team/add/`, this.formData)
+        .post(
+          `proposals/${this.$route.params.proposal_id}/team/add/`,
+          this.formData
+        )
         .then((res) => {
           this.team = res.data;
           this.$utilsStore.setLoading(false);
@@ -146,7 +151,7 @@ export default {
       if (confirm("Are you sure you would like to member this member?")) {
         this.$utilsStore.setLoading(true);
         this.$api
-          .post(`proposals/${this.$route.params.id}/team/remove/`, {
+          .post(`proposals/${this.$route.params.proposal_id}/team/remove/`, {
             user: id,
           })
           .then((res) => {

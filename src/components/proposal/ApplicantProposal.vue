@@ -1,12 +1,39 @@
 <template lang="">
-  <div>
+  <div class="q-pa-sm">
     <div v-for="section in sections" :key="section.id">
       <hr :id="section.name" class="section-separator" />
       <div class="q-pa-sm">
         <q-toolbar-title class="flex justify-between">
           <div class="flex">
             {{ section.title }}
-            <section-editor
+          </div>
+        </q-toolbar-title>
+
+        <q-card
+          v-if="$proposalStore.currentProposal?.status == 'EDITING'"
+          class="flex no-wrap q-pa-sm"
+          flat
+          bordered
+        >
+          <q-icon size="md" class="q-pr-sm" name="info_outline" />
+          <div class="bg-grey-0">
+            <small class="text-caption text-grey-8">
+              {{ section.description }}</small
+            >
+          </div>
+        </q-card>
+        <div class="q-pt-sm">
+          <div v-if="section.ref == '#detailed_budget'">
+            <BudgetEditor />
+          </div>
+          <div v-else-if="section.ref == '#team'">
+            <TeamEditor />
+          </div>
+          <div v-else-if="section.ref == '#attachments'">
+            <AttachmentsEditor />
+          </div>
+          <div v-else>
+            <SectionEditor2
               :proposal="proposal"
               :section="section"
               @proposal-updated="
@@ -14,16 +41,13 @@
                 $proposalStore.setProposal($event);
               "
             />
+            <q-card class="my-card" flat bordered>
+              <q-card-section>
+                <div v-html="proposal[section.name]"></div>
+              </q-card-section>
+            </q-card>
           </div>
-        </q-toolbar-title>
-        <q-card flat bordered class="bg-grey-2 q-pa-sm">
-          <div>
-            <div
-              style="overflow: auto; min-height: 5rem"
-              v-html="proposal?.[section['name']] || ''"
-            ></div>
-          </div>
-        </q-card>
+        </div>
       </div>
     </div>
 
@@ -31,7 +55,13 @@
   </div>
 </template>
 <script>
+import BudgetEditor from "components/proposal/BudgetEditor.vue";
+import TeamEditor from "components/proposal/TeamEditor.vue";
+import SectionEditor2 from "components/proposal/SectionEditor2.vue";
+import AttachmentsEditor from "components/proposal/AttachmentsEditor.vue";
+
 export default {
+  components: { BudgetEditor, TeamEditor, SectionEditor2, AttachmentsEditor },
   data() {
     return {
       sections: [],
@@ -54,18 +84,20 @@ export default {
 
   methods: {
     getProposal() {
-      this.$api.get(`proposals/${this.$route.params.id}/`).then((res) => {
-        this.proposal = res.data;
-        this.$proposalStore.setProposal(this.proposal);
-        this.getScore();
-      });
+      this.$api
+        .get(`proposals/${this.$route.params.proposal_id}/`)
+        .then((res) => {
+          this.proposal = res.data;
+          this.$proposalStore.setProposal(this.proposal);
+          this.getScore();
+        });
     },
 
     getScore() {
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
-            this.$route.params.id
+            this.$route.params.proposal_id
           }`
         )
         .then((res) => {
@@ -86,10 +118,13 @@ export default {
 <style>
 body,
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 .section-separator {
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
+  border: none; /* Remove the default border */
+  height: 0.1px; /* Set height */
+  background-color: #dddddd;
 }
 </style>

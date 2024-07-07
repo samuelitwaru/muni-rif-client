@@ -40,7 +40,7 @@ defineOptions({
       showPopup: false,
       menuItems: ref([
         {
-          name: "Submitted Proposals",
+          name: "PENDING",
           route: "/proposals",
           icon: "description",
           color: "red",
@@ -48,13 +48,13 @@ defineOptions({
           click: () => {
             this.$utilsStore.setStateData(
               "ProposalList_status_query",
-              "SUBMITTED"
+              "PENDING"
             );
           },
         },
 
         {
-          name: "Proposal Reviews",
+          name: "REVIEWED",
           route: "/proposals",
           icon: "search",
           color: "red",
@@ -62,7 +62,35 @@ defineOptions({
           click: () => {
             this.$utilsStore.setStateData(
               "ProposalList_status_query",
-              "SCORING"
+              "REVIEWED"
+            );
+          },
+        },
+
+        {
+          name: "SELECTED",
+          route: "/proposals",
+          icon: "check_circle_outline",
+          color: "red",
+          roles: ["grants_officer"],
+          click: () => {
+            this.$utilsStore.setStateData(
+              "ProposalList_status_query",
+              "SELECTED"
+            );
+          },
+        },
+
+        {
+          name: "THEMES",
+          route: "/themes",
+          icon: "apps",
+          color: "red",
+          roles: ["grants_officer"],
+          click: () => {
+            this.$utilsStore.setStateData(
+              "ProposalList_status_query",
+              "SELECTED"
             );
           },
         },
@@ -75,9 +103,9 @@ defineOptions({
           roles: ["applicant"],
         },
         {
-          name: "New Proposal",
+          name: "Apply",
           route: "",
-          icon: "add",
+          icon: "app_registration",
           color: "red",
           roles: ["applicant"],
           click: () => {
@@ -92,13 +120,13 @@ defineOptions({
           color: "red",
           roles: ["reviewer"],
         },
-        {
-          name: "Account",
-          route: "/account/profile",
-          icon: "person",
-          color: "secondary",
-          roles: [],
-        },
+        // {
+        //   name: "Account",
+        //   route: "/account/profile",
+        //   icon: "person",
+        //   color: "secondary",
+        //   roles: [],
+        // },
       ]),
     };
   },

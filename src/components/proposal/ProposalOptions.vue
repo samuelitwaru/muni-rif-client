@@ -42,6 +42,11 @@ export default {
             icon: "people",
             route: `/applicant/proposals/${this.$proposalStore.currentProposal.id}/team`,
           },
+          {
+            name: "REPORTS",
+            icon: "book",
+            route: `/applicant/proposals/${this.$proposalStore.currentProposal.id}/reports`,
+          },
         ];
       } else if (this.$userHasAnyGroups(["reviewer"])) {
         return [

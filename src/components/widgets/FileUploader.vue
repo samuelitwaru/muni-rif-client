@@ -23,7 +23,7 @@
           <div>
             <q-uploader
               :url="uploadUrl"
-              multiple
+              :multiple="multiple"
               @added="onFileAdded"
               style="width: 100%"
             >
@@ -47,7 +47,7 @@
                     type="file"
                     id="files"
                     class="hidden"
-                    multiple
+                    :multiple="multiple"
                   />
                   <label for="files" class="button-label"> Browse </label>
                 </div>
@@ -104,11 +104,12 @@
 
 <script>
 export default {
-  props: ["attachment_id"],
+  name: "FileUploader",
+  props: ["uploadUrl", "multiple", "formData"],
   data() {
     return {
       modalVisible: false,
-      uploadUrl: `${this.$api.getUri()}/files/`,
+      // uploadUrl: `${this.$api.getUri()}/files/`,
       uploadHeaders: {
         // Add any headers required for authentication or other purposes
       },
@@ -118,6 +119,7 @@ export default {
   },
   methods: {
     onFileAdded(files) {
+      // console.log(files);
       files.forEach((file) => {
         this.uploadFile(file);
       });
@@ -125,11 +127,19 @@ export default {
     },
     onBrowse(event) {
       var files = Array.from(event.target.files);
+      console.log(files);
       this.onFileAdded(files);
     },
     uploadFile(file) {
       const formData = new FormData();
       formData.append("file", file);
+
+      for (const key in this.formData) {
+        if (this.formData.hasOwnProperty(key)) {
+          formData.append(key, this.formData[key]);
+        }
+      }
+
       formData.append("name", file.name);
       formData.append("attachment", this.attachment_id);
       formData.append("proposal", this.$route.params["proposal_id"]);
@@ -146,6 +156,8 @@ export default {
           this.filesToUpload = this.filesToUpload.filter(
             (element) => element.key != file.key
           );
+          console.log(file);
+          console.log(this.filesToUpload);
           this.uploadedFiles = [];
           this.modalVisible = false;
           this.$emit("file-uploaded");

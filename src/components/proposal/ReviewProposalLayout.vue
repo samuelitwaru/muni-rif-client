@@ -29,7 +29,6 @@
           />
         </q-toolbar-title>
         <div class="flex">
-          <score-sheet />
           <proposal-options />
         </div>
       </q-toolbar>
@@ -59,7 +58,7 @@
         <a
           v-for="(section, index) in sections"
           :key="section.id"
-          :href="`/proposal-reviews/${$route.params.id}${section.ref}`"
+          :href="`/proposal-reviews/${$route.params.proposal_id}${section.ref}`"
         >
           <q-item clickable v-ripple>
             <div class="q-px-sm border q-my-auto q-mr-sm">
@@ -74,38 +73,16 @@
 
     <q-page-container>
       <router-view></router-view>
+      <div align="center" class="q-mb-xl">
+        <score-sheet />
+      </div>
     </q-page-container>
-
-    <q-footer elevated>
-      <q-toolbar class="bg-white text-dark flex justify-between">
-        <!-- <q-toolbar-title> -->
-        <div>Attachments</div>
-        <div>
-          <q-chip
-            v-for="file in proposalFiles"
-            :key="file.id"
-            class="glossy"
-            icon="attachment"
-            :label="file.name"
-            :removable="
-              $userHasAnyGroups(['applicant']) &&
-              $authStore.currentUser.id == $proposalStore.currentProposal.user
-            "
-            clickable
-            @remove="deleteFile(file.id)"
-            @click="openFile(file.file)"
-          />
-        </div>
-        <proposal-file-attachment @file-uploaded="getProposalFiles" />
-        <!-- </q-toolbar-title> -->
-      </q-toolbar>
-    </q-footer>
   </q-layout>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
-
+import { protectFile } from "src/utils/helpers";
 export default defineComponent({
   name: "ProposalLayout",
 
@@ -140,24 +117,27 @@ export default defineComponent({
   },
 
   created() {
+    protectFile(this.$options.__file);
     this.getProposal();
   },
 
   methods: {
     getProposal() {
       this.$utilsStore.setLoading(true);
-      this.$api.get(`proposals/${this.$route.params.id}/`).then((res) => {
-        this.proposal = res.data;
-        this.$proposalStore.setProposal(this.proposal);
-        this.getProposalFiles();
-        this.getSections();
-        this.getScore();
-        this.$utilsStore.setLoading(false);
-      });
+      this.$api
+        .get(`proposals/${this.$route.params.proposal_id}/`)
+        .then((res) => {
+          this.proposal = res.data;
+          this.$proposalStore.setProposal(this.proposal);
+          this.getProposalFiles();
+          this.getSections();
+          this.getScore();
+          this.$utilsStore.setLoading(false);
+        });
     },
     getProposalFiles() {
       this.$api
-        .get(`files/?proposal_id=${this.$route.params.id}`)
+        .get(`files/?proposal_id=${this.$route.params.proposal_id}`)
         .then((res) => {
           this.proposalFiles = res.data;
         });
@@ -167,7 +147,7 @@ export default defineComponent({
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
-            this.$route.params.id
+            this.$route.params.proposal_id
           }`
         )
         .then((res) => {

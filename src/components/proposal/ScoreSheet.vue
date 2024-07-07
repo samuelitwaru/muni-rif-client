@@ -1,12 +1,6 @@
 <template>
   <div v-if="score && score.status == 'IN PROGRESS'">
-    <q-btn
-      dense
-      flat
-      color="primary"
-      label="Submit Review"
-      @click="startDialog"
-    />
+    <q-btn color="primary" label="Submit Review" @click="startDialog" />
 
     <q-dialog v-model="showDialog" persistent full-width full-height>
       <q-card style="width: 500px">
@@ -129,7 +123,7 @@ export default {
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
-            this.$route.params.id
+            this.$route.params.proposal_id
           }`
         )
         .then((res) => {

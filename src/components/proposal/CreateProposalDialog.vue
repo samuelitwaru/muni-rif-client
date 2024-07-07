@@ -23,6 +23,29 @@
               outlined
               required
             />
+            <div class="text-red">
+              <ul class="q-ma-xs">
+                <li v-for="err in formErrors?.title" :key="err">{{ err }}</li>
+              </ul>
+            </div>
+
+            <br />
+
+            <q-select
+              v-model="formData.theme"
+              :options="themes"
+              label="Select Theme"
+              outlined
+              option-value="id"
+              option-label="title"
+              map-options
+              emit-value
+            />
+            <div class="text-red">
+              <ul class="q-ma-xs">
+                <li v-for="err in formErrors?.theme" :key="err">{{ err }}</li>
+              </ul>
+            </div>
           </q-card-section>
           <q-separator spaced />
           <q-card-actions align="right">
@@ -36,6 +59,8 @@
 </template>
 
 <script>
+import { getThemes } from "src/utils/api";
+
 export default {
   props: {
     showButton: {
@@ -53,23 +78,37 @@ export default {
     return {
       loading: false,
       showDialog: false,
+      themes: [],
       formData: {
         title: "",
+        theme: null,
+        call: this.$dataStore.currentCall.id,
       },
+      formErrors: {},
     };
   },
   created() {
     if (process.env.DEBUG) this.setFormData();
+    getThemes().then((data) => (this.themes = data));
+    this.formData.call = this.$dataStore.currentCall.id;
   },
   methods: {
     createProposal() {
       this.$utilsStore.setLoading(true);
+      this.formErrors = {};
       this.formData["user"] = this.$authStore.currentUser.id;
-      this.$api.post("proposals/", this.formData).then((res) => {
-        this.$router.push(`/applicant/proposals/${res.data.id}`);
-        this.$utilsStore.setLoading(false);
-        this.showDialog = false;
-      });
+      this.$api
+        .post("proposals/", this.formData)
+        .then((res) => {
+          this.$router.push(`/applicant/proposals/${res.data.id}`);
+          this.$utilsStore.setLoading(false);
+          this.showDialog = false;
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          this.formErrors = err.response.data;
+          this.$utilsStore.setLoading(false);
+        });
     },
     cancelCreate() {
       // Cancel the creation and close the dialog.

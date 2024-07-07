@@ -36,6 +36,31 @@ const routes = [
         path: "account/password",
         component: () => import("components/account/ChangePassword.vue"),
       },
+      {
+        path: "calls",
+        component: () => import("components/call/Calls.vue"),
+      },
+      {
+        path: "calls/create",
+        component: () => import("components/call/CreateCall.vue"),
+      },
+      {
+        path: "calls/:call_id",
+        component: () => import("components/call/Call.vue"),
+      },
+
+      {
+        path: "themes",
+        component: () => import("components/theme/Themes.vue"),
+      },
+      {
+        path: "themes/create",
+        component: () => import("components/them/CreateTheme.vue"),
+      },
+      {
+        path: "themes/:theme_id",
+        component: () => import("components/theme/Theme.vue"),
+      },
     ],
   },
 
@@ -44,15 +69,15 @@ const routes = [
     component: () => import("components/proposal/ProposalLayout.vue"),
     children: [
       {
-        path: ":id",
+        path: ":proposal_id",
         component: () => import("components/proposal/ProposalEditor.vue"),
       },
       {
-        path: ":id/reviewers",
+        path: ":proposal_id/reviewers",
         component: () => import("components/proposal/ProposalReviewers.vue"),
       },
       {
-        path: ":id/team",
+        path: ":proposal_id/team",
         component: () => import("components/proposal/ProposalTeam.vue"),
       },
     ],
@@ -63,15 +88,19 @@ const routes = [
     component: () => import("components/proposal/ApplicantProposalLayout.vue"),
     children: [
       {
-        path: ":id",
+        path: ":proposal_id",
         component: () => import("components/proposal/ApplicantProposal.vue"),
       },
       {
-        path: ":id/reviews",
+        path: ":proposal_id/reviews",
         component: () => import("components/proposal/ProposalReviews.vue"),
       },
       {
-        path: ":id/team",
+        path: ":proposal_id/reports",
+        component: () => import("components/proposal/ProposalReports.vue"),
+      },
+      {
+        path: ":proposal_id/team",
         component: () => import("components/proposal/ProposalTeam.vue"),
       },
     ],
@@ -82,15 +111,15 @@ const routes = [
     component: () => import("components/proposal/ReviewProposalLayout.vue"),
     children: [
       {
-        path: ":id",
+        path: ":proposal_id",
         component: () => import("components/proposal/ReviewProposal.vue"),
       },
       {
-        path: ":id/reviews",
+        path: ":proposal_id/reviews",
         component: () => import("components/proposal/ProposalReviews.vue"),
       },
       {
-        path: ":id/team",
+        path: ":proposal_id/team",
         component: () => import("components/proposal/ProposalTeam.vue"),
       },
     ],
@@ -126,6 +155,10 @@ const routes = [
 
   // Always leave this as last one,
   // but you can also remove it
+  {
+    path: "/unauthorised",
+    component: () => import("pages/ErrorUnauthorised.vue"),
+  },
   {
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),

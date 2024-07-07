@@ -76,6 +76,8 @@
   </div>
 </template>
 <script>
+import { protectFile } from "src/utils/helpers";
+
 export default {
   data() {
     return {
@@ -87,9 +89,10 @@ export default {
   },
 
   created() {
+    protectFile(this.$options.__file);
     if (this.$userHasAnyGroups(["applicant"])) {
       this.getCurrentUserProposals();
-      this.getCurrentUserTeamProposals();
+      // this.getCurrentUserTeamProposals();
     }
   },
 
@@ -104,16 +107,16 @@ export default {
           this.loading = false;
         });
     },
-    getCurrentUserTeamProposals() {
-      // this.$utilsStore.setLoading(true);
-      var query = this.search_query ? `&search=${this.search_query}` : "";
-      this.$api
-        .get(`proposals?team__has=${this.$authStore.currentUser.id}${query}`)
-        .then((res) => {
-          this.teamProposals = res.data;
-          console.log(this.teamProposals);
-        });
-    },
+    // getCurrentUserTeamProposals() {
+    //   // this.$utilsStore.setLoading(true);
+    //   var query = this.search_query ? `&search=${this.search_query}` : "";
+    //   this.$api
+    //     .get(`proposals?team__has=${this.$authStore.currentUser.id}${query}`)
+    //     .then((res) => {
+    //       this.teamProposals = res.data;
+    //       console.log(this.teamProposals);
+    //     });
+    // },
   },
 
   watch: {

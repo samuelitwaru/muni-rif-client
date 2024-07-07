@@ -54,7 +54,7 @@
         <a
           v-for="(section, index) in sections"
           :key="section.id"
-          :href="`/proposals/${$route.params.id}${section.ref}`"
+          :href="`/proposals/${$route.params.proposal_id}${section.ref}`"
         >
           <q-item clickable v-ripple>
             <div class="q-px-sm border q-my-auto q-mr-sm">
@@ -71,7 +71,7 @@
       <router-view></router-view>
     </q-page-container>
 
-    <q-footer elevated>
+    <!-- <q-footer elevated>
       <q-toolbar class="bg-white text-dark flex justify-between">
         <div>Attachments</div>
         <div>
@@ -91,12 +91,13 @@
           />
         </div>
       </q-toolbar>
-    </q-footer>
+    </q-footer> -->
   </q-layout>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
+import { protectFile } from "src/utils/helpers";
 
 export default defineComponent({
   name: "ProposalLayout",
@@ -112,25 +113,28 @@ export default defineComponent({
   },
 
   created() {
+    protectFile(this.$options.__file);
     this.getProposal();
   },
 
   methods: {
     getProposal() {
       this.$utilsStore.setLoading(true);
-      this.$api.get(`proposals/${this.$route.params.id}/`).then((res) => {
-        this.proposal = res.data;
-        this.$proposalStore.setProposal(this.proposal);
-        this.getProposalFiles();
-        this.getSections();
-        this.getScore();
-        this.$utilsStore.setLoading(false);
-      });
+      this.$api
+        .get(`proposals/${this.$route.params.proposal_id}/`)
+        .then((res) => {
+          this.proposal = res.data;
+          this.$proposalStore.setProposal(this.proposal);
+          this.getProposalFiles();
+          this.getSections();
+          this.getScore();
+          this.$utilsStore.setLoading(false);
+        });
     },
 
     getProposalFiles() {
       this.$api
-        .get(`files/?proposal_id=${this.$route.params.id}`)
+        .get(`files/?proposal_id=${this.$route.params.proposal_id}`)
         .then((res) => {
           this.proposalFiles = res.data;
         });
@@ -140,7 +144,7 @@ export default defineComponent({
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
-            this.$route.params.id
+            this.$route.params.proposal_id
           }`
         )
         .then((res) => {

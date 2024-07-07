@@ -1,9 +1,9 @@
-<template lang="">
+<template lang>
   <div>
     <proposal-score-sheets />
     <div class="q-pa-sm">
       <q-toolbar-title>Reviewers</q-toolbar-title>
-      <q-markup-table flat bordered>
+      <q-markup-table v-if="scores.length" flat bordered>
         <tbody>
           <tr v-for="score in scores" :key="score.id">
             <td class="text-left">
@@ -17,8 +17,7 @@
                 icon="close"
                 flat
                 dense
-                @click="deleteScore(score.id)"
-              />
+                @click="deleteScore(score.id)" />
             </td>
           </tr>
         </tbody>
@@ -31,8 +30,7 @@
               flat
               class="q-mx-sm"
               label="Select reviewer"
-              color="primary"
-            >
+              color="primary">
               <q-list>
                 <q-item
                   v-for="user in reviewers"
@@ -42,8 +40,7 @@
                   @click="
                     this.formData.email = user.username;
                     this.formData.user = user.id;
-                  "
-                >
+                  ">
                   <q-item-section>
                     <q-item-label>
                       <div>
@@ -63,8 +60,7 @@
               dense
               v-model="formData.email"
               type="email"
-              label="Enter Email Address"
-            />
+              label="Enter Email Address" />
           </div>
           <div class="col-2 q-pa-sm">
             <q-btn color="primary" label="Add" @click="createScore" />
@@ -84,7 +80,7 @@ export default {
       formData: {
         user: null,
         email: null,
-        proposal: this.$route.params.id,
+        proposal: this.$route.params.proposal_id,
       },
     };
   },
@@ -94,9 +90,11 @@ export default {
   },
   methods: {
     getScores() {
-      this.$api.get(`scores/?proposal=${this.$route.params.id}`).then((res) => {
-        this.scores = res.data;
-      });
+      this.$api
+        .get(`scores/?proposal=${this.$route.params.proposal_id}`)
+        .then((res) => {
+          this.scores = res.data;
+        });
     },
 
     getReviewers() {
@@ -129,4 +127,4 @@ export default {
   },
 };
 </script>
-<style lang=""></style>
+<style lang></style>

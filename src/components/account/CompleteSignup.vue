@@ -54,38 +54,6 @@
           </div>
         </div>
 
-        <!-- <div class="row q-col-gutter-xs q-my-sm">
-          <div class="col">
-            <q-select
-              outlined
-              dense
-              v-model="formData.faculty"
-              :options="faculties"
-              option-value="id"
-              option-label="name"
-              label="Faculty"
-              emit-value
-              map-options
-            />
-          </div>
-          <div class="col">
-            <q-select
-              outlined
-              dense
-              v-model="formData.department"
-              :options="
-                this.faculties.find((f) => f.id === this.formData.faculty)
-                  ?.departments
-              "
-              option-value="id"
-              option-label="name"
-              label="Department"
-              emit-value
-              map-options
-            />
-          </div>
-        </div> -->
-
         <div class="row q-col-gutter-xs">
           <div class="col">
             <q-select

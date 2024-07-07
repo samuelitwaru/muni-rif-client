@@ -5,3 +5,32 @@ a {
 .border {
   border: 2px solid #007aff;
 }
+
+.custom-table {
+  width: 100%;
+  margin-bottom: 1rem;
+  background-color: #fff;
+  border-collapse: collapse;
+}
+.custom-table th,
+.custom-table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+}
+.custom-table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+}
+.custom-table tbody + tbody {
+  border-top: 2px solid #dee2e6;
+}
+.custom-table .table {
+  margin-bottom: 0;
+}
+.custom-table .table-bordered {
+  border: 1;
+}
+.custom-table .table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}

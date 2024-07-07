@@ -7,9 +7,8 @@
   >
     <q-btn
       color="primary"
-      label="Submit"
-      dense
-      flat
+      label="Submit Application"
+      :disabled="disabled"
       @click="modalVisible = true"
     />
     <q-dialog v-model="modalVisible">
@@ -80,6 +79,7 @@ import cheerio from "cheerio";
 export default {
   props: {
     proposal: { type: Object, required: true },
+    disabled: { type: Boolean, required: true },
   },
   data() {
     return {
@@ -120,13 +120,13 @@ export default {
   },
   methods: {
     getProposal() {
-      this.$api.get(`/proposals/${this.$route.params.id}/`);
+      this.$api.get(`/proposals/${this.$route.params.proposal_id}/`);
     },
     submitProposal() {
       this.$utilsStore.setLoading(true);
       this.$api
-        .patch(`/proposals/${this.$route.params.id}/`, {
-          status: "SUBMITTED",
+        .patch(`/proposals/${this.$route.params.proposal_id}/`, {
+          status: "PENDING",
         })
         .then((res) => {
           this.$utilsStore.setLoading(false);
