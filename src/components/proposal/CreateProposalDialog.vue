@@ -117,7 +117,7 @@ export default {
 
     setFormData() {
       this.formData = {
-        title: "Muni RIF Management System",
+        title: "",
       };
     },
   },

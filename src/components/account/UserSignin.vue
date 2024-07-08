@@ -98,7 +98,11 @@ export default {
           const user = res.data.user;
           this.$authStore.setUserAndToken(user, token);
           this.$utilsStore.setLoading(false);
+
           var _next = this.$route.query._next || "/";
+          if (this.$userHasAnyGroups(["reviewer"])) {
+            _next = "/proposal-reviews";
+          }
           this.$router.push(_next);
           this.$utilsStore.setLoading(false);
         })

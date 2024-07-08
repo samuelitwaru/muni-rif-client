@@ -34,6 +34,7 @@
           </div>
           <div v-else>
             <SectionEditor2
+              v-if="$proposalStore.currentProposal?.status == 'EDITING'"
               :proposal="proposal"
               :section="section"
               @proposal-updated="
@@ -41,7 +42,7 @@
                 $proposalStore.setProposal($event);
               "
             />
-            <q-card class="my-card" flat bordered>
+            <q-card v-else class="my-card" flat bordered>
               <q-card-section>
                 <div v-html="proposal[section.name]"></div>
               </q-card-section>

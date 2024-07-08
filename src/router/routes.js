@@ -55,7 +55,7 @@ const routes = [
       },
       {
         path: "themes/create",
-        component: () => import("components/them/CreateTheme.vue"),
+        component: () => import("components/theme/CreateTheme.vue"),
       },
       {
         path: "themes/:theme_id",
