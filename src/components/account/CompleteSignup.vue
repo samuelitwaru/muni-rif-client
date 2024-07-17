@@ -161,6 +161,7 @@ export default {
     this.getQualifications();
   },
   methods: {
+    getUser() {},
     completeSignup() {
       // Handle form submission here
       this.$utilsStore.setLoading(true);

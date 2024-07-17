@@ -10,13 +10,13 @@
       <q-dialog v-model="showDialog" persistent>
         <q-card style="width: 500px">
           <q-card-section>
-            <div class="text-h6">New Proposal</div>
+            <div class="text-h6">New Project Proposal</div>
           </q-card-section>
           <q-separator />
           <q-card-section class="q-pt-lg q-pb-md">
-            <label>Name your proposal</label>
-            <br />
-            <br />
+            <!-- <div class="text-center text-h6">Background Information</div> -->
+            <!-- <br /> -->
+            <!-- <br /> -->
             <q-input
               v-model="formData.title"
               label="Title of your proposal"
@@ -94,6 +94,7 @@ export default {
   },
   methods: {
     createProposal() {
+      console.log(this.formData);
       this.$utilsStore.setLoading(true);
       this.formErrors = {};
       this.formData["user"] = this.$authStore.currentUser.id;

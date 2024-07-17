@@ -5,6 +5,7 @@
       :showPopup="showPopup"
       @showPopupChanged="this.showPopup = $event"
     />
+
     <div class="q-py-xl flex flex-center">
       <router-link
         :key="item.name"
@@ -12,18 +13,24 @@
         :to="item.route"
         @click="item.click"
       >
-        <q-card
+        <q-btn
           v-if="$userHasAnyGroups(item.roles) || item.roles.length == 0"
-          flat
-          bordered
-          :class="`text-center q-pa-md q-ma-xs text-${item.color}`"
-          style="width: 200px"
+          outlined
+          :class="`text-center q-pa-md q-ma-sm text-${item.color}`"
+          style="width: 200px; height: 150px"
         >
+          <q-badge
+            class="q-pa-sm"
+            v-if="counts[item.name]"
+            color="primary"
+            floating
+            >{{ counts[item.name] }}</q-badge
+          >
           <q-icon :name="item.icon" size="xl" />
           <q-card-section>
             <div class="text-h6">{{ item.name }}</div>
           </q-card-section>
-        </q-card>
+        </q-btn>
       </router-link>
     </div>
 
@@ -34,30 +41,32 @@
 <script setup>
 import { ref } from "vue";
 defineOptions({
-  name: "HomePage",
+  name: "MainPage",
+
   data() {
     return {
       showPopup: false,
       menuItems: ref([
         {
-          name: "PENDING",
-          route: "/proposals",
+          name: "SUBMISSIONS",
+          route: "/go/proposals/submitted",
           icon: "description",
-          color: "red",
+          color: "secondary",
           roles: ["grants_officer"],
+          count: 0,
           click: () => {
             this.$utilsStore.setStateData(
               "ProposalList_status_query",
-              "PENDING"
+              "SUBMITTED"
             );
           },
         },
 
         {
-          name: "REVIEWED",
-          route: "/proposals",
+          name: "REVIEWES",
+          route: "/go/proposals/reviewed",
           icon: "search",
-          color: "red",
+          color: "secondary",
           roles: ["grants_officer"],
           click: () => {
             this.$utilsStore.setStateData(
@@ -69,9 +78,9 @@ defineOptions({
 
         {
           name: "SELECTED",
-          route: "/proposals",
+          route: "/go/proposals/selected",
           icon: "check_circle_outline",
-          color: "red",
+          color: "secondary",
           roles: ["grants_officer"],
           click: () => {
             this.$utilsStore.setStateData(
@@ -85,28 +94,30 @@ defineOptions({
           name: "THEMES",
           route: "/themes",
           icon: "apps",
-          color: "red",
+          color: "secondary",
           roles: ["grants_officer"],
-          click: () => {
-            this.$utilsStore.setStateData(
-              "ProposalList_status_query",
-              "SELECTED"
-            );
-          },
+        },
+
+        {
+          name: "REVIEWERS",
+          route: "/reviewers",
+          icon: "people",
+          color: "secondary",
+          roles: ["grants_officer"],
         },
 
         {
           name: "My Proposals",
           route: "/applicant/proposals",
           icon: "search",
-          color: "red",
+          color: "secondary",
           roles: ["applicant"],
         },
         {
           name: "Apply",
           route: "",
           icon: "app_registration",
-          color: "red",
+          color: "secondary",
           roles: ["applicant"],
           click: () => {
             this.showPopup = true;
@@ -117,18 +128,35 @@ defineOptions({
           name: "Proposal Reviews",
           route: "/proposal-reviews",
           icon: "search",
-          color: "red",
+          color: "secondary",
           roles: ["reviewer"],
         },
-        // {
-        //   name: "Account",
-        //   route: "/account/profile",
-        //   icon: "person",
-        //   color: "secondary",
-        //   roles: [],
-        // },
       ]),
+
+      counts: {
+        SELECTED: 0,
+        SUBMISSIONS: 0,
+      },
     };
+  },
+
+  created() {
+    this.getCounts();
+  },
+
+  methods: {
+    getCounts() {
+      this.$api.get("proposals/count/?is_selected=true").then((res) => {
+        if ((res.status = 200)) {
+          this.counts.SELECTED = res.data.count;
+        }
+      });
+      this.$api.get("proposals/count/?status=SUBMITTED").then((res) => {
+        if ((res.status = 200)) {
+          this.counts.SUBMISSIONS = res.data.count;
+        }
+      });
+    },
   },
 });
 </script>

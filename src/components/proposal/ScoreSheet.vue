@@ -2,8 +2,8 @@
   <div v-if="score && score.status == 'IN PROGRESS'">
     <q-btn color="primary" label="Submit Review" @click="startDialog" />
 
-    <q-dialog v-model="showDialog" persistent full-width full-height>
-      <q-card style="width: 500px">
+    <q-dialog v-model="showDialog" persistent full-height>
+      <q-card style="min-width: 500px">
         <q-card-section class="flex justify-between">
           <div class="text-h6">Submit Review</div>
           <q-btn
@@ -25,20 +25,23 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                :class="{
-                  'bg-green-2': score[section.name] > 5,
-                  'bg-red-1': score[section.name] <= 5,
-                }"
-                v-for="section in sections"
-                :key="section.id"
-              >
-                <td class="text-left">{{ section.title }}</td>
-                <td class="text-right">{{ score[section.name] }}</td>
-                <td class="text-left">
-                  {{ score[`${section.name}_comment`] }}
-                </td>
-              </tr>
+              <template v-for="section in sections" :key="section.id">
+                <tr v-if="section.max_score > 0">
+                  <td class="text-left">{{ section.title }}</td>
+                  <td
+                    class="text-center"
+                    :class="{
+                      'bg-green-2': score[section.name] > section.max_score / 2,
+                      'bg-red-1': score[section.name] <= section.max_score / 2,
+                    }"
+                  >
+                    {{ score[section.name] }}/{{ section.max_score }}
+                  </td>
+                  <td class="text-left">
+                    {{ score[`${section.name}_comment`] }}
+                  </td>
+                </tr>
+              </template>
             </tbody>
           </q-markup-table>
         </q-card-section>

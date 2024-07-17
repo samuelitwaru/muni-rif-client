@@ -14,7 +14,7 @@
               <q-input outlined v-model="formData[date.name]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover :breakpoint="600">
+                    <q-popup-proxy cover :breakpoint="1000">
                       <q-date mask="YYYY-MM-DD" v-model="formData[date.name]" />
                     </q-popup-proxy>
                   </q-icon>

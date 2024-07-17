@@ -17,17 +17,9 @@
         <div class="text-orange-3 q-px-xs">
           <router-link to="/account/profile">
             <q-chip
-              class="md"
+              class="glossy"
               icon="person"
-              :label="$authStore.currentUser?.username"
-            />
-            <q-btn
-              color="white"
-              dense
-              text-color="dark"
-              class="xs"
-              round
-              icon="person"
+              :label="`${$authStore.currentUser?.first_name} ${$authStore.currentUser?.last_name}`"
             />
           </router-link>
           <!-- {{ $getState("user")?.name }} -->
@@ -36,13 +28,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      class="bg-grey-2"
-      show-if-above
-      bordered
-      :width="220"
-    >
+    <q-drawer v-model="leftDrawerOpen" class="bg-grey-2" bordered :width="220">
       <q-img
         src="~assets/logo.jpeg"
         spinner-color="primary"

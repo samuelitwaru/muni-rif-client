@@ -1,11 +1,12 @@
 <template>
   <div>
-    <q-markup-table class="q-ma-sm" flat bordered>
+    <q-markup-table class="q-my-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Full Name</th>
           <th align="left">Email</th>
           <th align="left">Telephone</th>
+          <th align="left">Role</th>
           <th
             v-if="$proposalStore.currentProposal?.status == 'EDITING'"
             align="left"
@@ -15,7 +16,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-if="$proposalStore.currentProposal?.status == 'EDITING'">
+        <tr
+          class="q-tr--no-hover"
+          v-if="
+            $proposalStore.currentProposal?.status == 'EDITING' &&
+            items.length < 5
+          "
+        >
           <td>
             <input
               v-model="formData.full_name"
@@ -39,13 +46,26 @@
           </td>
 
           <td>
+            <select v-model="formData.role">
+              <option
+                v-for="option in options"
+                :key="option.name"
+                :value="option.name"
+              >
+                {{ option.value }}
+              </option>
+            </select>
+          </td>
+
+          <td>
             <button @click="createTeam">Add</button>
           </td>
         </tr>
-        <tr v-for="item in items" :key="item.id">
+        <tr class="q-tr--no-hover" v-for="item in items" :key="item.id">
           <td>{{ item.full_name }}</td>
           <td>{{ item.email }}</td>
           <td>{{ item.telephone }}</td>
+          <td>{{ item.role }}</td>
           <td v-if="$proposalStore.currentProposal?.status == 'EDITING'">
             <q-btn
               icon="delete"
@@ -72,6 +92,11 @@ export default {
         proposal: this.$route.params.proposal_id,
       },
       items: [],
+      options: [
+        { name: "PI", value: "PI" },
+        { name: "Co PI", value: "Co PI" },
+        { name: "MEMBER", value: "MEMBER" },
+      ],
     };
   },
   created() {
@@ -91,7 +116,7 @@ export default {
     createTeam() {
       this.$api.post(`teams/`, this.formData).then((res) => {
         if ((res.status = 201)) {
-          this.items.unshift(res.data);
+          this.items.push(res.data);
           this.resetFormData();
           this.$bus.emit("proposal-updated", true);
         }

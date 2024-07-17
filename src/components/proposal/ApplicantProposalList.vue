@@ -79,6 +79,7 @@
 import { protectFile } from "src/utils/helpers";
 
 export default {
+  name: "ApplicantProposalList",
   data() {
     return {
       loading: false,
@@ -89,10 +90,9 @@ export default {
   },
 
   created() {
-    protectFile(this.$options.__file);
+    protectFile(this.$options.name);
     if (this.$userHasAnyGroups(["applicant"])) {
       this.getCurrentUserProposals();
-      // this.getCurrentUserTeamProposals();
     }
   },
 
@@ -107,16 +107,6 @@ export default {
           this.loading = false;
         });
     },
-    // getCurrentUserTeamProposals() {
-    //   // this.$utilsStore.setLoading(true);
-    //   var query = this.search_query ? `&search=${this.search_query}` : "";
-    //   this.$api
-    //     .get(`proposals?team__has=${this.$authStore.currentUser.id}${query}`)
-    //     .then((res) => {
-    //       this.teamProposals = res.data;
-    //       console.log(this.teamProposals);
-    //     });
-    // },
   },
 
   watch: {

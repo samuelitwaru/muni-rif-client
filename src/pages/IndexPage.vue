@@ -5,7 +5,6 @@
         <!-- <q-breadcrumbs-el icon="home" to="/" label="Home" /> -->
 
         <q-breadcrumbs-el text-color="black" label="Home" icon="home" />
-        <q-breadcrumbs-el :label="call.title" icon="campaign" />
       </q-breadcrumbs>
     </div>
     <q-separator spaced />

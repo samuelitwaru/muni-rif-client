@@ -18,7 +18,7 @@
           toggle-color="primary"
           :options="[
             { label: 'All', value: null },
-            { label: 'Pending', value: 'PENDING' },
+            { label: 'Pending', value: 'SUBMITTED' },
             // { label: 'Reviewing', value: 'REVIEWING' },
             { label: 'Reviewed', value: 'REVIEWED' },
             { label: 'Selected', value: 'SELECTED' },
@@ -60,16 +60,6 @@
             label="Go To Reviews"
             @click="$router.push(`/proposals/${proposal.id}/reviewers`)"
           />
-
-          <!-- <q-btn
-            color="secondary"
-            class="q-mx-sm"
-            dense
-            outline
-            icon="people"
-            label="Team Members"
-            @click="$router.push(`/proposals/${proposal.id}/team`)"
-          /> -->
         </div>
         <div style="width: 100px">
           <q-chip
@@ -93,6 +83,7 @@
 <script>
 import { protectFile } from "src/utils/helpers";
 export default {
+  name: "ProposalList",
   data() {
     return {
       stateData: this.$utilsStore.getStateData(),
@@ -104,7 +95,7 @@ export default {
   },
 
   created() {
-    protectFile(this.$options.__file);
+    protectFile(this.$options.name);
     this.status_query = this.stateData.ProposalList_status_query;
     this.getProposals();
   },

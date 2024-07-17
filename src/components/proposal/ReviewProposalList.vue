@@ -40,6 +40,7 @@
 <script>
 import { protectFile } from "src/utils/helpers";
 export default {
+  name: "ReviewProposalList",
   data() {
     return {
       loading: false,
@@ -49,8 +50,7 @@ export default {
   },
 
   created() {
-    console.log(this.$options.__name);
-    protectFile(this.$options.__file);
+    protectFile(this.$options.name);
     if (this.$userHasAnyGroups(["reviewer"])) {
       this.getCurrentUserScoreSheets();
     }
@@ -58,7 +58,6 @@ export default {
 
   methods: {
     getCurrentUserScoreSheets() {
-      // this.$utilsStore.setLoading(true);
       var query = this.search_query ? `&search=${this.search_query}` : "";
       this.$api
         .get(`scores?user=${this.$authStore.currentUser.id}${query}`)

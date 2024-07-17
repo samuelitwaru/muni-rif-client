@@ -10,52 +10,24 @@
           </div>
         </q-toolbar-title>
 
-        <div v-if="section.name=='attachments'">
-          <q-markup-table class="q-ma-sm" flat bordered>
-            <thead>
-              <tr>
-                <th align="left">Title</th>
-                <th align="left" colspan="2">Files</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in attachments" :key="item.id">
-                <td>{{ item.title }}</td>
-                <td>
-                  <div class="flex">
-                    <q-chip
-                      v-for="file in item.files"
-                      dense
-                      :key="file.id"
-                      class="glossy"
-                      icon="attachment"
-                      :label="file.name"
-                      :removable="
-                        $userHasAnyGroups(['applicant']) &&
-                        $authStore.currentUser.id ==
-                          $proposalStore.currentProposal.user &&
-                        $proposalStore.currentProposal.status == 'EDITING'
-                      "
-                      clickable
-                      @remove="deleteFile(file.id)"
-                      @click="openFile(file.file)" />
-                  </div>
-                </td>
-                <td>
-                  <proposal-file-attachment
-                    :attachment_id="item.id"
-                    @file-uploaded="getFiles()" />
-                </td>
-              </tr>
-            </tbody>
-          </q-markup-table>
+        <div v-if="section.name == 'attachments'">
+          <ProposalAttachments />
         </div>
 
-        <q-card v-else flat bordered class="bg-grey-2 q-pa-sm">
+        <div v-else-if="section.name == 'team'">
+          <TeamMembers />
+        </div>
+
+        <div v-else-if="section.name == 'summary_budget'">
+          <BudgetItems />
+        </div>
+
+        <q-card v-else flat bordered class="q-pa-sm">
           <div>
             <div
               style="overflow: auto; min-height: 5rem"
-              v-html="proposal?.[section['name']] || ''"></div>
+              v-html="proposal?.[section['name']] || ''"
+            ></div>
           </div>
         </q-card>
       </div>
@@ -64,7 +36,11 @@
   </div>
 </template>
 <script>
+import ProposalAttachments from "components/proposal/ProposalAttachments.vue";
+import TeamMembers from "components/proposal/TeamMembers.vue";
+import BudgetItems from "components/proposal/BudgetItems.vue";
 export default {
+  components: { ProposalAttachments, TeamMembers, BudgetItems },
   data() {
     return {
       sections: [],
@@ -77,7 +53,7 @@ export default {
         corrupti quasi cupiditate recusandae magnam, quis dicta facere dolore
         blanditiis.
       </p>`,
-      attachments:[],
+      attachments: [],
     };
   },
 
@@ -147,9 +123,5 @@ export default {
 body,
 html {
   scroll-behavior: smooth;
-}
-
-.section-separator {
-  margin-bottom: 3rem;
 }
 </style>

@@ -61,6 +61,19 @@ const routes = [
         path: "themes/:theme_id",
         component: () => import("components/theme/Theme.vue"),
       },
+
+      {
+        path: "reviewers",
+        component: () => import("components/reviewer/Reviewers.vue"),
+      },
+      {
+        path: "reviewers/create",
+        component: () => import("components/reviewer/CreateReviewer.vue"),
+      },
+      {
+        path: "reviewers/:user_id",
+        component: () => import("components/reviewer/Reviewer.vue"),
+      },
     ],
   },
 
@@ -68,6 +81,10 @@ const routes = [
     path: "/proposals",
     component: () => import("components/proposal/ProposalLayout.vue"),
     children: [
+      {
+        path: "submitted/list",
+        component: () => import("components/proposal/SubmittedProposals.vue"),
+      },
       {
         path: ":proposal_id",
         component: () => import("components/proposal/ProposalEditor.vue"),
@@ -80,6 +97,26 @@ const routes = [
         path: ":proposal_id/team",
         component: () => import("components/proposal/ProposalTeam.vue"),
       },
+    ],
+  },
+
+  {
+    path: "/go/proposals",
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        path: "submitted",
+        component: () => import("components/proposal/SubmittedProposals.vue"),
+      },
+      {
+        path: "reviewed",
+        component: () => import("components/proposal/ReviewedProposals.vue"),
+      },
+      {
+        path: "selected",
+        component: () => import("components/proposal/SelectedProposals.vue"),
+      },
+
     ],
   },
 

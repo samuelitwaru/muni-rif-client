@@ -1,40 +1,54 @@
 <template lang="">
-  <q-card
+  <div
     v-if="
       score &&
       score.status == 'IN PROGRESS' &&
       this.$userHasAnyGroups(['reviewer'])
     "
-    flat
-    bordered
-    class="q-mt-sm q-pa-sm"
+    class="q-mb-sm q-mt-sm"
   >
-    <div class="q-mb-sm">
-      <div>
-        <span>
-          <div>
-            <small>Score</small>
-          </div>
-          <input
-            type="number"
-            :min="min"
-            :max="max"
-            v-model="mark"
-            @blur="updateSectionScore(score.id)"
-          />
-        </span>
-        /10
-        <q-input
-          height="2"
-          multiline
-          v-model="comment"
-          type="textarea"
-          label="Comment (Optional)"
-          @blur="updateSectionComment(score.id)"
-        />
-      </div>
-    </div>
-  </q-card>
+    <q-markup-table bordered flat square style="background: #f5f5f5">
+      <thead>
+        <tr>
+          <th class="text-left">Score</th>
+          <th class="text-left">Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="">
+          <td class="q-td--no-hover">
+            <div class="text-center">
+              <input
+                type="number"
+                :min="min"
+                :max="max"
+                v-model="mark"
+                @blur="updateSectionScore(score.id)"
+              />/{{ max }}
+            </div>
+            <q-slider
+              v-model="mark"
+              :min="min"
+              :max="max"
+              :step="1"
+              color="green"
+              @change="updateSectionScore(score.id)"
+            />
+          </td>
+          <td class="q-td--no-hover">
+            <q-input
+              outlined
+              multiline
+              v-model="comment"
+              type="textarea"
+              label="Comment (Optional)"
+              @blur="updateSectionComment(score.id)"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </q-markup-table>
+  </div>
 </template>
 <script>
 export default {
@@ -63,7 +77,6 @@ export default {
 
   watch: {
     score(newValue, oldValue) {
-      // This function will run whenever myProp changes
       this.mark = this.score[this.section["name"]];
       this.comment = this.score[`${this.section["name"]}_comment`];
     },
@@ -71,8 +84,8 @@ export default {
 
   data() {
     return {
-      comment: null,
-      mark: null,
+      comment: "",
+      mark: 0,
       formData: {
         l: 4,
       },
@@ -81,6 +94,12 @@ export default {
 
   methods: {
     updateSectionScore(scoreId) {
+      if (this.mark > this.section.max_score) {
+        this.mark = this.section.max_score;
+      } else if (this.mark < 0) {
+        this.mark = 0;
+      }
+
       this.formData[this.section["name"]] = this.mark;
       this.$api.patch(`scores/${scoreId}/`, this.formData).then((res) => {
         console.log(res.data);

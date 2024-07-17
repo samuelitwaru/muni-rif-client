@@ -14,7 +14,7 @@
       @click="modalVisible = true"
     />
     <q-dialog v-model="modalVisible">
-      <q-card style="width: 400px">
+      <q-card style="width: 500px">
         <q-card-section class="q-pa-sm text-center">
           <div class="text-h6">Attachments</div>
         </q-card-section>
@@ -26,6 +26,7 @@
               multiple
               @added="onFileAdded"
               style="width: 100%"
+              flat
             >
               <template v-slot:header>
                 <div
@@ -48,13 +49,16 @@
                     id="files"
                     class="hidden"
                     multiple
+                    :accept="acceptedFileTypes"
                   />
-                  <label for="files" class="button-label"> Browse </label>
+                  <div>
+                    <label for="files" class="button-label"> Browse </label>
+                  </div>
                 </div>
               </template>
 
               <template v-slot:list>
-                <q-list separator>
+                <q-list separator dense bordered>
                   <q-item v-for="file in filesToUpload" :key="file.__key">
                     <q-item-section>
                       <q-item-label class="full-width ellipsis">
@@ -62,7 +66,7 @@
                       </q-item-label>
 
                       <q-item-label caption>
-                        {{ file.__sizeLabel }} / {{ file.__progressLabel }}
+                        {{ file.__sizeLabel }} {{ file.__progressLabel }}
                       </q-item-label>
                     </q-item-section>
 
@@ -71,6 +75,11 @@
                     </q-item-section>
                   </q-item>
                 </q-list>
+
+                <div align="center">
+                  <br />
+                  Only <strong>PDF, WORD, EXCEL</strong> are accepted
+                </div>
               </template>
             </q-uploader>
           </div>
@@ -107,6 +116,8 @@ export default {
   props: ["attachment_id"],
   data() {
     return {
+      acceptedFileTypes:
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       modalVisible: false,
       uploadUrl: `${this.$api.getUri()}/files/`,
       uploadHeaders: {
@@ -119,9 +130,13 @@ export default {
   methods: {
     onFileAdded(files) {
       files.forEach((file) => {
-        this.uploadFile(file);
+        console.dir(file);
+        if (file.type && this.acceptedFileTypes.includes(file.type)) {
+          this.uploadFile(file);
+          this.filesToUpload.push(file);
+        }
       });
-      this.filesToUpload = [...this.filesToUpload, ...files];
+      // this.filesToUpload = [...this.filesToUpload, ...files];
     },
     onBrowse(event) {
       var files = Array.from(event.target.files);

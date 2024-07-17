@@ -39,6 +39,14 @@
           </div>
         </q-toolbar-title>
         <div class="flex">
+          <q-btn
+            v-if="$proposalStore.currentProposal?.status != 'EDITING'"
+            color="primary"
+            icon="download"
+            dense
+            label="download"
+            @click="downloadProposal"
+          />
           <proposal-options />
         </div>
       </q-toolbar>
@@ -89,13 +97,60 @@
     </q-drawer>
 
     <q-page-container>
+      <div class="q-pa-md">
+        <q-toolbar-title class="flex justify-between">
+          <div class="flex">Background Information</div>
+        </q-toolbar-title>
+        <div>
+          <q-markup-table flat bordered class="q-ma-sm">
+            <tbody>
+              <tr class="q-tr--no-hover">
+                <td class="text-left">Title</td>
+                <td class="text-left">
+                  <q-input
+                    style="min-width: 20rem"
+                    v-if="$proposalStore.currentProposal?.status == 'EDITING'"
+                    @blur="editProposalTitle"
+                    v-model="formData.title"
+                    type="text"
+                    outlined
+                    dense
+                  />
+                  <label v-else>
+                    {{ $proposalStore.currentProposal.title }}
+                  </label>
+                </td>
+              </tr>
+              <tr class="q-tr--no-hover">
+                <td class="text-left">Theme</td>
+                <td class="text-left">
+                  {{ $proposalStore.currentProposal.theme_title }}
+                </td>
+              </tr>
+            </tbody>
+          </q-markup-table>
+        </div>
+      </div>
+
       <router-view></router-view>
 
-      <div align="center" class="q-mb-lg">
+      <div
+        v-if="$proposalStore.currentProposal?.status == 'EDITING'"
+        align="center"
+        class="flex justify-center q-mb-lg"
+      >
+        <router-link class="q-mx-sm" to="/applicant/proposals">
+          <q-btn
+            color="secondary"
+            outline
+            icon="check"
+            label="save and continue later"
+          />
+        </router-link>
+
         <submit-proposal
           :disabled="!isProposalValid"
           :proposal="$proposalStore.currentProposal"
-          v-if="$proposalStore.currentProposal?.status == 'EDITING'"
         />
       </div>
     </q-page-container>
@@ -242,6 +297,16 @@ export default defineComponent({
       });
     },
 
+    downloadProposal() {
+      this.$api
+        .get(`proposals/${this.$route.params.proposal_id}/pdf/download/`)
+        .then((res) => {
+          if (res.status == 200) {
+            window.open(res.data.file_url, "_blank");
+          }
+        });
+    },
+
     openFile(fileURL) {
       window.open(fileURL);
     },
@@ -265,7 +330,7 @@ export default defineComponent({
         isValid = this.isAttachmentsValid;
         this.validity[section.name] = isValid;
         return isValid;
-      } else if (section.name == "detailed_budget") {
+      } else if (section.name == "summary_budget") {
         isValid = this.isBudgetValid;
         this.validity[section.name] = isValid;
         return isValid;

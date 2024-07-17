@@ -1,12 +1,12 @@
 import { authStore } from "stores/auth";
 
 const fileAccessRoles = {
-  "ProposalLayout.vue": ["grants_officer"],
-  "ApplicantProposalLayout.vue": ["applicant"],
-  "ReviewProposalLayout.vue": ["reviewer"],
-  "ProposalList.vue": ["grants_officer"],
-  "ApplicantProposalList.vue": ["applicant"],
-  "ReviewProposalList.vue": ["reviewer"],
+  ProposalLayout: ["grants_officer"],
+  ApplicantProposalLayout: ["applicant"],
+  ReviewProposalLayout: ["reviewer"],
+  ProposalList: ["grants_officer"],
+  ApplicantProposalList: ["applicant"],
+  ReviewProposalList: ["reviewer"],
 };
 
 function userHasAnyGroups(groups) {
@@ -15,10 +15,9 @@ function userHasAnyGroups(groups) {
   return groups.some((group) => userGroups.includes(group));
 }
 
-function protectFile(filepath) {
-  let array = filepath.split("/");
-  let filename = array[array.length - 1];
-  let groups = fileAccessRoles[filename];
+function protectFile(name) {
+  console.log(">>>>>>>>>>>>>" + name);
+  let groups = fileAccessRoles[name];
   console.log(groups);
   if (groups) {
     if (userHasAnyGroups(groups)) {
@@ -29,4 +28,14 @@ function protectFile(filepath) {
   }
 }
 
-export { protectFile };
+function generateRandomString(length) {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
+  return result;
+}
+
+export { protectFile, generateRandomString };

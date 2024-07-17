@@ -25,6 +25,14 @@
         </q-toolbar-title>
         <div class="flex">
           <score-sheet />
+          <q-btn
+            v-if="$proposalStore.currentProposal?.status != 'EDITING'"
+            color="primary"
+            icon="download"
+            dense
+            label="download"
+            @click="downloadProposal"
+          />
           <proposal-options />
         </div>
       </q-toolbar>
@@ -37,19 +45,6 @@
       bordered
       :width="220"
     >
-      <q-card flat class="q-py-sm">
-        <router-link to="/proposals">
-          <q-btn
-            class="q-mx-sm"
-            block
-            color="primary"
-            flat
-            icon="arrow_back"
-            label="All Proposals"
-          />
-        </router-link>
-      </q-card>
-      <q-separator />
       <q-list>
         <a
           v-for="(section, index) in sections"
@@ -68,38 +63,18 @@
     </q-drawer>
 
     <q-page-container>
+      <ProposalHeader />
       <router-view></router-view>
     </q-page-container>
-
-    <!-- <q-footer elevated>
-      <q-toolbar class="bg-white text-dark flex justify-between">
-        <div>Attachments</div>
-        <div>
-          <q-chip
-            v-for="file in proposalFiles"
-            :key="file.id"
-            class="glossy"
-            icon="attachment"
-            :label="file.name"
-            :removable="
-              $userHasAnyGroups(['applicant']) &&
-              $authStore.currentUser.id == $proposalStore.currentProposal.user
-            "
-            clickable
-            @remove="deleteFile(file.id)"
-            @click="openFile(file.file)"
-          />
-        </div>
-      </q-toolbar>
-    </q-footer> -->
   </q-layout>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 import { protectFile } from "src/utils/helpers";
-
+import ProposalHeader from "components/proposal/ProposalHeader.vue";
 export default defineComponent({
+  components: { ProposalHeader },
   name: "ProposalLayout",
 
   data() {
@@ -113,7 +88,7 @@ export default defineComponent({
   },
 
   created() {
-    protectFile(this.$options.__file);
+    protectFile(this.$options.name);
     this.getProposal();
   },
 
@@ -166,6 +141,16 @@ export default defineComponent({
       this.$api.get(`sections/`).then((res) => {
         this.sections = res.data;
       });
+    },
+
+    downloadProposal() {
+      this.$api
+        .get(`proposals/${this.$route.params.proposal_id}/pdf/download/`)
+        .then((res) => {
+          if (res.status == 200) {
+            window.open(res.data.file_url, "_blank");
+          }
+        });
     },
 
     openFile(fileURL) {

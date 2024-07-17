@@ -1,5 +1,6 @@
-<template lang="">
+<template lang>
   <div class="q-pa-sm">
+
     <div v-for="section in sections" :key="section.id">
       <hr :id="section.name" class="section-separator" />
       <div class="q-pa-sm">
@@ -13,35 +14,32 @@
           v-if="$proposalStore.currentProposal?.status == 'EDITING'"
           class="flex no-wrap q-pa-sm"
           flat
-          bordered
-        >
+          bordered>
           <q-icon size="md" class="q-pr-sm" name="info_outline" />
           <div class="bg-grey-0">
             <small class="text-caption text-grey-8">
-              {{ section.description }}</small
-            >
+              {{ section.description }}</small>
           </div>
         </q-card>
         <div class="q-pt-sm">
-          <div v-if="section.ref == '#detailed_budget'">
-            <BudgetEditor />
+          <div v-if="section.ref == '#summary_budget'">
+            <budgeteditor />
           </div>
           <div v-else-if="section.ref == '#team'">
-            <TeamEditor />
+            <teameditor />
           </div>
           <div v-else-if="section.ref == '#attachments'">
-            <AttachmentsEditor />
+            <attachmentseditor />
           </div>
           <div v-else>
-            <SectionEditor2
+            <sectioneditor2
               v-if="$proposalStore.currentProposal?.status == 'EDITING'"
               :proposal="proposal"
               :section="section"
               @proposal-updated="
                 proposal = $event;
                 $proposalStore.setProposal($event);
-              "
-            />
+              " />
             <q-card v-else class="my-card" flat bordered>
               <q-card-section>
                 <div v-html="proposal[section.name]"></div>
@@ -56,13 +54,13 @@
   </div>
 </template>
 <script>
-import BudgetEditor from "components/proposal/BudgetEditor.vue";
-import TeamEditor from "components/proposal/TeamEditor.vue";
-import SectionEditor2 from "components/proposal/SectionEditor2.vue";
-import AttachmentsEditor from "components/proposal/AttachmentsEditor.vue";
+import budgeteditor from "components/proposal/BudgetEditor.vue";
+import teameditor from "components/proposal/TeamEditor.vue";
+import sectioneditor2 from "components/proposal/SectionEditor2.vue";
+import attachmentseditor from "components/proposal/AttachmentsEditor.vue";
 
 export default {
-  components: { BudgetEditor, TeamEditor, SectionEditor2, AttachmentsEditor },
+  components: { budgeteditor, teameditor, sectioneditor2, attachmentseditor },
   data() {
     return {
       sections: [],
@@ -120,12 +118,5 @@ export default {
 body,
 html {
   scroll-behavior: auto;
-}
-
-.section-separator {
-  margin-bottom: 2.5rem;
-  border: none; /* Remove the default border */
-  height: 0.1px; /* Set height */
-  background-color: #dddddd;
 }
 </style>

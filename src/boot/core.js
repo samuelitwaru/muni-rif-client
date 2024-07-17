@@ -31,6 +31,10 @@ export default boot(({ app }) => {
       .join("&");
   };
 
+  app.config.globalProperties.$commaSeparator = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   app.config.globalProperties.$authStore = useAuthStore;
   app.config.globalProperties.$dataStore = useDataStore;
   app.config.globalProperties.$proposalStore = useProposalStore;

@@ -62,7 +62,7 @@ module.exports = configure(function (/* ctx */) {
       // publicPath: '/',
       // analyze: true,
       env: {
-        DEBUG: false,
+        DEBUG: true,
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
@@ -99,7 +99,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ["Notify"],
     },
 
     // animations: 'all', // --- includes all animations

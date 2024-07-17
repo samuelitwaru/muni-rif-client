@@ -27,21 +27,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="section in sections" :key="section.id">
-                <td class="text-left">{{ section.title }}</td>
-                <td class="text-left">{{ section.word_limit }}</td>
-                <td class="text-left">
-                  {{ wordCounts[section.name] }}
-                </td>
-                <td class="text-left">
-                  <q-icon
-                    name="check"
-                    class="text-green"
-                    v-if="wordCounts[section.name] <= section.word_limit"
-                  />
-                  <q-icon class="text-red" v-else name="close" />
-                </td>
-              </tr>
+              <template v-for="section in sections" :key="section.id">
+                <!-- <tr v-if="section.name == 'team'"></tr>
+                <tr v-else-if="section.name == 'summary_budget'"></tr>
+                <tr v-else-if="section.name == 'attachments'"></tr> -->
+                <tr v-if="section.lower_limit == 50">
+                  <td class="text-left">{{ section.title }}</td>
+                  <td class="text-center">
+                    {{ section.lower_limit }} - {{ section.word_limit }}
+                  </td>
+                  <td class="text-left">
+                    {{ wordCounts[section.name] }}
+                  </td>
+                  <td class="text-left">
+                    <q-icon
+                      name="check"
+                      class="text-green"
+                      v-if="wordCounts[section.name] <= section.word_limit"
+                    />
+                    <q-icon class="text-red" v-else name="close" />
+                  </td>
+                </tr>
+              </template>
             </tbody>
           </q-markup-table>
 
@@ -126,7 +133,7 @@ export default {
       this.$utilsStore.setLoading(true);
       this.$api
         .patch(`/proposals/${this.$route.params.proposal_id}/`, {
-          status: "PENDING",
+          status: "SUBMITTED",
         })
         .then((res) => {
           this.$utilsStore.setLoading(false);

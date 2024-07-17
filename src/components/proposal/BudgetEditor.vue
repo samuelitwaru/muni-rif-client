@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-markup-table class="q-ma-sm" flat bordered>
+    <q-markup-table class="q-my-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Item</th>
@@ -17,7 +17,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-if="$proposalStore.currentProposal?.status == 'EDITING'">
+        <tr
+          class="q-tr--no-hover"
+          v-if="$proposalStore.currentProposal?.status == 'EDITING'"
+        >
           <td>
             <input
               v-model="formData.item"
@@ -46,17 +49,17 @@
               type="number"
             />
           </td>
-          <td>{{ formData.unit_cost * formData.quantity }}</td>
+          <td>{{ $commaSeparator(formData.unit_cost * formData.quantity) }}</td>
           <td>
             <button @click="createBudget">Add</button>
           </td>
         </tr>
-        <tr v-for="item in items" :key="item.id">
+        <tr class="q-tr--no-hover" v-for="item in items" :key="item.id">
           <td>{{ item.item }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.units }}</td>
-          <td>{{ item.unit_cost }}</td>
-          <td>{{ item.unit_cost * item.quantity }}</td>
+          <td>{{ $commaSeparator(item.unit_cost) }} UGX</td>
+          <td>{{ $commaSeparator(item.unit_cost * item.quantity) }} UGX</td>
           <td v-if="$proposalStore.currentProposal?.status == 'EDITING'">
             <q-btn
               icon="delete"
@@ -65,6 +68,11 @@
               @click="deleteItem(item.id)"
             />
           </td>
+        </tr>
+        <tr class="q-tr--no-hover">
+          <th class="text-left" colspan="4">Total</th>
+          <th class="text-left">{{ $commaSeparator(totalBudget) }} UGX</th>
+          <td></td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -93,6 +101,16 @@ export default {
       },
       items: [],
     };
+  },
+  computed: {
+    totalBudget() {
+      var total = 0;
+      for (let index = 0; index < this.items.length; index++) {
+        const item = this.items[index];
+        total += item.unit_cost * item.quantity;
+      }
+      return total;
+    },
   },
   created() {
     this.init();

@@ -17,7 +17,8 @@
                 icon="close"
                 flat
                 dense
-                @click="deleteScore(score.id)" />
+                @click="deleteScore(score.id)"
+              />
             </td>
           </tr>
         </tbody>
@@ -30,7 +31,8 @@
               flat
               class="q-mx-sm"
               label="Select reviewer"
-              color="primary">
+              color="primary"
+            >
               <q-list>
                 <q-item
                   v-for="user in reviewers"
@@ -40,7 +42,8 @@
                   @click="
                     this.formData.email = user.username;
                     this.formData.user = user.id;
-                  ">
+                  "
+                >
                   <q-item-section>
                     <q-item-label>
                       <div>
@@ -60,7 +63,8 @@
               dense
               v-model="formData.email"
               type="email"
-              label="Enter Email Address" />
+              label="Enter Email Address"
+            />
           </div>
           <div class="col-2 q-pa-sm">
             <q-btn color="primary" label="Add" @click="createScore" />

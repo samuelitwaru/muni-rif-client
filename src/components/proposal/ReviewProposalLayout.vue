@@ -29,6 +29,14 @@
           />
         </q-toolbar-title>
         <div class="flex">
+          <q-btn
+            v-if="$proposalStore.currentProposal?.status != 'EDITING'"
+            color="primary"
+            icon="download"
+            dense
+            label="download"
+            @click="downloadProposal"
+          />
           <proposal-options />
         </div>
       </q-toolbar>
@@ -84,7 +92,7 @@
 import { defineComponent, ref } from "vue";
 import { protectFile } from "src/utils/helpers";
 export default defineComponent({
-  name: "ProposalLayout",
+  name: "ReviewProposalLayout",
 
   data() {
     return {
@@ -110,14 +118,14 @@ export default defineComponent({
         },
         { id: "#conflict_of_interest", name: "Conflict of Interest" },
         { id: "#summary_budget", name: "Summary Budget" },
-        { id: "#detailed_budget", name: "Detailed Budget" },
+        { id: "#summary_budget", name: "Detailed Budget" },
         { id: "#workplan", name: "Workplan" },
       ],
     };
   },
 
   created() {
-    protectFile(this.$options.__file);
+    protectFile(this.$options.name);
     this.getProposal();
   },
 
@@ -169,6 +177,16 @@ export default defineComponent({
       this.$api.get(`sections/`).then((res) => {
         this.sections = res.data;
       });
+    },
+
+    downloadProposal() {
+      this.$api
+        .get(`proposals/${this.$route.params.proposal_id}/pdf/download/`)
+        .then((res) => {
+          if (res.status == 200) {
+            window.open(res.data.file_url, "_blank");
+          }
+        });
     },
 
     openFile(fileURL) {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-markup-table class="q-ma-sm" flat bordered>
+    <q-markup-table class="q-my-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Title</th>
@@ -8,7 +8,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in attachments" :key="item.id">
+        <tr class="q-tr--no-hover" v-for="item in attachments" :key="item.id">
           <td>{{ item.title }}</td>
           <td>
             <div class="flex">
