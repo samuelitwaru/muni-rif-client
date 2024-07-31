@@ -44,6 +44,12 @@
                 @click="editItem(item)"
               />
             </router-link>
+            <q-btn
+              icon="delete"
+              flat
+              color="primary"
+              @click="deleteItem(item.id)"
+            />
           </td>
         </tr>
       </tbody>
@@ -73,6 +79,16 @@ export default {
       this.$api.get("users/?groups__name__in=reviewer").then((res) => {
         this.reviewers = res.data;
       });
+    },
+
+    deleteItem(id) {
+      if (confirm("Delete this reviewer?")) {
+        this.$api.delete(`users/${id}`).then((res) => {
+          if (res.status == 204) {
+            this.init();
+          }
+        });
+      }
     },
   },
 };

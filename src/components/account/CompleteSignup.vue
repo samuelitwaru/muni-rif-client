@@ -74,13 +74,12 @@
               dense
               v-model="formData.designation"
               label="Your Designation"
-              :rules="nameRules"
               required
             ></q-input>
           </div>
         </div>
 
-        <div class="row q-col-gutter-xs">
+        <div class="row q-col-gutter-xs q-mt-xs">
           <div class="col">
             <q-input
               outlined
@@ -121,6 +120,7 @@ export default {
       faculties: [],
       departments: [],
       qualifications: [],
+      user: null,
       formData: {
         token: this.$route.params.token,
         first_name: "",
@@ -159,9 +159,18 @@ export default {
     // this.setFormData();
     this.getFaculties();
     this.getQualifications();
+    this.getUser();
   },
   methods: {
-    getUser() {},
+    getUser() {
+      this.$api
+        .get(`users/get-user-by-token/${this.$route.params.token}`)
+        .then((res) => {
+          console.log(res.data);
+          this.user = res.data;
+          this.setFormData();
+        });
+    },
     completeSignup() {
       // Handle form submission here
       this.$utilsStore.setLoading(true);
@@ -172,7 +181,7 @@ export default {
           const user = res.data.user;
           this.$authStore.setUserAndToken(user, token);
           this.$utilsStore.setLoading(false);
-          this.$router.push(this.$route.query._next);
+          this.$router.push("/proposal-reviews");
         })
         .catch((err) => {
           this.$utilsStore.setLoading(false);
@@ -196,16 +205,17 @@ export default {
 
     setFormData() {
       this.formData = {
-        email: "samuel@gmail.com",
-        first_name: "Samuel",
-        last_name: "Itwaru",
-        phone: "0781902516",
-        gender: "Male",
-        faculty: null,
-        department: null,
-        qualification: null,
-        password: "bratz123",
-        confirm_password: "bratz123",
+        token: this.$route.params.token,
+        email: this.user.email,
+        first_name: this.user.first_name,
+        last_name: this.user.last_name,
+        phone: this.user.profile.phone,
+        gender: this.user.profile.gender,
+        faculty: this.user.profile.faculty,
+        department: this.user.profile.department,
+        qualification: this.user.profile.qualification,
+        password: "",
+        confirm_password: "",
       };
     },
   },
