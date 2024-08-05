@@ -65,12 +65,12 @@ export default {
   props: {
     showButton: {
       type: Boolean,
-      required: true,
+      required: false,
       default: true,
     },
     showPopup: {
       type: Boolean,
-      required: true,
+      required: false,
       default: false,
     },
   },
@@ -82,7 +82,7 @@ export default {
       formData: {
         title: "",
         theme: null,
-        call: this.$dataStore.currentCall.id,
+        call: this.$dataStore?.currentCall?.id,
       },
       formErrors: {},
     };
@@ -90,7 +90,7 @@ export default {
   created() {
     if (process.env.DEBUG) this.setFormData();
     getThemes().then((data) => (this.themes = data));
-    this.formData.call = this.$dataStore.currentCall.id;
+    this.formData.call = this.$dataStore?.currentCall?.id;
   },
   methods: {
     createProposal() {

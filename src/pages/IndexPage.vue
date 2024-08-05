@@ -23,12 +23,10 @@ export default defineComponent({
   name: "IndexPage",
   data() {
     return {
-      call: this.$dataStore.currentCall,
+      call: this.$dataStore?.currentCall,
     };
   },
-  created() {
-    console.log(this.$dataStore.currentCall);
-  },
+  created() {},
   methods: {},
 });
 </script>

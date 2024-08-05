@@ -70,7 +70,6 @@ export default {
     deleteItem(id) {
       if (confirm("Delete this call?")) {
         this.$api.delete(`calls/${id}`).then((res) => {
-          console.log(res.status);
           if (res.status == 204) {
             this.init();
           }

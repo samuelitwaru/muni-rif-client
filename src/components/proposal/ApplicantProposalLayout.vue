@@ -210,7 +210,7 @@ export default defineComponent({
     protectFile(this.$options.__file);
     this.getProposal();
     this.$bus.on("proposal-updated", (val) => {
-      this.getProposal();
+      this.getProposal(false);
     });
 
     this.$bus.on("attachments-updated", (val) => {
@@ -219,8 +219,8 @@ export default defineComponent({
   },
 
   methods: {
-    getProposal() {
-      this.$utilsStore.setLoading(true);
+    getProposal(withLoading = true) {
+      this.$utilsStore.setLoading(withLoading);
       this.$api
         .get(`proposals/${this.$route.params.proposal_id}/`)
         .then((res) => {

@@ -1,0 +1,1 @@
+.cursor{animation:blink .7s infinite}@keyframes blink{0%,to{opacity:1}50%{opacity:0}}

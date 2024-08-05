@@ -1,7 +1,6 @@
 <template lang="">
   <div>
-    <proposal-score-sheets />
-    <div class="q-pa-sm">
+    <div class="q-pa-md">
       <q-toolbar-title>Reports</q-toolbar-title>
       <q-markup-table class="q-my-sm" flat bordered>
         <thead>
@@ -21,7 +20,7 @@
                   <q-btn
                     color="primary"
                     flat
-                    icon="report"
+                    icon="book"
                     :label="file.title"
                     :removable="
                       $userHasAnyGroups(['applicant']) &&

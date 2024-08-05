@@ -20,10 +20,12 @@
           style="width: 200px; height: 150px"
         >
           <q-badge
-            class="q-pa-sm"
+            class="q-pa-sm justify-center"
+            style="width: 30px"
             v-if="counts[item.name]"
             color="primary"
             floating
+            rounded
             >{{ counts[item.name] }}</q-badge
           >
           <q-icon :name="item.icon" size="xl" />
@@ -141,21 +143,48 @@ defineOptions({
   },
 
   created() {
-    this.getCounts();
+    this.getCalls();
   },
 
   methods: {
+    getCalls() {
+      this.$api.get(`calls/`).then((res) => {
+        this.calls = res.data;
+
+        if (this.calls.length) {
+          var lastCall = this.calls[0];
+          this.setCurrentCall(this.$dataStore.currentCall || lastCall);
+          this.getCounts();
+        } else {
+          this.setCurrentCall({ title: "No Call Found" });
+        }
+      });
+    },
+
+    setCurrentCall(call) {
+      this.currentCall = call;
+      this.$dataStore.setCall(this.currentCall);
+    },
+
     getCounts() {
-      this.$api.get("proposals/count/?is_selected=true").then((res) => {
-        if ((res.status = 200)) {
-          this.counts.SELECTED = res.data.count;
-        }
-      });
-      this.$api.get("proposals/count/?status=SUBMITTED").then((res) => {
-        if ((res.status = 200)) {
-          this.counts.SUBMISSIONS = res.data.count;
-        }
-      });
+      this.$api
+        .get(
+          `proposals/count/?call=${this.$dataStore.currentCall.id}&is_selected=true`
+        )
+        .then((res) => {
+          if ((res.status = 200)) {
+            this.counts.SELECTED = res.data.count;
+          }
+        });
+      this.$api
+        .get(
+          `proposals/count/?call=${this.$dataStore.currentCall.id}&status=SUBMITTED`
+        )
+        .then((res) => {
+          if ((res.status = 200)) {
+            this.counts.SUBMISSIONS = res.data.count;
+          }
+        });
     },
   },
 });

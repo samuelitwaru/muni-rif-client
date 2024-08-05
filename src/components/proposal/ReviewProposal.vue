@@ -126,7 +126,6 @@ export default {
     },
 
     getScore() {
-      console.log(this.$authStore.currentUser?.id || 0);
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${

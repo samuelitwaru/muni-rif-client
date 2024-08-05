@@ -146,7 +146,6 @@ export default {
     },
     getThemes() {
       this.$api.get("themes/").then((res) => {
-        console.log(res.data);
         this.themes = res.data;
       });
     },

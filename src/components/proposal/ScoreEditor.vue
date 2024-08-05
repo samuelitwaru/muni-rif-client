@@ -101,16 +101,12 @@ export default {
       }
 
       this.formData[this.section["name"]] = this.mark;
-      this.$api.patch(`scores/${scoreId}/`, this.formData).then((res) => {
-        console.log(res.data);
-      });
+      this.$api.patch(`scores/${scoreId}/`, this.formData).then((res) => {});
     },
 
     updateSectionComment(scoreId) {
       this.formData[`${this.section["name"]}_comment`] = this.comment;
-      this.$api.patch(`scores/${scoreId}/`, this.formData).then((res) => {
-        console.log(res.data);
-      });
+      this.$api.patch(`scores/${scoreId}/`, this.formData).then((res) => {});
     },
   },
 };

@@ -56,9 +56,7 @@ export default {
     },
   },
 
-  created() {
-    console.log(this.$authStore.currentUser);
-  },
+  created() {},
   methods: {
     navigateTo(route) {
       this.$router.push(route);

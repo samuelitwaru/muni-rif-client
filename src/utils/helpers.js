@@ -16,9 +16,7 @@ function userHasAnyGroups(groups) {
 }
 
 function protectFile(name) {
-  console.log(">>>>>>>>>>>>>" + name);
   let groups = fileAccessRoles[name];
-  console.log(groups);
   if (groups) {
     if (userHasAnyGroups(groups)) {
       return true;

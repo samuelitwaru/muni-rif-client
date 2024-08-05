@@ -118,7 +118,6 @@ export default {
         )
         .then((res) => {
           if (res.status == 200) {
-            console.log(res.data);
             window.open(res.data.file_url, "_blank");
           }
         });

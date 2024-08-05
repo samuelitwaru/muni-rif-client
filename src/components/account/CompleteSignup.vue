@@ -166,7 +166,6 @@ export default {
       this.$api
         .get(`users/get-user-by-token/${this.$route.params.token}`)
         .then((res) => {
-          console.log(res.data);
           this.user = res.data;
           this.setFormData();
         });

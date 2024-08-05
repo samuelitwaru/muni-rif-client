@@ -4,8 +4,6 @@ import { dataStore } from "src/stores/data";
 import { authStore } from "stores/auth";
 import { utilsStore } from "stores/utils";
 
-console.dir(authStore().currentUser);
-
 export default boot(({ app }) => {
   const useAuthStore = authStore();
   const useProposalStore = proposalStore();
@@ -33,6 +31,17 @@ export default boot(({ app }) => {
 
   app.config.globalProperties.$commaSeparator = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  app.config.globalProperties.$formatDate = (dateString) => {
+    if (!dateString) return "";
+    const dateObject = new Date(dateString);
+    const year = dateObject.getFullYear();
+    const month = dateObject.toLocaleString("en-US", { month: "short" });
+    const day = String(dateObject.getDate()).padStart(2, "0");
+
+    const formattedDate = `${month} ${day} ${year}`;
+    return formattedDate;
   };
 
   app.config.globalProperties.$authStore = useAuthStore;

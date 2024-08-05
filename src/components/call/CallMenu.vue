@@ -86,6 +86,7 @@ export default {
   created() {
     getCalls().then((res) => {
       this.calls = res;
+
       if (this.calls.length) {
         var lastCall = this.calls[0];
         this.setCurrentCall(this.$dataStore.currentCall || lastCall);

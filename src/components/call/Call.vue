@@ -10,7 +10,7 @@
         >
           <template v-slot:title>
             <div>
-              {{ formatDate(date.date) || "Not Added!" }}
+              {{ $formatDate(date.date) || "Not Added!" }}
               <q-input outlined v-model="formData[date.name]">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -42,7 +42,36 @@
               required
             />
 
-            <div class="row q-col-gutter-xs q-my-sm">
+            <q-card
+              flat
+              bordered
+              class="flex items-center justify-between q-pa-sm q-mt-sm"
+            >
+              <div>
+                <span class="text-grey text-caption">From : </span>
+                {{ $formatDate(formData.date_from) }}
+              </div>
+              <div>
+                <span class="text-grey text-caption">To : </span>
+                {{ $formatDate(formData.date_to) }}
+              </div>
+              <q-btn icon="event" round color="primary">
+                <q-popup-proxy
+                  @before-show="updateProxy"
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    @range-end="setDateRange"
+                    v-model="formData.date_range"
+                    range
+                  />
+                </q-popup-proxy>
+              </q-btn>
+            </q-card>
+
+            <!-- <div class="row q-col-gutter-xs q-my-sm">
               <q-input
                 class="col"
                 v-model="formData.date_from"
@@ -57,7 +86,7 @@
                 label="Period Ends On?"
                 outlined
               />
-            </div>
+            </div> -->
             <q-input
               class="q-my-sm"
               v-model="formData.submission_date"
@@ -156,7 +185,6 @@ export default {
   },
   created() {
     this.getCall();
-    if (process.env.DEBUG) this.setFormData();
   },
   methods: {
     getCall() {
@@ -164,11 +192,19 @@ export default {
         if (res.status == 200) {
           this.call = res.data;
           this.formData = res.data;
+          this.formData.date_range = { from: "", to: "" };
         }
       });
     },
     updateCall() {
+      this.formData.date_from = new Date(this.formData.date_range.from)
+        .toJSON()
+        .split("T")[0];
+      this.formData.date_to = new Date(this.formData.date_range.to)
+        .toJSON()
+        .split("T")[0];
       this.$utilsStore.setLoading(true);
+      console.log(this.formData);
       this.$api
         .put(`calls/${this.$route.params.call_id}/`, this.formData)
         .then((res) => {
@@ -180,24 +216,10 @@ export default {
         });
     },
 
-    setFormData() {
-      this.formData = {
-        title: "Muni RIF Management System",
-        is_active: true,
-        date_from: "2024-06-24T09:57:11.467359Z",
-        date_to: "2024-06-24T09:57:11.467359Z",
-      };
-    },
-
-    formatDate(dateString) {
-      if (!dateString) return "";
-      const dateObject = new Date(dateString);
-      const year = dateObject.getFullYear();
-      const month = dateObject.toLocaleString("en-US", { month: "short" });
-      const day = String(dateObject.getDate()).padStart(2, "0");
-
-      const formattedDate = `${month} ${day} ${year}`;
-      return formattedDate;
+    setDateRange() {
+      this.formData.date_from = this.formData.date_range.from;
+      this.formData.date_to = this.formData.date_range.to;
+      console.log(this.formData);
     },
   },
 

@@ -76,20 +76,24 @@ export default {
     if (!this.$authStore.currentUser) {
       location.href = "/index/account/signin";
     }
-    getCalls().then((res) => {
-      this.calls = res;
-      if (this.calls.length) {
-        var lastCall = this.calls[0];
-        this.setCurrentCall(this.$dataStore.currentCall || lastCall);
-      } else {
-        this.setCurrentCall({ title: "No Call Found" });
-      }
-    });
+    this.getCalls();
   },
 
   methods: {
     toggleLeftDrawer() {
       this.leftDrawerOpen = !this.leftDrawerOpen;
+    },
+
+    getCalls() {
+      getCalls().then((res) => {
+        this.calls = res;
+        if (this.calls.length) {
+          var lastCall = this.calls[0];
+          this.setCurrentCall(this.$dataStore.currentCall || lastCall);
+        } else {
+          this.setCurrentCall({ title: "No Call Found" });
+        }
+      });
     },
 
     changeCurrentCall(call) {

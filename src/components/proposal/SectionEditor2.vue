@@ -68,7 +68,6 @@ export default {
         .then((res) => {
           this.$emit("proposal-updated", res.data);
           this.$bus.emit("proposal-updated", res.data);
-
           // this.$utilsStore.setLoading(false);
         });
     },

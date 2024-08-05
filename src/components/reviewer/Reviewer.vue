@@ -238,7 +238,6 @@ export default {
   methods: {
     getReviewer() {
       this.$api.get(`users/${this.$route.params.user_id}/`).then((res) => {
-        console.log(res.data);
         if (res.status == 200) {
           this.reviewer = res.data;
           this.setFormData();
