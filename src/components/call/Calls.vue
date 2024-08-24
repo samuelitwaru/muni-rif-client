@@ -8,6 +8,11 @@
       </q-breadcrumbs>
     </div>
     <q-separator spaced />
+    <div align="right" class="q-ma-sm">
+      <router-link to="/calls/create">
+        <q-btn color="primary" outline label="add call" />
+      </router-link>
+    </div>
     <q-markup-table class="q-ma-sm" flat bordered>
       <thead>
         <tr>
@@ -46,15 +51,7 @@ export default {
   name: "DataTable",
   data() {
     return {
-      items: [
-        {
-          id: 1,
-          title: "CALL 2024/2025",
-          date_from: "2024-06-24T09:57:11.467359Z",
-          date_to: "2024-06-24T09:57:11.467359Z",
-        },
-        // Add more items as needed
-      ],
+      items: [],
     };
   },
   created() {
@@ -71,7 +68,7 @@ export default {
       if (confirm("Delete this call?")) {
         this.$api.delete(`calls/${id}`).then((res) => {
           if (res.status == 204) {
-            this.init();
+            window.location = "/calls";
           }
         });
       }

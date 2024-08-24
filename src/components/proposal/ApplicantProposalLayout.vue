@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" v-if="$proposalStore.currentProposal">
     <loading-component />
     <q-header elevated>
       <q-toolbar class="bg-white text-dark">

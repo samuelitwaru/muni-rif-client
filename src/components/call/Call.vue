@@ -2,7 +2,6 @@
   <q-page padding v-if="call">
     <div class="flex q-gutter-md">
       <q-timeline style="width: 500px" color="secondary" layout="dense">
-        <!-- <q-timeline-entry heading> {{ call.title }} </q-timeline-entry> -->
         <q-timeline-entry
           v-for="date in timelineDates"
           :key="date"
@@ -57,7 +56,6 @@
               </div>
               <q-btn icon="event" round color="primary">
                 <q-popup-proxy
-                  @before-show="updateProxy"
                   cover
                   transition-show="scale"
                   transition-hide="scale"
@@ -192,7 +190,10 @@ export default {
         if (res.status == 200) {
           this.call = res.data;
           this.formData = res.data;
-          this.formData.date_range = { from: "", to: "" };
+          this.formData.date_range = {
+            from: this.formData.date_from,
+            to: this.formData.date_to,
+          };
         }
       });
     },
@@ -204,7 +205,6 @@ export default {
         .toJSON()
         .split("T")[0];
       this.$utilsStore.setLoading(true);
-      console.log(this.formData);
       this.$api
         .put(`calls/${this.$route.params.call_id}/`, this.formData)
         .then((res) => {
@@ -219,7 +219,6 @@ export default {
     setDateRange() {
       this.formData.date_from = this.formData.date_range.from;
       this.formData.date_to = this.formData.date_range.to;
-      console.log(this.formData);
     },
   },
 

@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf" v-if="currentCall">
     <loading-component />
     <q-header elevated>
       <q-toolbar>
@@ -12,7 +12,11 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> MuniRIF </q-toolbar-title>
+        <q-toolbar-title>
+          Muni RIF
+
+          <DropdownCallMenu />
+        </q-toolbar-title>
 
         <div class="text-orange-3 q-px-xs">
           <router-link to="/account/profile">
@@ -52,10 +56,11 @@
 <script>
 import { getCalls } from "src/utils/api";
 import CallMenu from "src/components/call/CallMenu.vue";
+import DropdownCallMenu from "src/components/call/DropdownCallMenu.vue";
 
 export default {
   name: "MainLayout",
-  components: { CallMenu },
+  components: { CallMenu, DropdownCallMenu },
   data() {
     return {
       leftDrawerOpen: false,
@@ -89,9 +94,14 @@ export default {
         this.calls = res;
         if (this.calls.length) {
           var lastCall = this.calls[0];
-          this.setCurrentCall(this.$dataStore.currentCall || lastCall);
+          this.setCurrentCall(lastCall);
         } else {
           this.setCurrentCall({ title: "No Call Found" });
+          if (this.$userHasAnyGroups(["grants_officer"])) {
+            this.$router.push("/calls");
+          } else {
+            this.$router.push("/no-call-found");
+          }
         }
       });
     },

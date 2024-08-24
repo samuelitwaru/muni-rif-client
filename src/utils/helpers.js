@@ -36,4 +36,4 @@ function generateRandomString(length) {
   return result;
 }
 
-export { protectFile, generateRandomString };
+export { protectFile, generateRandomString, userHasAnyGroups };

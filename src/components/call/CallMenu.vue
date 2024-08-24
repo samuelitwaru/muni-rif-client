@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$userHasAnyGroups(['grants_officer'])">
+  <div v-if="currentUser && $userHasAnyGroups(['grants_officer'])">
     <div v-if="calls.length">
       <q-list>
         <q-item
@@ -46,6 +46,7 @@ export default {
     return {
       calls: [],
       currentCall: null,
+      currentUser: this.$authStore.currentUser,
     };
   },
   computed: {

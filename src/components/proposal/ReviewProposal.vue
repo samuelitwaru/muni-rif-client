@@ -54,8 +54,9 @@
           :section="section"
           :score="score"
         />
+
         <ScoreView
-          v-show="section.view == 'scores'"
+          v-show="section.view == 'scores' && score?.status == 'COMPLETED'"
           :section="section"
           :score="score"
         />

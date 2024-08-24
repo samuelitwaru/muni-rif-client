@@ -3,6 +3,7 @@
     <div class="q-ma-md">
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" to="/" label="Home" />
+        <q-breadcrumbs-el icon="campaign" to="/calls" label="Calls" />
         <q-breadcrumbs-el label="Create New Call" icon="campaign" />
       </q-breadcrumbs>
     </div>
@@ -38,7 +39,6 @@
             </div>
             <q-btn icon="event" round color="primary">
               <q-popup-proxy
-                @before-show="updateProxy"
                 cover
                 transition-show="scale"
                 transition-hide="scale"
@@ -51,23 +51,6 @@
               </q-popup-proxy>
             </q-btn>
           </q-card>
-          <!-- </div> -->
-
-          <!-- <q-input
-              class="col"
-              v-model="formData.date_from"
-              type="date"
-              label="Period Starts From?"
-              outlined
-            />
-            <q-input
-              class="col"
-              v-model="formData.date_to"
-              type="date"
-              label="Period Ends On?"
-              outlined
-            /> -->
-          <!-- </div> -->
 
           <q-input
             class="q-my-sm"
@@ -134,7 +117,8 @@ export default {
         .split("T")[0];
       // this.$utilsStore.setLoading(true);
       this.$api.post("calls/", this.formData).then((res) => {
-        this.$router.push(`/calls/`);
+        // this.$router.push(`/calls/`);
+        window.location = "/calls";
         this.$utilsStore.setLoading(false);
         this.showDialog = false;
       });
