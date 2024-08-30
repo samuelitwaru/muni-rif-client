@@ -39,8 +39,15 @@ export default route(function (/* { store, ssrContext } */) {
   Router.beforeEach((to, from) => {
     console.log("to" + "-" + to.fullPath);
     console.log("from" + "-" + from.fullPath);
-    if (!dataStore().currentCall.id) {
-      if (to.fullPath.startsWith("/calls")) return;
+    if (!dataStore().currentCall?.id) {
+      if (
+        to.fullPath == "/" ||
+        to.fullPath.startsWith("/calls") ||
+        to.fullPath.startsWith("/index") ||
+        to.fullPath.startsWith("/account") ||
+        to.fullPath.startsWith("/no-call-found")
+      )
+        return;
 
       if (userHasAnyGroups(["grants_officer"])) {
         Router.push("/calls");

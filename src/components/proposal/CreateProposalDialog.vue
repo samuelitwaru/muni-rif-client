@@ -14,9 +14,6 @@
           </q-card-section>
           <q-separator />
           <q-card-section class="q-pt-lg q-pb-md">
-            <!-- <div class="text-center text-h6">Background Information</div> -->
-            <!-- <br /> -->
-            <!-- <br /> -->
             <q-input
               v-model="formData.title"
               label="Title of your proposal"
@@ -106,7 +103,6 @@ export default {
           this.showDialog = false;
         })
         .catch((err) => {
-          console.log(err.response.data);
           this.formErrors = err.response.data;
           this.$utilsStore.setLoading(false);
         });

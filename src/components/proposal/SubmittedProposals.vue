@@ -90,12 +90,7 @@
 
           <td>
             <router-link :to="`/proposals/${item.id}`">
-              <q-btn
-                label="View"
-                flat
-                color="primary"
-                @click="editItem(item)"
-              />
+              <q-btn label="View" flat color="primary" />
             </router-link>
           </td>
         </tr>

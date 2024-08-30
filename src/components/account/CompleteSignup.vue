@@ -181,6 +181,7 @@ export default {
           this.$authStore.setUserAndToken(user, token);
           this.$utilsStore.setLoading(false);
           this.$router.push("/proposal-reviews");
+          //window.loca
         })
         .catch((err) => {
           this.$utilsStore.setLoading(false);

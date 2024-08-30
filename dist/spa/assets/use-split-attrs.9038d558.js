@@ -1,0 +1,1 @@
+import{s as a,ae as c}from"./index.3ceec1d0.js";const u=/^on[A-Z]/;function l(e,r){const s={listeners:a({}),attributes:a({})};function n(){const o={},i={};for(const t in e)t!=="class"&&t!=="style"&&u.test(t)===!1&&(o[t]=e[t]);for(const t in r.props)u.test(t)===!0&&(i[t]=r.props[t]);s.attributes.value=o,s.listeners.value=i}return c(n),n(),s}export{l as u};

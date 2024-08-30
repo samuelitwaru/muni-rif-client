@@ -131,10 +131,14 @@ export default {
     },
     submitProposal() {
       this.$utilsStore.setLoading(true);
+      const today = new Date();
+      var data = {
+        status: "SUBMITTED",
+        submission_date: today.toJSON().split("T")[0],
+      };
+
       this.$api
-        .patch(`/proposals/${this.$route.params.proposal_id}/`, {
-          status: "SUBMITTED",
-        })
+        .patch(`/proposals/${this.$route.params.proposal_id}/`, data)
         .then((res) => {
           this.$utilsStore.setLoading(false);
           location.reload();

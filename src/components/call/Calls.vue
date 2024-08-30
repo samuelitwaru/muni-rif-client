@@ -41,6 +41,16 @@
         </tr>
       </tbody>
     </q-markup-table>
+    <div v-if="items.length == 0">
+      <p class="text-center q-py-xl q-my-xl text-h3 text-grey">
+        No Calls Found!
+      </p>
+      <div class="text-center">
+        <router-link to="/calls/create">
+          <q-btn color="primary" outline label="add call" />
+        </router-link>
+      </div>
+    </div>
   </q-page>
 </template>
 

@@ -1,1 +1,0 @@
-import{_ as t,H as s,r as n,o as r,h as a,g as e,a as c}from"./index.542c6195.js";const l=s({name:"ErrorNotFound"}),_={class:"fullscreen text-center q-pa-md flex flex-center"},d=e("div",{style:{"font-size":"10vh"}},"No Calls Open",-1);function p(u,f,i,m,v,x){const o=n("user-logout");return r(),a("div",_,[e("div",null,[d,c(o)])])}var N=t(l,[["render",p]]);export{N as default};

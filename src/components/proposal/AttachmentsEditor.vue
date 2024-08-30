@@ -9,7 +9,10 @@
       </thead>
       <tbody>
         <tr v-for="item in attachments" :key="item.id">
-          <td>{{ item.title }}</td>
+          <td>
+            {{ item.title }}
+            <span v-if="item.is_required" class="text-red">*</span>
+          </td>
           <td>
             <div class="flex">
               <q-chip
@@ -91,7 +94,8 @@ export default {
     validateAttachments() {
       for (let index = 0; index < this.attachments.length; index++) {
         const attachment = this.attachments[index];
-        if (attachment?.files?.length == 0) {
+        console.log(attachment.is_required);
+        if (attachment?.files?.length == 0 && attachment.is_required) {
           return false;
         }
       }

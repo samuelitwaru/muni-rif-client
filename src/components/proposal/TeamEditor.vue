@@ -29,6 +29,13 @@
               style="display: block; width: 100%"
               type="text"
             />
+            <div class="text-red">
+              <ul class="q-ma-xs">
+                <li v-for="err in formErrors?.full_name" :key="err">
+                  {{ err }}
+                </li>
+              </ul>
+            </div>
           </td>
           <td>
             <input
@@ -36,6 +43,13 @@
               style="display: block; width: 100%"
               type="email"
             />
+            <div class="text-red">
+              <ul class="q-ma-xs">
+                <li v-for="err in formErrors?.email" :key="err">
+                  {{ err }}
+                </li>
+              </ul>
+            </div>
           </td>
           <td>
             <input
@@ -43,6 +57,13 @@
               style="display: block; width: 100%"
               type="text"
             />
+            <div class="text-red">
+              <ul class="q-ma-xs">
+                <li v-for="err in formErrors?.telephone" :key="err">
+                  {{ err }}
+                </li>
+              </ul>
+            </div>
           </td>
 
           <td>
@@ -90,7 +111,9 @@ export default {
         email: "",
         telephone: "",
         proposal: this.$route.params.proposal_id,
+        role: "PI",
       },
+      formErrors: {},
       items: [],
       options: [
         { name: "PI", value: "PI" },
@@ -114,13 +137,20 @@ export default {
         });
     },
     createTeam() {
-      this.$api.post(`teams/`, this.formData).then((res) => {
-        if ((res.status = 201)) {
-          this.items.push(res.data);
-          this.resetFormData();
-          this.$bus.emit("proposal-updated", true);
-        }
-      });
+      this.$api
+        .post(`teams/`, this.formData)
+        .then((res) => {
+          if ((res.status = 201)) {
+            this.formErrors = {};
+            this.items.push(res.data);
+            this.resetFormData();
+            this.$bus.emit("proposal-updated", true);
+          }
+        })
+        .catch((err) => {
+          this.formErrors = err.response.data;
+          this.$utilsStore.setLoading(false);
+        });
     },
 
     deleteItem(id) {
