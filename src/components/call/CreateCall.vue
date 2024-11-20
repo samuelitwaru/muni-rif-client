@@ -20,10 +20,9 @@
             label="Title of your call"
             outlined
             required
+            :rules="[rules.required]"
           />
 
-          <!-- <div class="row q-col-gutter-xs q-my-sm"> -->
-          <!-- <div class="col q-pa-md"> -->
           <q-card
             flat
             bordered
@@ -80,7 +79,7 @@
         </q-card-section>
         <q-separator spaced />
         <q-card-actions align="right">
-          <q-btn color="primary" label="Create" @click="createCall" />
+          <q-btn type="submit" color="primary" label="Create" />
         </q-card-actions>
       </q-card>
     </q-form>
@@ -102,6 +101,44 @@ export default {
         date_from: "",
         date_to: "",
       },
+      rules: {
+        required: (value) => !!value || "This field is required",
+        dateRangeFrom: (value) =>
+          !value ||
+          !this.formData.date_range.to ||
+          value <= this.formData.date_range.to ||
+          "Start date must be less than end date",
+        dateRangeTo: (value) =>
+          !value ||
+          !this.formData.date_range.from ||
+          value >= this.formData.date_range.from ||
+          "End date must be greater than start date",
+        submissionDate: (value) => {
+          const { from } = this.formData.date_range;
+          const { review_date } = this.formData;
+          return (
+            ((!from || value > from) &&
+              (!review_date || value < review_date)) ||
+            "Submission date must be greater than start date and less than review date"
+          );
+        },
+        reviewDate: (value) => {
+          const { submission_date, selection_date } = this.formData;
+          return (
+            ((!submission_date || value > submission_date) &&
+              (!selection_date || value < selection_date)) ||
+            "Review date must be greater than submission date and less than selection date"
+          );
+        },
+        selectionDate: (value) => {
+          const { review_date, date_range } = this.formData;
+          return (
+            ((!review_date || value > review_date) &&
+              (!date_range.to || value < date_range.to)) ||
+            "Selection date must be greater than review date and less than the end date"
+          );
+        },
+      },
     };
   },
   created() {
@@ -109,6 +146,7 @@ export default {
   },
   methods: {
     createCall() {
+      console.log(this.formData.date_from);
       this.formData.date_from = new Date(this.formData.date_from)
         .toJSON()
         .split("T")[0];

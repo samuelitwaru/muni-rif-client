@@ -143,7 +143,7 @@ defineOptions({
   },
 
   created() {
-    this.getCalls();
+    //this.getCalls();
   },
 
   methods: {

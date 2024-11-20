@@ -101,9 +101,11 @@ export default {
   created() {
     getCalls().then((res) => {
       this.calls = res;
-
+      console.log("calls", res);
       if (this.calls.length) {
         var lastCall = this.calls[0];
+        console.log("lastcall", this.$dataStore.currentCall);
+        console.log("lastcall", lastCall);
         this.setCurrentCall(this.$dataStore.currentCall || lastCall);
       } else {
         this.setCurrentCall({ title: "No Call Found" });

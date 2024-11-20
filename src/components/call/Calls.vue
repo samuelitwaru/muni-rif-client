@@ -19,6 +19,7 @@
           <th align="left">Title</th>
           <th align="left">Date From</th>
           <th align="left">Date To</th>
+          <th align="left">Active</th>
           <th align="left">Actions</th>
         </tr>
       </thead>
@@ -27,6 +28,9 @@
           <td>{{ item.title }}</td>
           <td>{{ item.date_from }}</td>
           <td>{{ item.date_to }}</td>
+          <td>
+            <q-icon v-if="item.is_active" name="check" size="md" />
+          </td>
           <td>
             <router-link :to="`/calls/${item.id}`">
               <q-btn icon="edit" flat color="primary" @click="editItem(item)" />

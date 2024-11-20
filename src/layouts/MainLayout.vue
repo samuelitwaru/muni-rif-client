@@ -15,7 +15,11 @@
         <q-toolbar-title>
           Muni RIF
 
-          <DropdownCallMenu />
+          <DropdownCallMenu v-if="$userHasAnyGroups(['grants_officer'])" />
+          <span v-else>
+            <q-icon name="arrow_right" size="md" />
+            {{ this.currentCall.title }}</span
+          >
         </q-toolbar-title>
 
         <div class="text-orange-3 q-px-xs">
@@ -93,8 +97,17 @@ export default {
       getCalls().then((res) => {
         this.calls = res;
         if (this.calls.length) {
-          var lastCall = this.calls[0];
-          this.setCurrentCall(lastCall);
+          if (this.$userHasAnyGroups(["applicant", "reviewer"])) {
+            var activeCall = this.calls.find((call) => call.is_active);
+            if (activeCall) {
+              this.setCurrentCall(activeCall || { title: "No Call Found" });
+            } else {
+              this.$router.push("/no-call-found");
+            }
+          } else {
+            var lastCall = this.calls[0];
+            this.setCurrentCall(this.$dataStore.currentCall || lastCall);
+          }
         } else {
           this.setCurrentCall({ title: "No Call Found" });
           if (this.$userHasAnyGroups(["grants_officer"])) {
