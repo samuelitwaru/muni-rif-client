@@ -19,7 +19,7 @@
           <th align="left">Title</th>
           <th align="left">Date From</th>
           <th align="left">Date To</th>
-          <th align="left">Active</th>
+          <th align="center">Active</th>
           <th align="left">Actions</th>
         </tr>
       </thead>
@@ -28,8 +28,21 @@
           <td>{{ item.title }}</td>
           <td>{{ item.date_from }}</td>
           <td>{{ item.date_to }}</td>
-          <td>
-            <q-icon v-if="item.is_active" name="check" size="md" />
+          <td align="center">
+            <q-icon
+              v-if="item.is_active"
+              name="check_circle_outline"
+              size="lg"
+              color="green"
+            />
+            <q-btn
+              v-else
+              color="primary"
+              dense
+              outline
+              label="set as active"
+              @click="setAsActiveCall(item.id)"
+            />
           </td>
           <td>
             <router-link :to="`/calls/${item.id}`">
@@ -77,6 +90,15 @@ export default {
     },
     editItem(item) {
       console.log("Edit item:", item);
+    },
+    setAsActiveCall(callId) {
+      this.$utilsStore.setLoading(true);
+      this.$api.get(`/calls/${callId}/set-as-active`).then((res) => {
+        if (res.status == 200) {
+          this.init();
+          this.$utilsStore.setLoading(false);
+        }
+      });
     },
     deleteItem(id) {
       if (confirm("Delete this call?")) {

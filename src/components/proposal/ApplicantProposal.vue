@@ -1,6 +1,5 @@
 <template lang>
   <div class="q-pa-sm">
-
     <div v-for="section in sections" :key="section.id">
       <hr :id="section.name" class="section-separator" />
       <div class="q-pa-sm">
@@ -14,11 +13,13 @@
           v-if="$proposalStore.currentProposal?.status == 'EDITING'"
           class="flex no-wrap q-pa-sm"
           flat
-          bordered>
+          bordered
+        >
           <q-icon size="md" class="q-pr-sm" name="info_outline" />
           <div class="bg-grey-0">
             <small class="text-caption text-grey-8">
-              {{ section.description }}</small>
+              {{ section.description }}</small
+            >
           </div>
         </q-card>
         <div class="q-pt-sm">
@@ -39,7 +40,8 @@
               @proposal-updated="
                 proposal = $event;
                 $proposalStore.setProposal($event);
-              " />
+              "
+            />
             <q-card v-else class="my-card" flat bordered>
               <q-card-section>
                 <div v-html="proposal[section.name]"></div>

@@ -106,10 +106,6 @@
               label="Applications Selection Deadline?"
               outlined
             />
-            <q-checkbox
-              v-model="formData.is_active"
-              label="Set as currently active period"
-            />
           </q-card-section>
           <q-separator spaced />
           <q-card-actions align="right">
@@ -118,14 +114,19 @@
           </q-card-actions>
         </q-card>
       </q-form>
+      <!-- <CalendarGrid /> -->
+      <!-- <CalendarGrid2 /> -->
     </div>
   </q-page>
 </template>
 
 <script>
+import CalendarGrid from "components/utils/CalendarGrid.vue";
+import CalendarGrid2 from "components/utils/CalendarGrid2.vue";
+
 export default {
   name: "UpdateCall",
-
+  components: {},
   data() {
     return {
       loading: false,

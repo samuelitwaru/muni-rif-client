@@ -4,7 +4,10 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [
       { path: "", component: () => import("pages/IndexPage.vue") },
-      { path: "/no-call-found", component: () => import("pages/NoCallFound.vue") },
+      {
+        path: "/no-call-found",
+        component: () => import("pages/NoCallFound.vue"),
+      },
       {
         path: "proposals",
         component: () => import("components/proposal/ProposalList.vue"),
@@ -59,7 +62,7 @@ const routes = [
         component: () => import("components/theme/CreateTheme.vue"),
       },
       {
-        path: "themes/:theme_id",
+        path: "themes/:id",
         component: () => import("components/theme/Theme.vue"),
       },
 
@@ -117,7 +120,6 @@ const routes = [
         path: "selected",
         component: () => import("components/proposal/SelectedProposals.vue"),
       },
-
     ],
   },
 

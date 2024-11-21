@@ -20,10 +20,14 @@
             v-if="numWords > section.word_limit"
             class="text-red text-caption"
           >
-            Exceeded word limit ({{ numWords }}/{{ section.word_limit }})
+            Exceeded word limit ({{ numWords }}/{{ section.lower_limit }}-{{
+              section.word_limit
+            }})
           </small>
           <div v-else class="text-right">
-            Number of Words ({{ numWords }}/{{ section.word_limit }})
+            Number of Words ({{ numWords }}/{{ section.lower_limit }}-{{
+              section.word_limit
+            }})
           </div>
         </div>
       </div>

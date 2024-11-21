@@ -57,6 +57,7 @@
             type="date"
             label="Applications Submission Deadline?"
             outlined
+            :rules="[rules.submissionDate]"
           />
           <q-input
             class="q-my-sm"
@@ -64,6 +65,7 @@
             type="date"
             label="Applications Review Deadline?"
             outlined
+            :rules="[rules.reviewDate]"
           />
           <q-input
             class="q-my-sm"
@@ -71,11 +73,12 @@
             type="date"
             label="Applications Selection Deadline?"
             outlined
+            :rules="[rules.selectionDate]"
           />
-          <q-checkbox
+          <!-- <q-checkbox
             v-model="formData.is_active"
             label="Set this as currently active period"
-          />
+          /> -->
         </q-card-section>
         <q-separator spaced />
         <q-card-actions align="right">
@@ -114,8 +117,13 @@ export default {
           value >= this.formData.date_range.from ||
           "End date must be greater than start date",
         submissionDate: (value) => {
-          const { from } = this.formData.date_range;
-          const { review_date } = this.formData;
+          const from = this.formData.date_from
+            .replace("/", "-")
+            .replace("/", "-");
+          console.log(this.formData);
+          const review_date = this.formData.review_date;
+          console.log(from, review_date, value);
+          console.log(from, review_date, value);
           return (
             ((!from || value > from) &&
               (!review_date || value < review_date)) ||

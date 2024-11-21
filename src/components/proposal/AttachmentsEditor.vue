@@ -58,6 +58,7 @@ export default {
         proposal: this.$route.params.proposal_id,
       },
       attachments: [],
+      attachmentsValid: false,
     };
   },
   created() {
@@ -85,20 +86,21 @@ export default {
             var files = res.data;
             this.attachments.filter((att) => att.id == attachment.id)[0].files =
               files;
-            if (index == this.attachments.length - 1)
-              this.$bus.emit("attachments-updated", this.validateAttachments());
+
+            if (index == this.attachments.length - 1) {
+              let isAttachmentsValid = this.validateAttachments();
+              this.$bus.emit("attachments-updated", isAttachmentsValid);
+            }
           });
       }
     },
 
     validateAttachments() {
-      for (let index = 0; index < this.attachments.length; index++) {
-        const attachment = this.attachments[index];
-        console.log(attachment.is_required);
-        if (attachment?.files?.length == 0 && attachment.is_required) {
-          return false;
-        }
-      }
+      let invalidAttachements = this.attachments.filter(
+        (attachment) => attachment.is_required && attachment.files?.length == 0
+      );
+      console.log("invalidAttach", invalidAttachements);
+      if (invalidAttachements.length) return false;
       return true;
     },
 

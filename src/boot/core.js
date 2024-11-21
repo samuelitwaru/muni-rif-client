@@ -15,8 +15,8 @@ export default boot(({ app }) => {
   };
 
   app.config.globalProperties.$userHasAnyGroups = (groups) => {
-    var userGroups = authStore().currentUser.groups;
-    return groups.some((group) => userGroups.includes(group));
+    var userGroups = authStore().currentUser?.groups;
+    return groups.some((group) => userGroups?.includes(group));
   };
 
   app.config.globalProperties.$buildURLQuery = (obj) => {

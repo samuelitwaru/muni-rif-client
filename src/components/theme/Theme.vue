@@ -1,108 +1,126 @@
 <template>
-  <q-page padding v-if="call">
-    <q-form @submit="updateCall" class="q-gutter-md flex justify-center">
-      <q-card style="width: 500px">
-        <q-card-section>
-          <div class="text-h6">{{ call.title }}</div>
-        </q-card-section>
-        <q-separator />
-        <q-card-section class="q-pt-lg q-pb-md">
-          <label>Name your call</label>
+  <q-page>
+    <div class="q-ma-md">
+      <q-breadcrumbs>
+        <q-breadcrumbs-el icon="home" to="/" label="Home" />
+        <q-breadcrumbs-el icon="apps" to="/themes" label="Themes" />
+        <q-breadcrumbs-el :label="`${theme?.title}`" icon="apps" />
+      </q-breadcrumbs>
+    </div>
+    <q-separator spaced size="0.5px" />
 
+    <div class="flex justify-center">
+      <q-card class="my-card q-pa-md" style="width: 500px">
+        <q-form @submit="submitForm" ref="form">
           <q-input
             v-model="formData.title"
-            label="Title of your call"
+            label="Title"
             outlined
             required
+            :rules="[rules.required]"
+            class="q-my-md"
           />
-
-          <div class="row q-col-gutter-xs q-my-sm">
-            <q-input
-              class="col"
-              v-model="formData.date_from"
-              type="date"
-              label="Period Starts From?"
-              outlined
-            />
-            <q-input
-              class="col"
-              v-model="formData.date_to"
-              type="date"
-              label="Period Ends On?"
-              outlined
-            />
-          </div>
-          <q-checkbox
-            v-model="formData.is_active"
-            label="Set as currently active period"
+          <q-select
+            v-model="formData.call"
+            label="Call"
+            outlined
+            :options="callOptions"
+            option-value="id"
+            option-label="title"
+            emit-value
+            map-options
+            class="q-my-md"
           />
-        </q-card-section>
-        <q-separator spaced />
-        <q-card-actions align="right">
-          <!-- <q-btn flat color="primary" label="Cancel" @click="cancelCreate" /> -->
-          <q-btn color="primary" label="Update" @click="updateCall" />
-        </q-card-actions>
+          <q-card-actions align="right">
+            <q-btn label="Cancel" flat color="negative" @click="cancel" />
+            <q-btn
+              label="Save"
+              color="primary"
+              :loading="loading"
+              type="submit"
+            />
+          </q-card-actions>
+        </q-form>
       </q-card>
-    </q-form>
+    </div>
   </q-page>
 </template>
 
 <script>
 export default {
-  name: "UpdateCall",
+  name: "ThemeComponent",
 
   data() {
     return {
-      loading: false,
-      showDialog: false,
-      call: null,
+      theme: {},
       formData: {
         title: "",
+        call: null,
+      },
+      callOptions: [],
+      loading: false,
+      rules: {
+        required: (value) => !!value || "This field is required",
       },
     };
   },
-  created() {
-    this.getCall();
-    if (process.env.DEBUG) this.setFormData();
+  async created() {
+    await this.fetchTheme();
+    await this.fetchCalls();
   },
   methods: {
-    getCall() {
-      this.$api.get(`calls/${this.$route.params.call_id}/`).then((res) => {
-        if (res.status == 200) {
-          this.call = res.data;
-          this.formData = res.data;
-        }
-      });
-    },
-    updateCall() {
-      this.$utilsStore.setLoading(true);
-      this.$api
-        .put(`calls/${this.$route.params.call_id}/`, this.formData)
-        .then((res) => {
-          if (res.status == 200) {
-            this.call = res.data;
-            this.$router.push(`/calls/`);
-            this.$utilsStore.setLoading(false);
-          }
+    async fetchTheme() {
+      try {
+        const response = await this.$api.get(`themes/${this.$route.params.id}`);
+        this.theme = response.data;
+        this.formData.title = this.theme.title;
+        this.formData.call = this.theme.call;
+        console.log(">>>>>>>>", this.theme);
+      } catch (error) {
+        this.$q.notify({
+          type: "negative",
+          message: "Failed to fetch theme details",
         });
+        console.error(error);
+      }
     },
+    async fetchCalls() {
+      try {
+        const response = await this.$api.get("/calls");
+        this.callOptions = response.data;
+      } catch (error) {
+        this.$q.notify({
+          type: "negative",
+          message: "Failed to fetch call options",
+        });
+        console.error(error);
+      }
+    },
+    async submitForm() {
+      if (!(await this.$refs.form.validate())) return;
 
-    setFormData() {
-      this.formData = {
-        title: "Muni RIF Management System",
-        is_active: true,
-        date_from: "2024-06-24T09:57:11.467359Z",
-        date_to: "2024-06-24T09:57:11.467359Z",
-      };
+      this.loading = true;
+      try {
+        console.log(this.formData);
+        await this.$api.put(`themes/${this.theme.id}/`, this.formData);
+        this.$q.notify({
+          type: "positive",
+          message: "Theme updated successfully",
+        });
+        this.cancel();
+        this.$emit("updated");
+      } catch (error) {
+        this.$q.notify({
+          type: "negative",
+          message: "Failed to update theme",
+        });
+        console.error(error);
+      } finally {
+        this.loading = false;
+      }
     },
-  },
-
-  watch: {
-    showPopup(newValue, oldValue) {
-      this.showDialog = newValue;
-    },
-    showDialog(newValue, oldValue) {
-      this.$emit("showPopupChanged", newValue);
+    cancel() {
+      this.$router.push("/themes");
     },
   },
 };
