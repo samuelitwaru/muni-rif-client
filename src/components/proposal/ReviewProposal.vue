@@ -56,12 +56,13 @@
         />
 
         <ScoreView
-          v-show="section.view == 'scores' && score?.status == 'COMPLETED'"
+          v-show="section.view == 'scores' && (score?.status == 'COMPLETED')"
           :section="section"
           :score="score"
         />
+
         <div
-          v-show="section.view == 'guidelines' && score.status == 'COMPLETED'"
+          v-show="section.view == 'guidelines' && (score.status == 'COMPLETED' || score?.status == 'IN PROGRESS')"
           class="q-my-sm"
         >
           <q-card class="flex no-wrap q-pa-sm" flat bordered>
