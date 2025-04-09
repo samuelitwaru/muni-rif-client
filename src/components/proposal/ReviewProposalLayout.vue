@@ -128,7 +128,7 @@ export default defineComponent({
     protectFile(this.$options.name);
     this.getProposal();
     this.$bus.on("score-updated", (val) => {
-      alert(val);
+      console.log("score updated", val);
     });
   },
 

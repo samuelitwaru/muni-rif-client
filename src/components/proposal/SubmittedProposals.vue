@@ -41,8 +41,12 @@
             />
           </q-popup-proxy>
         </q-btn>
+        <router-link to="/go/proposals/reviewed">
+          <q-btn color="primary" flat label="Go To Reviews" class="q-mr-sm" />
+        </router-link>
       </div>
     </div>
+
     <q-markup-table class="q-ma-sm" flat bordered>
       <thead>
         <tr>
@@ -64,7 +68,7 @@
       </thead>
       <tbody>
         <template v-for="item in proposals" :key="item.id">
-          <tr v-if="item?.scores?.length == 0">
+          <tr>
             <td>
               <input
                 :checked="selectedProposals.includes(item.id)"
@@ -75,18 +79,7 @@
             <td>{{ item.title }}</td>
             <td>{{ item.submission_date }}</td>
             <td>{{ item.user__first_name }} {{ item.user__last_name }}</td>
-            <!-- <td>
-            <div class="flex">
-              <q-chip
-                v-for="score in item.scores"
-                :key="score.id"
-                class="glossy"
-                :label="`${score.user__first_name} ${score.user__last_name}`"
-                removable
-                @remove="deleteScore(score.id)"
-              />
-            </div>
-          </td> -->
+
             <td>{{ item.status }}</td>
 
             <td>
@@ -96,24 +89,32 @@
 
               <q-btn
                 @click="selectProposal2(item.id)"
-                label="Reviewers"
+                label="Assign Reviewers"
                 flat
                 color="primary"
               />
+              <q-chip v-for="score in item.scores" :key="score.id">
+                {{ score.user__first_name }} {{ score.user__last_name }}
+                <q-icon
+                  name="delete"
+                  @click="deleteScore(score.id)"
+                  class="cursor-pointer"
+                />
+              </q-chip>
             </td>
           </tr>
         </template>
       </tbody>
     </q-markup-table>
-    <ReviewedProposals />
+    <!-- <AssignedProposals /> -->
   </q-page>
 </template>
 
 <script>
 import AssignReviewers2 from "components/proposal/AssignReviewers2.vue";
-import ReviewedProposals from "components/proposal/ReviewedProposals.vue";
+// import AssignedProposals from "components/proposal/AssignedProposals.vue";
 export default {
-  components: { AssignReviewers2, ReviewedProposals },
+  components: { AssignReviewers2 },
   name: "ReviewerList",
   data() {
     return {

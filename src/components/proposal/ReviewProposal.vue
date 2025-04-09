@@ -76,7 +76,6 @@
         <SectionView v-else :proposal="proposal" :section="section" />
       </div>
     </div>
-    {{ scoresAreValid }}
     <hr id="solution" class="section-separator" />
   </div>
 </template>

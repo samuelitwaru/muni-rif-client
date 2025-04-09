@@ -23,16 +23,36 @@
         </q-toolbar-title>
 
         <div class="text-orange-3 q-px-xs">
-          <router-link to="/account/profile">
-            <q-chip
-              class="glossy"
-              icon="person"
-              :label="`${$authStore.currentUser?.first_name} ${$authStore.currentUser?.last_name}`"
-            />
-          </router-link>
-          <!-- {{ $getState("user")?.name }} -->
+          <q-btn-dropdown
+            split
+            color="grey-2"
+            text-color="black"
+            rounded
+            icon="person"
+            to="/account/profile"
+            :label="`${$authStore.currentUser?.first_name} ${$authStore.currentUser?.last_name}`"
+          >
+            <q-list>
+              <q-item clickable v-close-popup to="/account/profile">
+                <q-item-section side>
+                  <q-icon name="person" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Profile</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="logout">
+                <q-item-section side>
+                  <q-icon name="logout" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Logout</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </div>
-        <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>
 
@@ -42,13 +62,6 @@
         spinner-color="primary"
         spinner-size="72px"
       />
-      <!-- <div>
-        <router-link to="/" block>
-          <q-btn color="black" class="full-width" align="left" icon="home" flat>
-            <span class="q-px-md">Home</span>
-          </q-btn>
-        </router-link>
-      </div> -->
       <CallMenu />
     </q-drawer>
     <q-page-container>
@@ -132,9 +145,8 @@ export default {
     logout() {
       this.$utilsStore.setLoading(true);
       this.$api.get(`/accounts/logout/`).then((res) => {
+        this.$router.push("/index/account/signin");
         this.$authStore.clearUserAndToken();
-        this.$router.push("/login");
-        // location.href = "/login";
         this.$utilsStore.setLoading(false);
       });
     },
