@@ -1,6 +1,14 @@
 <template>
   <q-page padding v-if="call">
-    <div class="flex q-gutter-md">
+    <div class="q-my-md">
+      <q-breadcrumbs>
+        <q-breadcrumbs-el icon="home" to="/" label="Home" />
+        <q-breadcrumbs-el label="Calls" to="/calls" icon="campaign" />
+        <q-breadcrumbs-el :label="call.title" icon="campaign" />
+      </q-breadcrumbs>
+    </div>
+    <CalendarGrid2 />
+    <!-- <div class="flex q-gutter-md">
       <q-timeline style="width: 500px" color="secondary" layout="dense">
         <q-timeline-entry
           v-for="date in timelineDates"
@@ -69,7 +77,7 @@
               </q-btn>
             </q-card>
 
-            <!-- <div class="row q-col-gutter-xs q-my-sm">
+            <div class="row q-col-gutter-xs q-my-sm">
               <q-input
                 class="col"
                 v-model="formData.date_from"
@@ -84,7 +92,7 @@
                 label="Period Ends On?"
                 outlined
               />
-            </div> -->
+            </div>
             <q-input
               class="q-my-sm"
               v-model="formData.submission_date"
@@ -109,78 +117,75 @@
           </q-card-section>
           <q-separator spaced />
           <q-card-actions align="right">
-            <!-- <q-btn flat color="primary" label="Cancel" @click="cancelCreate" /> -->
+            <q-btn flat color="primary" label="Cancel" @click="cancelCreate" />
             <q-btn color="primary" label="Update" @click="updateCall" />
           </q-card-actions>
         </q-card>
       </q-form>
-      <!-- <CalendarGrid /> -->
-      <!-- <CalendarGrid2 /> -->
-    </div>
+    </div> -->
   </q-page>
 </template>
 
 <script>
-import CalendarGrid from "components/utils/CalendarGrid.vue";
+// import CalendarGrid from "components/utils/CalendarGrid.vue";
 import CalendarGrid2 from "components/utils/CalendarGrid2.vue";
 
 export default {
   name: "UpdateCall",
-  components: {},
+  components: { CalendarGrid2 },
   data() {
     return {
       loading: false,
       showDialog: false,
       call: null,
-      formData: {
-        title: "",
-      },
+      // formData: {
+      //   title: "",
+      // },
     };
   },
   computed: {
-    timelineDates() {
-      if (!this.call) return [];
-      const options = { year: "numeric", month: "long", day: "numeric" };
-      var dates = [
-        {
-          title: "Call Start",
-          name: "date_from",
-          date: this.call.date_from,
-          description: "",
-          icon: "campaign",
-        },
-        {
-          title: "Submission",
-          name: "submission_date",
-          date: this.call.submission_date,
-          description: "",
-          icon: "description",
-        },
-        {
-          title: "Review",
-          name: "review_date",
-          date: this.call.review_date,
-          description: "",
-          icon: "search",
-        },
-        {
-          title: "Selection",
-          name: "selection_date",
-          date: this.call.selection_date,
-          description: "",
-          icon: "check",
-        },
-
-        {
-          title: "Call End",
-          name: "date_to",
-          date: this.call.date_to,
-          description: "",
-          icon: "stop",
-        },
-      ];
-      return dates;
-    },
+    // timelineDates() {
+    //   if (!this.call) return [];
+    //   const options = { year: "numeric", month: "long", day: "numeric" };
+    //   var dates = [
+    //     {
+    //       title: "Call Start",
+    //       name: "date_from",
+    //       date: this.call.date_from,
+    //       description: "",
+    //       icon: "campaign",
+    //     },
+    //     {
+    //       title: "Submission",
+    //       name: "submission_date",
+    //       date: this.call.submission_date,
+    //       description: "",
+    //       icon: "description",
+    //     },
+    //     {
+    //       title: "Review",
+    //       name: "review_date",
+    //       date: this.call.review_date,
+    //       description: "",
+    //       icon: "search",
+    //     },
+    //     {
+    //       title: "Selection",
+    //       name: "selection_date",
+    //       date: this.call.selection_date,
+    //       description: "",
+    //       icon: "check",
+    //     },
+    //     {
+    //       title: "Call End",
+    //       name: "date_to",
+    //       date: this.call.date_to,
+    //       description: "",
+    //       icon: "stop",
+    //     },
+    //   ];
+    //   return dates;
+    // },
   },
   created() {
     this.getCall();
@@ -190,37 +195,38 @@ export default {
       this.$api.get(`calls/${this.$route.params.call_id}/`).then((res) => {
         if (res.status == 200) {
           this.call = res.data;
-          this.formData = res.data;
-          this.formData.date_range = {
-            from: this.formData.date_from,
-            to: this.formData.date_to,
-          };
+          // this.formData = res.data;
+          // this.formData.date_range = {
+          //   from: this.formData.date_from,
+          //   to: this.formData.date_to,
+          // };
         }
       });
     },
-    updateCall() {
-      this.formData.date_from = new Date(this.formData.date_range.from)
-        .toJSON()
-        .split("T")[0];
-      this.formData.date_to = new Date(this.formData.date_range.to)
-        .toJSON()
-        .split("T")[0];
-      this.$utilsStore.setLoading(true);
-      this.$api
-        .put(`calls/${this.$route.params.call_id}/`, this.formData)
-        .then((res) => {
-          if (res.status == 200) {
-            this.call = res.data;
-            this.$router.push(`/calls/`);
-            this.$utilsStore.setLoading(false);
-          }
-        });
-    },
+    // updateCall() {
+    //   this.formData.date_from = new Date(this.formData.date_range.from)
+    //     .toJSON()
+    //     .split("T")[0];
+    //   this.formData.date_to = new Date(this.formData.date_range.to)
+    //     .toJSON()
+    //     .split("T")[0];
+    //   this.$utilsStore.setLoading(true);
+    //   console.log(this.formData);
+    //   this.$api
+    //     .put(`calls/${this.$route.params.call_id}/`, this.formData)
+    //     .then((res) => {
+    //       if (res.status == 200) {
+    //         this.call = res.data;
+    //         this.$router.push(`/calls/`);
+    //         this.$utilsStore.setLoading(false);
+    //       }
+    //     });
+    // },
 
-    setDateRange() {
-      this.formData.date_from = this.formData.date_range.from;
-      this.formData.date_to = this.formData.date_range.to;
-    },
+    // setDateRange() {
+    //   this.formData.date_from = this.formData.date_range.from;
+    //   this.formData.date_to = this.formData.date_range.to;
+    // },
   },
 
   watch: {

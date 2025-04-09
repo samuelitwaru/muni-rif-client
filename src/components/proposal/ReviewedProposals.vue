@@ -38,13 +38,14 @@
             {{ section.title }}
           </th>
           <th align="center">Total</th>
+          <th align="center">Reviewer</th>
           <th align="center">Average Score</th>
           <th align="left"></th>
         </tr>
       </thead>
       <tbody>
         <template v-for="item in proposals" :key="item.id">
-          <tr v-if="item.scores.length" class="q-tr--no-hover text-center">
+          <tr v-if="item?.scores?.length" class="q-tr--no-hover text-center">
             <td :rowspan="item.scores?.length" class="text-left">
               <table>
                 <tbody>
@@ -57,7 +58,7 @@
                       />
                     </td>
                     <td class="inner">
-                      <span>{{ item.title }}</span>
+                      <span>{{ item.title }} ({{ item.status }})</span>
                     </td>
                   </tr>
                 </tbody>
@@ -70,30 +71,37 @@
             <td>
               {{ item.scores[0].total_score }}
             </td>
+            <td>
+              {{ item.scores[0].user__first_name }}
+              {{ item.scores[0].user__last_name }}
+              ({{ item.scores[0].user__username }}) ({{
+                item.scores[0].status
+              }})
+            </td>
 
             <td :rowspan="item.scores?.length">{{ item.average_score }}</td>
             <td :rowspan="item.scores?.length">
               <router-link :to="`/proposals/${item.id}`">
-                <q-btn
-                  color="primary"
-                  icon="remove_red_eye"
-                  flat
-                  dense
-                  @click="onClick"
-                />
+                <q-btn color="primary" icon="remove_red_eye" flat dense />
               </router-link>
             </td>
           </tr>
 
           <tr
             class="q-tr--no-hover text-center"
-            v-for="score in item.scores.slice(1)"
+            v-for="score in item.scores?.slice(1)"
             :key="score.id"
           >
             <td class="exclude" v-for="section in sections" :key="section.id">
               {{ score[section.name] }}
             </td>
             <td class="">&nbsp;&nbsp;{{ score.total_score }}</td>
+            <td class="">
+              &nbsp;&nbsp;
+              {{ score.user__first_name }}
+              {{ score.user__last_name }}
+              ({{ score.user__username }}) ({{ score.status }})
+            </td>
           </tr>
         </template>
       </tbody>
@@ -110,6 +118,7 @@ export default {
     return {
       formData: {
         theme: null,
+        call: this.$dataStore.currentCall.id,
       },
       proposals: [],
       themes: [],

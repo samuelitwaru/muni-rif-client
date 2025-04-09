@@ -33,7 +33,7 @@
             label="download"
             @click="downloadProposal"
           />
-          <proposal-options />
+          <!-- <proposal-options /> -->
         </div>
       </q-toolbar>
     </q-header>

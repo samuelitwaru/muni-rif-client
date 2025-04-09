@@ -70,6 +70,12 @@ const routes = [
         path: "reviewers",
         component: () => import("components/reviewer/Reviewers.vue"),
       },
+
+      {
+        path: "applicants",
+        component: () => import("components/applicant/Applicants.vue"),
+      },
+
       {
         path: "reviewers/create",
         component: () => import("components/reviewer/CreateReviewer.vue"),

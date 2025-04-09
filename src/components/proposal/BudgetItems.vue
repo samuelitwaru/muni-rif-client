@@ -1,13 +1,13 @@
 <template>
   <div>
-    <q-markup-table class="q-my-sm" flat bordered>
+    <q-markup-table dense class="q-my-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Item</th>
           <th align="left">Quantity</th>
           <th align="left">Units</th>
-          <th align="left">Unit Cost (UGX)</th>
-          <th align="left">Total Cost (UGX)</th>
+          <th align="right">Unit Cost (UGX)</th>
+          <th align="right">Total Cost (UGX)</th>
         </tr>
       </thead>
       <tbody>
@@ -15,12 +15,14 @@
           <td>{{ item.item }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.units }}</td>
-          <td>{{ item.unit_cost }}</td>
-          <td>{{ item.unit_cost * item.quantity }}</td>
+          <td align="right">{{ $commaSeparator(item.unit_cost) }}</td>
+          <td align="right">
+            {{ $commaSeparator(item.unit_cost * item.quantity) }}
+          </td>
         </tr>
         <tr>
           <td colspan="4">Total</td>
-          <td>...</td>
+          <td align="right">{{ $commaSeparator(totalBudget) }}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -37,6 +39,17 @@ export default {
   },
   created() {
     this.init();
+  },
+
+  computed: {
+    totalBudget() {
+      var total = 0;
+      for (let index = 0; index < this.items.length; index++) {
+        const item = this.items[index];
+        total += item.unit_cost * item.quantity;
+      }
+      return total;
+    },
   },
   methods: {
     init() {

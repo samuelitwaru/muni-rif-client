@@ -12,91 +12,94 @@
             {{ section.title }}
           </div>
         </q-toolbar-title>
+
         <div v-if="section.max_score > 0">
-          <q-btn-toggle
-            class="q-mt-xs"
-            square
-            style="border: 1px #dddddd solid"
-            glossy
-            padding="5px 30px"
-            v-model="section.view"
-            color="white"
-            text-color="black"
-            toggle-text-color="white"
-            unelevated
-            bordered
-            toggle-color="red"
-            :options="[
-              { label: 'Proposal', value: 'proposal' },
-              { label: 'Guidelines', value: 'guidelines' },
-              { label: 'Scores', value: 'scores' },
-            ]"
+          <!-- Tab Navigation Buttons -->
+          <div>
+            <q-btn-toggle
+              class="q-mt-xs"
+              square
+              style="border: 1px #dddddd solid"
+              glossy
+              padding="5px 30px"
+              v-model="tab"
+              color="white"
+              text-color="black"
+              toggle-text-color="white"
+              unelevated
+              bordered
+              toggle-color="red"
+              :options="[
+                { label: 'Content', value: 'proposal' },
+                { label: 'Guidelines', value: 'guidelines' },
+                { label: 'Scores', value: 'scores' },
+              ]"
+            />
+          </div>
+
+          <!-- Section Content  -->
+          <SectionView
+            :proposal="proposal"
+            :section="section"
+            v-show="tab == 'proposal'"
           />
-        </div>
-        <div v-show="section.view == 'proposal'">
-          <proposalattachments v-if="section.name == 'attachments'" />
-          <BudgetItems v-else-if="section.name == 'summary_budget'" />
-          <TeamMembers v-else-if="section.name == 'team'" />
-          <div v-else>
-            <q-card flat bordered class="q-pa-sm q-my-sm">
-              <div
-                style="overflow: auto; min-height: 5rem"
-                v-html="proposal?.[section['name']] || ''"
-              ></div>
+
+          <!-- Score Editor -->
+          <score-editor
+            v-show="tab == 'scores'"
+            v-if="section.max_score > 0"
+            :min="0"
+            :max="section.max_score"
+            :proposal="proposal"
+            :section="section"
+            :score="score"
+          />
+
+          <!-- Score View -->
+          <ScoreView
+            v-show="tab == 'scores' && score?.status == 'COMPLETED'"
+            :section="section"
+            :score="score"
+          />
+          <div v-show="tab == 'guidelines'" class="q-my-sm">
+            <q-card class="flex no-wrap q-pa-sm" flat bordered>
+              <q-icon size="md" class="q-pr-sm" name="info_outline" />
+              <div class="bg-grey-0">
+                <small class="text-caption text-grey-8">
+                  {{ section.description }}</small
+                >
+              </div>
             </q-card>
           </div>
         </div>
-        <score-editor
-          v-show="section.view == 'scores'"
-          :min="0"
-          :max="section.max_score"
-          :proposal="proposal"
-          :section="section"
-          :score="score"
-        />
 
-        <ScoreView
-          v-show="section.view == 'scores' && score?.status == 'COMPLETED'"
-          :section="section"
-          :score="score"
-        />
-        <div
-          v-show="section.view == 'guidelines' && score.status == 'COMPLETED'"
-          class="q-my-sm"
-        >
-          <q-card class="flex no-wrap q-pa-sm" flat bordered>
-            <q-icon size="md" class="q-pr-sm" name="info_outline" />
-            <div class="bg-grey-0">
-              <small class="text-caption text-grey-8">
-                {{ section.description }}</small
-              >
-            </div>
-          </q-card>
-        </div>
+        <SectionView v-else :proposal="proposal" :section="section" />
       </div>
     </div>
-
+    {{ scoresAreValid }}
     <hr id="solution" class="section-separator" />
   </div>
 </template>
 <script>
-import proposalattachments from "components/proposal/ProposalAttachments.vue";
-import BudgetItems from "components/proposal/BudgetItems.vue";
-import TeamMembers from "components/proposal/TeamMembers.vue";
+// import proposalattachments from "components/proposal/ProposalAttachments.vue";
+// import BudgetItems from "components/proposal/BudgetItems.vue";
+// import TeamMembers from "components/proposal/TeamMembers.vue";
 import ProposalHeader from "components/proposal/ProposalHeader.vue";
 import ScoreView from "components/proposal/ScoreView.vue";
+import SectionView from "./SectionView.vue";
 export default {
   name: "ReviewProposal",
   components: {
-    proposalattachments,
-    BudgetItems,
-    TeamMembers,
+    // proposalattachments,
+    // BudgetItems,
+    // TeamMembers,
     ProposalHeader,
     ScoreView,
+    SectionView,
   },
   data() {
     return {
-      tab: "content",
+      tab: "proposal",
       sections: [],
       proposal: {},
       score: null,
@@ -113,6 +116,25 @@ export default {
   created() {
     this.getProposal();
     this.getSections();
+  },
+
+  computed: {
+    scoresAreValid() {
+      if (this.score && this.sections) {
+        console.log(this.score);
+        for (let index = 0; index < this.sections.length; index++) {
+          const section = this.sections[index];
+          if (section.max_score > 0) {
+            if (this.score[section.name] === null) {
+              this.$bus.emit("score-updated", false);
+              return false;
+            }
+          }
+        }
+      }
+      this.$bus.emit("score-updated", true);
+      return true;
+    },
   },
 
   methods: {
@@ -142,10 +164,7 @@ export default {
 
     getSections() {
       this.$api.get(`sections/`).then((res) => {
-        this.sections = res.data.map((section) => {
-          section.view = "proposal";
-          return section;
-        });
+        this.sections = res.data;
       });
     },
   },

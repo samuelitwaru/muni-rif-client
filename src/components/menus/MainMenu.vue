@@ -109,7 +109,15 @@ defineOptions({
         },
 
         {
-          name: "My Proposals",
+          name: "APPLICANTS",
+          route: "/applicants",
+          icon: "people",
+          color: "secondary",
+          roles: ["grants_officer"],
+        },
+
+        {
+          name: "MY PROPOSALS",
           route: "/applicant/proposals",
           icon: "search",
           color: "secondary",

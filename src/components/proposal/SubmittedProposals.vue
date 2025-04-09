@@ -32,7 +32,7 @@
           :disabled="selectedProposals.length == 0"
         >
           <q-popup-proxy v-model="show" :breakpoint="1000">
-            <AssignReviewers
+            <AssignReviewers2
               :reviewers="reviewers"
               @reviewers-selected="
                 createScores($event);
@@ -57,24 +57,25 @@
           <!-- <th align="left">Theme</th> -->
           <th align="left">Date Submitted</th>
           <th align="left">PI</th>
-          <th align="left">Reviewers</th>
+          <!-- <th align="left">Reviewers</th> -->
           <th align="left">Status</th>
           <th align="left"></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in proposals" :key="item.id">
-          <td>
-            <input
-              :checked="selectedProposals.includes(item.id)"
-              type="checkbox"
-              @click="selectProposal(item.id)"
-            />
-          </td>
-          <td>{{ item.title }}</td>
-          <td>{{ item.submission_date }}</td>
-          <td>{{ item.user__first_name }} {{ item.user__last_name }}</td>
-          <td>
+        <template v-for="item in proposals" :key="item.id">
+          <tr v-if="item?.scores?.length == 0">
+            <td>
+              <input
+                :checked="selectedProposals.includes(item.id)"
+                type="checkbox"
+                @click="selectProposal(item.id)"
+              />
+            </td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.submission_date }}</td>
+            <td>{{ item.user__first_name }} {{ item.user__last_name }}</td>
+            <!-- <td>
             <div class="flex">
               <q-chip
                 v-for="score in item.scores"
@@ -85,24 +86,34 @@
                 @remove="deleteScore(score.id)"
               />
             </div>
-          </td>
-          <td>{{ item.status }}</td>
+          </td> -->
+            <td>{{ item.status }}</td>
 
-          <td>
-            <router-link :to="`/proposals/${item.id}`">
-              <q-btn label="View" flat color="primary" />
-            </router-link>
-          </td>
-        </tr>
+            <td>
+              <router-link :to="`/proposals/${item.id}`">
+                <q-btn label="View" flat color="primary" />
+              </router-link>
+
+              <q-btn
+                @click="selectProposal2(item.id)"
+                label="Reviewers"
+                flat
+                color="primary"
+              />
+            </td>
+          </tr>
+        </template>
       </tbody>
     </q-markup-table>
+    <ReviewedProposals />
   </q-page>
 </template>
 
 <script>
-import AssignReviewers from "components/proposal/AssignReviewers.vue";
+import AssignReviewers2 from "components/proposal/AssignReviewers2.vue";
+import ReviewedProposals from "components/proposal/ReviewedProposals.vue";
 export default {
-  components: { AssignReviewers },
+  components: { AssignReviewers2, ReviewedProposals },
   name: "ReviewerList",
   data() {
     return {
@@ -115,6 +126,7 @@ export default {
       proposals: [],
       themes: [],
       selectedProposals: [],
+      selectedProposal: null,
       allSelected: false,
     };
   },
@@ -126,7 +138,6 @@ export default {
   methods: {
     getProposals() {
       var queryString = this.$buildURLQuery(this.formData);
-
       this.$api.get(`proposals/?${queryString}`).then((res) => {
         this.proposals = res.data;
         this.getProposalScores();
@@ -215,6 +226,13 @@ export default {
       if (this.selectedProposals.length == this.proposals.length) {
         this.allSelected = true;
       }
+    },
+
+    selectProposal2(proposalId) {
+      this.selectAllProposals = [];
+      this.selectedProposals.push(proposalId);
+      this.selectedProposal = proposalId;
+      this.show = true;
     },
     selectAllProposals(event) {
       if (event.target.checked) {

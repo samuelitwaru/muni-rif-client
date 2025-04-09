@@ -1,113 +1,188 @@
 <template>
   <div>
-    <div class="inputs">
-      <label>
-        Start Date:
-        <input type="date" v-model="startDate" @change="validateDates" />
-      </label>
-      <label>
-        Submission Date:
-        <input type="date" v-model="submissionDate" @change="validateDates" />
-      </label>
-      <label>
-        Review Date:
-        <input type="date" v-model="reviewDate" @change="validateDates" />
-      </label>
-      <label>
-        Selection Date:
-        <input type="date" v-model="selectionDate" @change="validateDates" />
-      </label>
-      <label>
-        Stop Date:
-        <input type="date" v-model="stopDate" @change="validateDates" />
-      </label>
-    </div>
+    <div class="row q-gutter-sm">
+      <q-input
+        v-model="formData.title"
+        label="Title of your call"
+        outlined
+        required
+      />
+      <q-input
+        type="date"
+        label="Start Date"
+        outlined
+        v-model="formData.date_from"
+        @change="validateDates"
+      />
+      <q-input
+        label="Submission Date"
+        type="date"
+        outlined
+        v-model="formData.submission_date"
+        @change="validateDates"
+      />
 
-    <div class="calendar">
-      <div v-for="month in calendarMonths" :key="month.name" class="month">
-        <h3>{{ month.name }} {{ month.year }}</h3>
-        <div class="days">
-          <div v-for="day in month.days" :key="day.date" class="day">
-            <span>{{ day.date }}</span>
-            <div v-if="day.event" class="speech-bubble">
-              {{ day.event }}
-            </div>
-          </div>
-        </div>
-      </div>
+      <q-input
+        label="Review Date"
+        outlined
+        type="date"
+        v-model="formData.review_date"
+        @change="validateDates"
+      />
+
+      <q-input
+        label="Selection Date"
+        outlined
+        type="date"
+        v-model="formData.selection_date"
+        @change="validateDates"
+      />
+      <q-input
+        label="End Date"
+        type="date"
+        outlined
+        v-model="formData.date_to"
+        @change="validateDates"
+      />
+      <q-btn color="primary" label="Update" @click="updateCall" />
+    </div>
+    <div class="row q-gutter-sm">
+      <MonthView
+        v-for="month in calendarMonths"
+        :key="month.name"
+        :selectedYear="month.year"
+        :selectedMonth="month.month"
+        :monthName="month.name"
+        :markedDates="markedDates"
+        :selectedDates="selectedDates"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import MonthView from "components/utils/MonthView.vue";
+
 export default {
+  components: { MonthView },
   data() {
     return {
-      startDate: "",
-      submissionDate: "",
-      reviewDate: "",
-      selectionDate: "",
-      stopDate: "",
+      selectedDates: {
+        Start: new Date(2025, 0, 2),
+        Submission: new Date(2025, 0, 5),
+        Review: new Date(2025, 0, 10),
+        Selection: new Date(2025, 0, 15),
+        End: new Date(2025, 0, 31),
+      },
+      formData: {
+        title: "",
+        date_from: "",
+        submission_date: "",
+        review_date: "",
+        selection_date: "",
+        date_to: "",
+      },
       calendarMonths: [],
+      markedDates: [new Date(2025, 0, 5), new Date(2025, 0, 15)],
     };
   },
+  created() {
+    this.getCall();
+  },
   methods: {
+    getCall() {
+      this.$api.get(`calls/${this.$route.params.call_id}/`).then((res) => {
+        if (res.status == 200) {
+          this.call = res.data;
+          this.formData = res.data;
+          this.formData.date_range = {
+            from: this.formData.date_from,
+            to: this.formData.date_to,
+          };
+
+          console.log(this.call);
+
+          this.formData = {
+            title: this.call.title,
+            date_from: this.call.date_from,
+            submission_date: this.call.submission_date,
+            review_date: this.call.review_date,
+            selection_date: this.call.selection_date,
+            date_to: this.call.date_to,
+          };
+
+          this.validateDates();
+        }
+      });
+    },
     validateDates() {
       if (
-        this.startDate &&
-        this.stopDate &&
-        new Date(this.startDate) > new Date(this.stopDate)
+        this.formData.date_from &&
+        this.formData.date_to &&
+        new Date(this.formData.date_from) > new Date(this.formData.date_to)
       ) {
         alert("Start Date cannot be later than Stop Date.");
-        this.stopDate = "";
+        this.formData.date_to = "";
       }
 
       if (
-        this.startDate &&
-        this.submissionDate &&
-        new Date(this.submissionDate) < new Date(this.startDate)
+        this.formData.date_from &&
+        this.formData.submission_date &&
+        new Date(this.formData.submission_date) <
+          new Date(this.formData.date_from)
       ) {
         alert("Submission Date cannot be before Start Date.");
-        this.submissionDate = "";
+        this.formData.submission_date = "";
       }
 
       if (
-        this.submissionDate &&
-        this.reviewDate &&
-        new Date(this.reviewDate) < new Date(this.submissionDate)
+        this.formData.submission_date &&
+        this.formData.review_date &&
+        new Date(this.formData.review_date) <
+          new Date(this.formData.submission_date)
       ) {
         alert("Review Date cannot be before Submission Date.");
-        this.reviewDate = "";
+        this.formData.review_date = "";
       }
 
       if (
-        this.reviewDate &&
-        this.selectionDate &&
-        new Date(this.selectionDate) < new Date(this.reviewDate)
+        this.formData.review_date &&
+        this.formData.selection_date &&
+        new Date(this.formData.selection_date) <
+          new Date(this.formData.review_date)
       ) {
         alert("Selection Date cannot be before Review Date.");
-        this.selectionDate = "";
+        this.formData.selection_date = "";
       }
 
       if (
-        this.selectionDate &&
-        this.stopDate &&
-        new Date(this.stopDate) < new Date(this.selectionDate)
+        this.formData.selection_date &&
+        this.formData.date_to &&
+        new Date(this.formData.date_to) < new Date(this.formData.selection_date)
       ) {
         alert("Stop Date cannot be before Selection Date.");
-        this.stopDate = "";
+        this.formData.date_to = "";
       }
+
+      (this.selectedDates = {
+        Start: new Date(this.formData.date_from) || null,
+        Submission: new Date(this.formData.submission_date) || null,
+        Review: new Date(this.formData.review_date) || null,
+        Selection: new Date(this.formData.selection_date) || null,
+        End: new Date(this.formData.date_to) || null,
+      }),
+        console.log(this.formData.date_to);
 
       this.generateCalendar();
     },
     generateCalendar() {
-      if (!this.startDate || !this.stopDate) {
+      if (!this.formData.date_from || !this.formData.date_to) {
         this.calendarMonths = [];
         return;
       }
 
-      const start = new Date(this.startDate);
-      const stop = new Date(this.stopDate);
+      const start = new Date(this.formData.date_from);
+      const stop = new Date(this.formData.date_to);
       const months = [];
 
       for (
@@ -127,18 +202,19 @@ export default {
           let event = null;
 
           if (
-            this.submissionDate &&
-            current.toISOString().split("T")[0] === this.submissionDate
+            this.formData.submission_date &&
+            current.toISOString().split("T")[0] ===
+              this.formData.submission_date
           ) {
             event = "Submission";
           } else if (
-            this.reviewDate &&
-            current.toISOString().split("T")[0] === this.reviewDate
+            this.formData.review_date &&
+            current.toISOString().split("T")[0] === this.formData.review_date
           ) {
             event = "Review";
           } else if (
-            this.selectionDate &&
-            current.toISOString().split("T")[0] === this.selectionDate
+            this.formData.selection_date &&
+            current.toISOString().split("T")[0] === this.formData.selection_date
           ) {
             event = "Selection";
           }
@@ -148,12 +224,26 @@ export default {
 
         months.push({
           name: date.toLocaleString("default", { month: "long" }),
+          month: date.getMonth(),
           year: date.getFullYear(),
           days,
         });
       }
 
       this.calendarMonths = months;
+    },
+    updateCall() {
+      console.log(this.formData);
+      this.$utilsStore.setLoading(true);
+      this.$api
+        .put(`calls/${this.$route.params.call_id}/`, this.formData)
+        .then((res) => {
+          if (res.status == 200) {
+            this.call = res.data;
+            this.$router.push(`/calls/`);
+            this.$utilsStore.setLoading(false);
+          }
+        });
     },
   },
 };

@@ -89,19 +89,25 @@ export default {
 
             if (index == this.attachments.length - 1) {
               let isAttachmentsValid = this.validateAttachments();
-              this.$bus.emit("attachments-updated", isAttachmentsValid);
+              console.log(index, isAttachmentsValid);
             }
           });
       }
     },
 
     validateAttachments() {
+      let isAttachmentsValid = true;
       let invalidAttachements = this.attachments.filter(
         (attachment) => attachment.is_required && attachment.files?.length == 0
       );
       console.log("invalidAttach", invalidAttachements);
-      if (invalidAttachements.length) return false;
-      return true;
+      if (invalidAttachements.length) {
+        isAttachmentsValid = false;
+      } else {
+        isAttachmentsValid = true;
+      }
+      this.$bus.emit("attachments-updated", isAttachmentsValid);
+      return isAttachmentsValid;
     },
 
     deleteFile(fileId) {

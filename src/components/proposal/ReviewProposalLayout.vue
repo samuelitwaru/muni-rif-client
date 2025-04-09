@@ -37,7 +37,7 @@
             label="download"
             @click="downloadProposal"
           />
-          <proposal-options />
+          <!-- <proposal-options /> -->
         </div>
       </q-toolbar>
     </q-header>
@@ -127,6 +127,9 @@ export default defineComponent({
   created() {
     protectFile(this.$options.name);
     this.getProposal();
+    this.$bus.on("score-updated", (val) => {
+      alert(val);
+    });
   },
 
   methods: {
