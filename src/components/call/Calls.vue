@@ -24,19 +24,30 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <th align="left">{{ currentCall.title }}</th>
+          <th align="left">{{ currentCall.date_from }}</th>
+          <th align="left">{{ currentCall.date_to }}</th>
+          <th align="center">
+            <q-icon name="check_circle_outline" size="lg" color="green" />
+          </th>
+          <th align="left">
+            <router-link :to="`/calls/${currentCall.id}`">
+              <q-btn
+                icon="edit"
+                flat
+                color="primary"
+                @click="editItem(currentCall)"
+              />
+            </router-link>
+          </th>
+        </tr>
         <tr v-for="item in items" :key="item.id">
           <td>{{ item.title }}</td>
           <td>{{ item.date_from }}</td>
           <td>{{ item.date_to }}</td>
           <td align="center">
-            <q-icon
-              v-if="item.is_active"
-              name="check_circle_outline"
-              size="lg"
-              color="green"
-            />
             <q-btn
-              v-else
               color="primary"
               dense
               outline
@@ -79,6 +90,8 @@ export default {
   data() {
     return {
       items: [],
+      currentCall: {},
+      entity: {},
     };
   },
   created() {
@@ -86,7 +99,25 @@ export default {
   },
   methods: {
     init() {
-      getCalls().then((res) => (this.items = res));
+      this.getEntity();
+    },
+    async getEntity() {
+      const res = await this.$api.get(`entities/`);
+      this.entity = res.data[0];
+      this.$dataStore.setEntity(this.entity);
+      console.log("entity", this.entity);
+      getCalls().then((res) => {
+        console.log("calls", res);
+        this.items = res;
+        this.currentCall = this.items.find(
+          (item) => item.id == this.entity.current_call
+        );
+        this.items = this.items.filter(
+          (item) => item.id != this.entity.current_call
+        );
+        console.log("store", this.currentCall);
+        this.$dataStore.setCall(this.currentCall);
+      });
     },
     editItem(item) {
       console.log("Edit item:", item);

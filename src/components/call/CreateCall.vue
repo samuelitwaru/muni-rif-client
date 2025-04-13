@@ -154,13 +154,12 @@ export default {
   },
   methods: {
     createCall() {
-      console.log(this.formData.date_from);
-      this.formData.date_from = new Date(this.formData.date_from)
-        .toJSON()
-        .split("T")[0];
-      this.formData.date_to = new Date(this.formData.date_to)
-        .toJSON()
-        .split("T")[0];
+      this.formData.date_from = this.formData.date_range.from.replaceAll(
+        "/",
+        "-"
+      );
+      this.formData.date_to = this.formData.date_range.to.replaceAll("/", "-");
+      console.log(this.formData);
       // this.$utilsStore.setLoading(true);
       this.$api.post("calls/", this.formData).then((res) => {
         // this.$router.push(`/calls/`);
@@ -184,11 +183,17 @@ export default {
 
     setFormData() {
       this.formData = {
-        title: "",
+        title: "sd;d;wdw",
         is_active: false,
-        date_range: { from: "", to: "" },
-        date_from: "",
-        date_to: "",
+        date_range: {
+          from: "2025/04/01",
+          to: "2025/04/30",
+        },
+        date_from: "2025-04-01",
+        date_to: "2025-04-30",
+        submission_date: "2025-04-08",
+        review_date: "2025-04-16",
+        selection_date: "2025-04-23",
       };
     },
   },

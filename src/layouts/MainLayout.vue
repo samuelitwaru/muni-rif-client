@@ -98,7 +98,7 @@ export default {
     if (!this.$authStore.currentUser) {
       location.href = "/index/account/signin";
     }
-    this.getCalls();
+    this.getEntity();
   },
 
   methods: {
@@ -106,12 +106,23 @@ export default {
       this.leftDrawerOpen = !this.leftDrawerOpen;
     },
 
+    async getEntity() {
+      const res = await this.$api.get(`entities/`);
+      this.entity = res.data[0];
+      this.$dataStore.setEntity(this.entity);
+      console.log("entity", this.entity);
+      this.getCalls();
+    },
+
     getCalls() {
       getCalls().then((res) => {
         this.calls = res;
         if (this.calls.length) {
           if (this.$userHasAnyGroups(["applicant", "reviewer"])) {
-            var activeCall = this.calls.find((call) => call.is_active);
+            var activeCall = this.calls.find(
+              (call) => call.id == this.entity.current_call
+            );
+            console.log("ac", activeCall);
             if (activeCall) {
               this.setCurrentCall(activeCall || { title: "No Call Found" });
             } else {

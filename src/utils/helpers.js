@@ -36,4 +36,23 @@ function generateRandomString(length) {
   return result;
 }
 
-export { protectFile, generateRandomString, userHasAnyGroups };
+function converDateToString(date, separator = "/") {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const dd = String(date.getDate()).padStart(2, "0");
+  const formattedDate = `${yyyy}${separator}${mm}${separator}${dd}`;
+  return formattedDate;
+}
+
+function parseDate(ymdString) {
+  const [year, month, day] = ymdString.split("/").map(Number);
+  return new Date(year, month - 1, day); // Month is 0-based in JS
+}
+
+export {
+  protectFile,
+  generateRandomString,
+  userHasAnyGroups,
+  converDateToString,
+  parseDate,
+};

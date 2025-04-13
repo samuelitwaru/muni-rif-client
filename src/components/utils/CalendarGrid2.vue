@@ -1,51 +1,76 @@
 <template>
   <div>
-    <div class="row q-gutter-sm">
-      <q-input
-        v-model="formData.title"
-        label="Title of your call"
-        outlined
-        required
-      />
-      <q-input
-        type="date"
-        label="Start Date"
-        outlined
-        v-model="formData.date_from"
-        @change="validateDates"
-      />
-      <q-input
-        label="Submission Date"
-        type="date"
-        outlined
-        v-model="formData.submission_date"
-        @change="validateDates"
-      />
+    <q-form @submit="updateCall" @reset="onReset" class="q-gutter-md" >
+      <div class="row q-gutter-sm">
+        <div>
+          <q-input
+            v-model="formData.title"
+            label="Title of your call"
+            outlined
+            required
+          />
+          <div id="error-alert">{{formError.title}}</div>
+        </div>
 
-      <q-input
-        label="Review Date"
-        outlined
-        type="date"
-        v-model="formData.review_date"
-        @change="validateDates"
-      />
+        <div>
+          <q-input
+            type="date"
+            label="Start Date"
+            outlined
+            v-model="formData.date_from"
+            @change="validateDates"
+          />
+          <div id="error-alert">{{formError.date_from}}</div>
+        </div>
+        <div>
+          <q-input
+            label="Submission Date"
+            type="date"
+            outlined
+            v-model="formData.submission_date"
+            @change="validateDates"
+            required
+          />
+          <div id="error-alert">{{formError.title}}</div>
+        </div>
 
-      <q-input
-        label="Selection Date"
-        outlined
-        type="date"
-        v-model="formData.selection_date"
-        @change="validateDates"
-      />
-      <q-input
-        label="End Date"
-        type="date"
-        outlined
-        v-model="formData.date_to"
-        @change="validateDates"
-      />
-      <q-btn color="primary" label="Update" @click="updateCall" />
-    </div>
+
+        <div>
+          <q-input
+            label="Review Date"
+            outlined
+            type="date"
+            v-model="formData.review_date"
+            @change="validateDates"
+          />
+          <div id="error-alert">{{formError.review_date}}</div>
+        </div>
+
+        <div>
+          <q-input
+            label="Selection Date"
+            outlined
+            type="date"
+            v-model="formData.selection_date"
+            @change="validateDates"
+          />
+          <div id="error-alert">{{formError.title}}</div>
+        </div>
+
+        <div>
+          <q-input
+            label="End Date"
+            type="date"
+            outlined
+            v-model="formData.date_to"
+            @change="validateDates"
+          />
+          <div id="error-alert">{{formError.date_to}}</div>
+        </div>
+        <q-btn color="primary" label="Update" @click="updateCall" />
+      </div>
+    </q-form>
+
     <div class="row q-gutter-sm">
       <MonthView
         v-for="month in calendarMonths"
@@ -55,6 +80,7 @@
         :monthName="month.name"
         :markedDates="markedDates"
         :selectedDates="selectedDates"
+        @update:selectedDates="updateSelectedDates($event)"
       />
     </div>
   </div>
@@ -62,7 +88,7 @@
 
 <script>
 import MonthView from "components/utils/MonthView.vue";
-
+import { converDateToString } from "src/utils/helpers";
 export default {
   components: { MonthView },
   data() {
@@ -75,6 +101,14 @@ export default {
         End: new Date(2025, 0, 31),
       },
       formData: {
+        title: "",
+        date_from: "",
+        submission_date: "",
+        review_date: "",
+        selection_date: "",
+        date_to: "",
+      },
+      formError: {
         title: "",
         date_from: "",
         submission_date: "",
@@ -121,7 +155,7 @@ export default {
         this.formData.date_to &&
         new Date(this.formData.date_from) > new Date(this.formData.date_to)
       ) {
-        alert("Start Date cannot be later than Stop Date.");
+        this.formError.date_from = "Start Date cannot be later than Stop Date.";
         this.formData.date_to = "";
       }
 
@@ -231,6 +265,16 @@ export default {
       }
 
       this.calendarMonths = months;
+    },
+    updateSelectedDates(selectedDates) {
+      this.selectedDates = selectedDates;
+      this.formData.date_from = converDateToString(selectedDates.Start, '-');
+      this.formData.submission_date = converDateToString(selectedDates.Submission, '-');
+      this.formData.review_date = converDateToString(selectedDates.Review, '-');
+      this.formData.selection_date = converDateToString(selectedDates.Selection, '-');
+      this.formData.date_to = converDateToString(selectedDates.End, '-');
+      console.log('final formdata', this.formData);
+      this.generateCalendar()
     },
     updateCall() {
       console.log(this.formData);

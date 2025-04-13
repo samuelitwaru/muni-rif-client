@@ -1,17 +1,6 @@
 <template>
   <div class="month-year-picker">
     <div class="controls">
-      <!-- <select v-model="selectedYear" @change="updateCalendar">
-        <option v-for="year in years" :key="year" :value="year">
-          {{ year }}
-        </option>
-      </select>
-
-      <select v-model="selectedMonth" @change="updateCalendar">
-        <option v-for="(month, index) in months" :key="index" :value="index">
-          {{ month }}
-        </option>
-      </select> -->
     </div>
 
     <table class="calendar">
@@ -31,13 +20,27 @@
               marked: isSelected(day.date).result && !day.otherMonth,
             }"
           >
+            <q-btn v-if="isSelected(day.date).result && !day.otherMonth" round color="primary">
+              {{ day.date.getDate() }}
+              <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
+                <q-date v-model="formData[`${isSelected(day.date).label}`]" @update:model-value="setSelectedDateValue(`${isSelected(day.date).label}`)">
+                  <div class="row items-center justify-end q-gutter-sm">
+                    <q-btn label="Cancel" color="primary" flat v-close-popup />
+                    <q-btn label="OK" color="primary" flat @click="save" v-close-popup />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-btn>
+            <div v-else>
+              {{ day.date.getDate() }}
+            </div>
+
             <div
               v-if="isSelected(day.date).result && !day.otherMonth"
               class="badge"
             >
               {{ isSelected(day.date).label }}
             </div>
-            {{ day.date.getDate() }}
           </td>
         </tr>
         <tr v-if="calendar.length == 5">
@@ -49,6 +52,7 @@
 </template>
 
 <script>
+import { converDateToString } from "src/utils/helpers";
 export default {
   props: [
     "selectedYear",
@@ -81,9 +85,32 @@ export default {
       // selectedYear: currentYear,
       // selectedMonth: currentMonth,
       calendar: [],
+      formData: {
+      },
     };
   },
+  created() {
+    // this.formData = this.selectedDates
+    // loop through the selectedDates and set the formData
+    for (const [key, value] of Object.entries(this.selectedDates)) {
+      this.formData[key] = converDateToString(value);
+    }
+    console.log('this.formsData: ', this.formData)
+  },
   methods: {
+    setSelectedDateValue(key) {
+      console.log(this.formData)
+
+      let data = {}
+      for (const [key, value] of Object.entries(this.formData)) {
+        data[key] = new Date(value)
+      }
+      console.log('data: ', data)
+
+      this.$emit("update:selectedDates", {
+       ...data
+      })
+    },
     updateCalendar() {
       const year = this.selectedYear;
       const month = this.selectedMonth;
@@ -188,6 +215,7 @@ export default {
   position: relative;
   height: 50px;
   width: 50px;
+  cursor: pointer;
 }
 
 .calendar .other-month {
