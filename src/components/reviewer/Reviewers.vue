@@ -44,11 +44,19 @@
                 @click="editItem(item)"
               />
             </router-link>
+
             <q-btn
               icon="delete"
               flat
               color="primary"
               @click="deleteItem(item.id)"
+            />
+            <q-btn
+              v-if="!item.is_active"
+              label="Invite"
+              flat
+              color="secondary"
+              @click="inviteUser(item)"
             />
           </td>
         </tr>
@@ -79,6 +87,19 @@ export default {
       this.$api.get("users/?groups__name__in=reviewer").then((res) => {
         this.reviewers = res.data;
       });
+    },
+
+    inviteUser(user) {
+      if (confirm("Confirm send invite?")) {
+        const data = {email:user.email}
+        console.log('user', user)
+        this.$api.post(`users/send-invite/`, data).then((res) => {
+          if (res.status == 200) {
+            var message = "Invitation email has been sent";
+            this.$q.notify(message);
+          }
+        });
+      }
     },
 
     deleteItem(id) {
