@@ -97,7 +97,7 @@
     </q-drawer>
 
     <q-page-container>
-      <div class="q-pa-md">
+      <!-- <div class="q-pa-md">
         <q-toolbar-title class="flex justify-between">
           <div class="flex">Background Information</div>
         </q-toolbar-title>
@@ -130,8 +130,8 @@
             </tbody>
           </q-markup-table>
         </div>
-      </div>
-
+      </div> -->
+      <ProposalHeader />
       <router-view></router-view>
 
       <div
@@ -160,9 +160,13 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { protectFile } from "src/utils/helpers";
+import ProposalHeader from "components/proposal/ProposalHeader.vue";
 import cheerio from "cheerio";
 
 export default defineComponent({
+  components: {
+    ProposalHeader
+  },
   name: "ProposalLayout",
 
   data() {

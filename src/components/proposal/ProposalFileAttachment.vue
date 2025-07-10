@@ -15,8 +15,9 @@
     />
     <q-dialog v-model="modalVisible">
       <q-card style="width: 500px">
-        <q-card-section class="q-pa-sm text-center">
+        <q-card-section class="flex justify-between q-pa-sm text-center">
           <div class="text-h6">Attachments</div>
+          <q-btn color="primary" icon="close" flat @click="uploadedFiles = [];modalVisible = false;" />
         </q-card-section>
         <q-separator spaced />
         <q-card-section class="q-pa-sm">
@@ -58,7 +59,7 @@
               </template>
 
               <template v-slot:list>
-                <q-list separator dense bordered>
+                <q-list separator dense >
                   <q-item v-for="file in filesToUpload" :key="file.__key">
                     <q-item-section>
                       <q-item-label class="full-width ellipsis">

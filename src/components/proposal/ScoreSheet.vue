@@ -1,9 +1,9 @@
 <template>
-  <div v-if="score && score.status == 'IN PROGRESS'">
+  <div v-if="score && score.status == 'IN PROGRESS' && $userHasAnyGroups(['reviewer'])">
     <q-btn color="primary" label="Submit Review" @click="startDialog" />
 
     <q-dialog v-model="showDialog" persistent full-height>
-      <q-card style="min-width: 500px">
+      <q-card style="min-width: 22rem">
         <q-card-section class="flex justify-between">
           <div class="text-h6">Submit Review</div>
           <q-btn
@@ -47,7 +47,7 @@
         </q-card-section>
 
         <div class="q-pa-sm row">
-          <div class="col q-px-sm">
+          <div class="col-12 q-px-sm">
             <q-chip
               outline
               color="teal"
@@ -64,7 +64,7 @@
               label="Strengths"
             />
           </div>
-          <div class="col">
+          <div class="col-12 q-px-sm">
             <q-chip
               outline
               color="primary"

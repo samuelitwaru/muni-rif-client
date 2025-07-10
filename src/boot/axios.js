@@ -10,7 +10,7 @@ import axios from "axios";
 
 var baseURL = process.env.DEBUG
   ? "http://127.0.0.1:8000"
-  : "https://munirif.pythonanywhere.com";
+  : "https://munirif.vps.webdock.cloud";
 
 var apiURL = `${baseURL}/api`;
 
@@ -37,6 +37,8 @@ api.interceptors.response.use(
   },
   (error) => {
     // Handle response errors globally
+
+    console.log("API Error:", error);
 
     if (error.response.status === 500) {
       error.response.data = { error: ["Internal Server Error"] };

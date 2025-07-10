@@ -100,8 +100,12 @@ const routes = [
         component: () => import("components/proposal/ProposalEditor.vue"),
       },
       {
-        path: ":proposal_id/reviewers",
+        path: ":proposal_id/reviews",
         component: () => import("components/proposal/ProposalReviewers.vue"),
+      },
+      {
+        path: ":proposal_id/reports",
+        component: () => import("components/proposal/ProposalReports.vue"),
       },
       {
         path: ":proposal_id/team",

@@ -15,12 +15,12 @@ export const dataStore = defineStore({
   actions: {
     setCall(call) {
       this.call = call;
-      localStorage.setItem("call", JSON.stringify(call));
+      localStorage.setItem("call", JSON.stringify(call || {}));
     },
     setEntity(entity) {
       // this.entity = entity;
       console.log('entity', entity)
-      localStorage.setItem("entity", JSON.stringify(entity));
+      localStorage.setItem("entity", JSON.stringify(entity || {}));
     },
   },
 });

@@ -1,23 +1,5 @@
 <template>
   <q-page>
-    <q-separator spaced />
-    <div align="right" class="q-ma-sm row">
-      <div class="col">
-        <q-select
-          v-model="formData.theme"
-          dense
-          outlined
-          :options="[{ id: null, title: 'All' }].concat(themes)"
-          label="Select Theme"
-          option-value="id"
-          option-label="title"
-          map-options
-          emit-value
-          @update:model-value="getProposals"
-        />
-      </div>
-      <div class="col"></div>
-    </div>
     <q-markup-table
       class="q-ma-sm my-sticky-column-table"
       wrap-cells
@@ -107,6 +89,13 @@
 // import { useQuasar } from "quasar";
 import { useQuasar } from "quasar";
 export default {
+  props: {
+    proposals: {
+      type: Array,
+      default: () => ([]),
+    },
+
+  },
   name: "ReviewerList",
   data() {
     return {
@@ -114,7 +103,7 @@ export default {
         theme: null,
         call: this.$dataStore.currentCall.id,
       },
-      proposals: [],
+      // proposals: [],
       themes: [],
       sections: [],
     };
@@ -122,7 +111,7 @@ export default {
   created() {
     this.$q = useQuasar();
     this.getSections();
-    this.getProposals();
+    // this.getProposals();
     this.getThemes();
   },
   methods: {
@@ -131,22 +120,22 @@ export default {
         this.sections = res.data.filter((sec) => sec.max_score > 0);
       });
     },
-    getProposals() {
-      var queryString = this.$buildURLQuery(this.formData);
-      this.$api.get(`proposals/?${queryString}`).then((res) => {
-        this.proposals = res.data;
-        this.getProposalScores();
-      });
-    },
-    getProposalScores() {
-      for (let index = 0; index < this.proposals.length; index++) {
-        const prop = this.proposals[index];
+    // getProposals() {
+    //   var queryString = this.$buildURLQuery(this.formData);
+    //   this.$api.get(`proposals/?${queryString}`).then((res) => {
+    //     this.proposals = res.data;
+    //     this.getProposalScores();
+    //   });
+    // },
+    // getProposalScores() {
+    //   for (let index = 0; index < this.proposals.length; index++) {
+    //     const prop = this.proposals[index];
 
-        this.$api.get(`scores/?proposal=${prop.id}`).then((res) => {
-          this.proposals[index].scores = res.data;
-        });
-      }
-    },
+    //     this.$api.get(`scores/?proposal=${prop.id}`).then((res) => {
+    //       this.proposals[index].scores = res.data;
+    //     });
+    //   }
+    // },
     getThemes() {
       this.$api.get("themes/").then((res) => {
         this.themes = res.data;

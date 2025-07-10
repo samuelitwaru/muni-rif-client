@@ -38,10 +38,10 @@
           min-height: 40rem;
         "
       >
-        <div class="flex col-md-8 q-mb-md">
+        <div class="flex col-md-4 q-mb-md">
           <q-separator spaced />
         </div>
-        <div class="col flex justify-center q-px-md">
+        <div class="col-12 flex justify-center align-self-center q-px-md">
           <router-view />
         </div>
       </div>

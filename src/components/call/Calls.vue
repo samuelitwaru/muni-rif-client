@@ -9,24 +9,29 @@
     </div>
     <q-separator spaced />
     <div align="right" class="q-ma-sm">
-      <router-link to="/calls/create">
-        <q-btn color="primary" outline label="add call" />
-      </router-link>
+      <CreateCallModal />
     </div>
-    <q-markup-table class="q-ma-sm" flat bordered>
+
+    <q-markup-table separator="cell" class="q-ma-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Title</th>
-          <th align="left">Date From</th>
-          <th align="left">Date To</th>
+          <th align="left">Start</th>
+          <th align="left">Submission Date</th>
+          <th align="left">Review Date</th>
+          <th align="left">Selection Date</th>
+          <th align="left">End Date</th>
           <th align="center">Active</th>
           <th align="left">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr style="background-color: #dddddd;" v-if="currentCall">
           <th align="left">{{ currentCall.title }}</th>
           <th align="left">{{ currentCall.date_from }}</th>
+          <th align="left">{{ currentCall.submission_date }}</th>
+          <th align="left">{{ currentCall.review_date }}</th>
+          <th align="left">{{ currentCall.selection_date }}</th>
           <th align="left">{{ currentCall.date_to }}</th>
           <th align="center">
             <q-icon name="check_circle_outline" size="lg" color="green" />
@@ -45,6 +50,9 @@
         <tr v-for="item in items" :key="item.id">
           <td>{{ item.title }}</td>
           <td>{{ item.date_from }}</td>
+          <td>{{ item.submission_date }}</td>
+          <td>{{ item.review_date }}</td>
+          <td>{{ item.selection_date }}</td>
           <td>{{ item.date_to }}</td>
           <td align="center">
             <q-btn
@@ -69,7 +77,7 @@
         </tr>
       </tbody>
     </q-markup-table>
-    <div v-if="items.length == 0">
+    <div v-if="!currentCall && items.length == 0">
       <p class="text-center q-py-xl q-my-xl text-h3 text-grey">
         No Calls Found!
       </p>
@@ -84,8 +92,12 @@
 
 <script>
 import { getCalls } from "src/utils/api";
+import CreateCallModal from "./CreateCallModal.vue";
 
 export default {
+  components: {
+    CreateCallModal,
+  },
   name: "DataTable",
   data() {
     return {

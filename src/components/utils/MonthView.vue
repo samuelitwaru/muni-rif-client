@@ -1,8 +1,5 @@
 <template>
   <div class="month-year-picker">
-    <div class="controls">
-    </div>
-
     <table class="calendar">
       <tbody>
         <tr>
@@ -22,17 +19,24 @@
           >
             <q-btn v-if="isSelected(day.date).result && !day.otherMonth" round color="primary">
               {{ day.date.getDate() }}
-              <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-date v-model="formData[`${isSelected(day.date).label}`]" @update:model-value="setSelectedDateValue(`${isSelected(day.date).label}`)">
                   <div class="row items-center justify-end q-gutter-sm">
                     <q-btn label="Cancel" color="primary" flat v-close-popup />
-                    <q-btn label="OK" color="primary" flat @click="save" v-close-popup />
+                    <q-btn label="OK" color="primary" flat v-close-popup />
                   </div>
                 </q-date>
               </q-popup-proxy>
             </q-btn>
             <div v-else>
               {{ day.date.getDate() }}
+              <!-- <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
+                <div>
+                  <q-radio v-model="selectedDate" @vue:updated="setDateValue" :val="{key:'Submission', date:day.date}" label="Submission" />
+                  <q-radio v-model="selectedDate" @vue:updated="setDateValue" :val="{key:'Review', date:day.date}" label="Review" />
+                  <q-radio v-model="selectedDate" @vue:updated="setDateValue" :val="{key:'Selection', date:day.date}" label="Selection" />
+                </div>
+              </q-popup-proxy> -->
             </div>
 
             <div
@@ -87,6 +91,7 @@ export default {
       calendar: [],
       formData: {
       },
+      selectedDate: {},
     };
   },
   created() {
@@ -106,7 +111,6 @@ export default {
         data[key] = new Date(value)
       }
       console.log('data: ', data)
-
       this.$emit("update:selectedDates", {
        ...data
       })
@@ -181,6 +185,17 @@ export default {
       );
 
       return { result: isSelected, label: label };
+    },
+
+    setDateValue() {
+      const {key, date} = this.selectedDate
+      console.log('setDateValue: ', this.selectedDate)
+      const formattedDate = converDateToString(date);
+      let data = {};
+      data[key] = formattedDate;
+      this.$emit("update:selectDates", {
+        ...this.selectedDate
+      });
     },
   },
   mounted() {

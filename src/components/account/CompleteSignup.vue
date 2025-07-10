@@ -1,12 +1,19 @@
 <template>
   <div align="center">
     <error-message-modal :errorResponse="errorResponse" />
-    <q-card class="q-ma-sm q-pa-md" style="max-width: 40rem">
-      <h2 class="text-h6">Complete Signup</h2>
-      <q-form @submit="completeSignup">
+    <q-card class="q-ma-sm q-pa-md" style="width: 100%" v-if="user">
+      <h1 class="text-h4">Complete Signup</h1>
+      <q-form @submit="completeSignup" >
+
+        <hr />
+
+        Welcome, <strong>{{user.first_name.toUpperCase()}}.</strong>
+        <p>Please set your password</p>
+
         <div class="row q-col-gutter-xs">
           <div class="col">
             <q-input
+              :disable="true"
               outlined
               dense
               v-model="formData.first_name"
@@ -18,6 +25,7 @@
           <div class="col">
             <q-input
               outlined
+              :disable="true"
               dense
               v-model="formData.last_name"
               label="Last Name"
@@ -28,6 +36,21 @@
         </div>
 
         <div class="row q-col-gutter-xs">
+          <div class="col">
+            <q-input
+              :disable="true"
+              outlined
+              dense
+              v-model="formData.email"
+              label="Email"
+              :rules="nameRules"
+              required
+            ></q-input>
+          </div>
+
+        </div>
+
+        <!-- <div class="row q-col-gutter-xs">
           <div class="col-12">
             <q-input
               outlined
@@ -52,9 +75,9 @@
               ]"
             />
           </div>
-        </div>
+        </div> -->
 
-        <div class="row q-col-gutter-xs">
+        <!-- <div class="row q-col-gutter-xs">
           <div class="col">
             <q-select
               dense
@@ -77,7 +100,7 @@
               required
             ></q-input>
           </div>
-        </div>
+        </div> -->
 
         <div class="row q-col-gutter-xs q-mt-xs">
           <div class="col">
@@ -91,6 +114,10 @@
               required
             ></q-input>
           </div>
+        </div>
+
+        <div class="row q-col-gutter-xs q-mt-xs">
+
           <div class="col">
             <q-input
               outlined
@@ -125,12 +152,12 @@ export default {
         token: this.$route.params.token,
         first_name: "",
         last_name: "",
-        phone: "",
-        gender: "",
-        designation: "",
-        faculty: null,
-        department: null,
-        qualification: null,
+        // phone: "",
+        // gender: "",
+        // designation: "",
+        // faculty: null,
+        // department: null,
+        // qualification: null,
         password: "",
         confirm_password: "",
       },
@@ -173,6 +200,7 @@ export default {
     completeSignup() {
       // Handle form submission here
       this.$utilsStore.setLoading(true);
+      console.log(this.formData)
       this.$api
         .post("accounts/complete-signup/", this.formData)
         .then((res) => {
@@ -181,7 +209,6 @@ export default {
           this.$authStore.setUserAndToken(user, token);
           this.$utilsStore.setLoading(false);
           this.$router.push("/proposal-reviews");
-          //window.loca
         })
         .catch((err) => {
           this.$utilsStore.setLoading(false);

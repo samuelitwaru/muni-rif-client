@@ -5,19 +5,14 @@
       <q-btn
         color="primary"
         icon="download"
-        dense
+
         label="export"
+        flat
         @click="downloadScoreSheet"
       />
     </div>
 
     <q-markup-table flat dense bordered separator="vertical">
-      <!-- <thead>
-        <tr class="bg-grey-3">
-          <th class="text-left">Section</th>
-          <th class="text-left" :colspan="scores.length">Scores</th>
-        </tr>
-      </thead> -->
       <tbody>
         <tr class="bg-grey-2">
           <td class="text-left"></td>

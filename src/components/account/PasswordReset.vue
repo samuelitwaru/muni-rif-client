@@ -2,7 +2,7 @@
   <div align="center">
     <message-box :message="this.message" @close="this.message = ''" />
     <error-message-modal :errorResponse="errorResponse" />
-    <q-card class="q-my-lg" style="min-width: 23rem">
+    <q-card class="q-my-lg" style="min-width: 22rem">
       <q-card-section>
         <h3 class="text-h6">Password Reset</h3>
       </q-card-section>

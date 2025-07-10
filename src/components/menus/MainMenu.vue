@@ -17,7 +17,7 @@
           v-if="$userHasAnyGroups(item.roles) || item.roles.length == 0"
           outlined
           :class="`text-center q-pa-md q-ma-sm text-${item.color}`"
-          style="width: 200px; height: 150px"
+          style="width: 10rem; height: 10rem"
         >
           <q-badge
             class="q-pa-sm justify-center"
@@ -62,6 +62,15 @@ defineOptions({
               "SUBMITTED"
             );
           },
+        },
+
+        {
+          name: "CALLS",
+          route: "/calls",
+          icon: "campaign",
+          color: "secondary",
+          roles: ["grants_officer"],
+          count: 0,
         },
 
         {

@@ -1,7 +1,7 @@
 <template>
   <div align="center">
     <error-message-modal :errorResponse="errorResponse" />
-    <q-card class="q-pa-md" style="max-width: 40rem">
+    <q-card class="q-pa-md" style="width: 100%">
       <h2 class="text-h6">Signup</h2>
       <q-form @submit="signup">
         <div class="row q-col-gutter-xs">

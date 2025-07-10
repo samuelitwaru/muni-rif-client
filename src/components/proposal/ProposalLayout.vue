@@ -45,6 +45,18 @@
       bordered
       :width="220"
     >
+      <q-card flat class="q-py-sm">
+        <router-link to="/go/proposals/submitted">
+          <q-btn
+            class="q-mx-sm"
+            block
+            color="primary"
+            flat
+            icon="arrow_back"
+            label="Back"
+          />
+        </router-link>
+      </q-card>
       <q-list>
         <a
           v-for="(section, index) in sections"
@@ -56,6 +68,19 @@
               {{ index + 1 }}
             </div>
             <q-item-section>{{ section.title }}</q-item-section>
+          </q-item>
+          <q-separator />
+        </a>
+      </q-list>
+
+      <q-list>
+        <a
+          v-for="item in menuItems"
+          :key="item.name"
+          :href="`/proposals/${$route.params.proposal_id}${item.link}`"
+        >
+          <q-item clickable v-ripple>
+            <q-item-section>{{ item.label }}</q-item-section>
           </q-item>
           <q-separator />
         </a>
@@ -84,6 +109,10 @@ export default defineComponent({
       proposalFiles: [],
       score: {},
       sections: [],
+      menuItems: [
+        {icon: "bluetooth", label: "Reviews", link: "/reviews"},
+        {icon: "bluetooth", label: "Reports", link: "/reports"},
+      ]
     };
   },
 

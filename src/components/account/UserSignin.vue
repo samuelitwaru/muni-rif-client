@@ -1,7 +1,6 @@
 <template>
   <div align="center">
-    <div class="flex justify-center">
-      <q-card class="q-mt-l" style="min-width: 23rem">
+      <q-card class="q-mt-l" style="min-width: 22rem; height:25rem">
         <q-card-section>
           <q-form @submit="login" ref="form" @reset="resetForm">
             <h2 class="text-h6">Login</h2>
@@ -59,7 +58,6 @@
           </q-form>
         </q-card-section>
       </q-card>
-    </div>
   </div>
 </template>
 

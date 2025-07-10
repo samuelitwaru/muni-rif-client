@@ -1,77 +1,12 @@
 <template>
   <div>
-    <q-form @submit="updateCall" @reset="onReset" class="q-gutter-md" >
-      <div class="row q-gutter-sm">
-        <div>
-          <q-input
-            v-model="formData.title"
-            label="Title of your call"
-            outlined
-            required
-          />
-          <div id="error-alert">{{formError.title}}</div>
-        </div>
 
-        <div>
-          <q-input
-            type="date"
-            label="Start Date"
-            outlined
-            v-model="formData.date_from"
-            @change="validateDates"
-          />
-          <div id="error-alert">{{formError.date_from}}</div>
-        </div>
-        <div>
-          <q-input
-            label="Submission Date"
-            type="date"
-            outlined
-            v-model="formData.submission_date"
-            @change="validateDates"
-            required
-          />
-          <div id="error-alert">{{formError.title}}</div>
-        </div>
+    <div class="row q-gutter-sm justify-center">
+      <DatePicker v-for="item in dateData" :key="item.value" :name="item.name" :label="item.label" :date="item.value" @update:date="onDateChanged($event)"/>
+    </div>
 
-
-        <div>
-          <q-input
-            label="Review Date"
-            outlined
-            type="date"
-            v-model="formData.review_date"
-            @change="validateDates"
-          />
-          <div id="error-alert">{{formError.review_date}}</div>
-        </div>
-
-        <div>
-          <q-input
-            label="Selection Date"
-            outlined
-            type="date"
-            v-model="formData.selection_date"
-            @change="validateDates"
-          />
-          <div id="error-alert">{{formError.title}}</div>
-        </div>
-
-        <div>
-          <q-input
-            label="End Date"
-            type="date"
-            outlined
-            v-model="formData.date_to"
-            @change="validateDates"
-          />
-          <div id="error-alert">{{formError.date_to}}</div>
-        </div>
-        <q-btn color="primary" label="Update" @click="updateCall" />
-      </div>
-    </q-form>
-
-    <div class="row q-gutter-sm">
+    <q-separator spaced  />
+    <div class="row q-mt-sm q-gutter-sm justify-center">
       <MonthView
         v-for="month in calendarMonths"
         :key="month.name"
@@ -89,8 +24,9 @@
 <script>
 import MonthView from "components/utils/MonthView.vue";
 import { converDateToString } from "src/utils/helpers";
+import DatePicker from "../widgets/DatePicker.vue";
 export default {
-  components: { MonthView },
+  components: { MonthView, DatePicker },
   data() {
     return {
       selectedDates: {
@@ -108,6 +44,15 @@ export default {
         selection_date: "",
         date_to: "",
       },
+
+      rules: {
+        required: (value) => !!value || "This field is required",
+        dateRangeFrom: (value) => this.validateDateFrom(value),
+        dateRangeTo: (value) => this.validateDateTo(value),
+        submissionDate: (value) => this.validateSubmisionDate(value),
+        reviewDate: (value) => this.validateReviewDate(value),
+        selectionDate: (value) => this.validateSelectionDate(value),
+      },
       formError: {
         title: "",
         date_from: "",
@@ -123,7 +68,22 @@ export default {
   created() {
     this.getCall();
   },
+  computed: {
+    dateData() {
+      return [
+        { name: "date_from", label: "Start Date", value: this.formData.date_from },
+        { name: "submission_date", label: "Submission Date", value: this.formData.submission_date },
+        { name: "review_date", label: "Review Date", value: this.formData.review_date },
+        { name: "selection_date", label: "Selection Date", value: this.formData.selection_date },
+        { name: "date_to", label: "End Date", value: this.formData.date_to },
+      ];
+    },
+  },
   methods: {
+    onDateChanged(data) {
+      this.formData[data.name] = data.date;
+      this.updateCall();
+    },
     getCall() {
       this.$api.get(`calls/${this.$route.params.call_id}/`).then((res) => {
         if (res.status == 200) {
@@ -134,7 +94,7 @@ export default {
             to: this.formData.date_to,
           };
 
-          console.log(this.call);
+          this.validateDates();
 
           this.formData = {
             title: this.call.title,
@@ -145,7 +105,8 @@ export default {
             date_to: this.call.date_to,
           };
 
-          this.validateDates();
+          console.log("formdata >>>", this.formData);
+
         }
       });
     },
@@ -165,7 +126,6 @@ export default {
         new Date(this.formData.submission_date) <
           new Date(this.formData.date_from)
       ) {
-        alert("Submission Date cannot be before Start Date.");
         this.formData.submission_date = "";
       }
 
@@ -175,7 +135,6 @@ export default {
         new Date(this.formData.review_date) <
           new Date(this.formData.submission_date)
       ) {
-        alert("Review Date cannot be before Submission Date.");
         this.formData.review_date = "";
       }
 
@@ -185,7 +144,6 @@ export default {
         new Date(this.formData.selection_date) <
           new Date(this.formData.review_date)
       ) {
-        alert("Selection Date cannot be before Review Date.");
         this.formData.selection_date = "";
       }
 
@@ -194,7 +152,6 @@ export default {
         this.formData.date_to &&
         new Date(this.formData.date_to) < new Date(this.formData.selection_date)
       ) {
-        alert("Stop Date cannot be before Selection Date.");
         this.formData.date_to = "";
       }
 
@@ -205,7 +162,6 @@ export default {
         Selection: new Date(this.formData.selection_date) || null,
         End: new Date(this.formData.date_to) || null,
       }),
-        console.log(this.formData.date_to);
 
       this.generateCalendar();
     },
@@ -277,17 +233,64 @@ export default {
       this.generateCalendar()
     },
     updateCall() {
-      console.log(this.formData);
-      this.$utilsStore.setLoading(true);
+      this.validateDates();
+      // this.$utilsStore.setLoading(true);
+      console.log('formdata', this.formData);
       this.$api
         .put(`calls/${this.$route.params.call_id}/`, this.formData)
         .then((res) => {
           if (res.status == 200) {
             this.call = res.data;
-            this.$router.push(`/calls/`);
+            // this.$router.push(`/calls/`);
             this.$utilsStore.setLoading(false);
           }
         });
+    },
+
+    validateDateFrom(value) {
+      return (
+        !value ||
+        !this.formData.date_to ||
+        value <= this.formData.date_to ||
+        "Start date must be less than end date"
+      );
+    },
+    validateSubmisionDate(value) {
+      const from = this.formData.date_from
+        .replace("/", "-")
+        .replace("/", "-");
+      const review_date = this.formData.review_date;
+      return (
+        ((!from || value > from) &&
+          (!review_date || value < review_date)) ||
+        "Submission date must be greater than start date and less than review date"
+      );
+    },
+    validateReviewDate(value) {
+      const { submission_date, selection_date } = this.formData;
+      return (
+        ((!submission_date || value > submission_date) &&
+          (!selection_date || value < selection_date)) ||
+        "Review date must be greater than submission date and less than selection date"
+      );
+    },
+    validateSelectionDate(value) {
+      console.log('formdata', this.formData);
+      const {date_from, submission_date, review_date, selection_date, date_to} = this.formData;
+
+      return (
+        ((!review_date || value > review_date) &&
+          (!date_to || value < date_to)) ||
+        "Selection date must be greater than review date and less than the end date"
+      );
+    },
+    validateDateTo(value) {
+      return (
+        !value ||
+        !this.formData.date_from ||
+        value >= this.formData.date_from ||
+        "End date must be greater than start date"
+      );
     },
   },
 };

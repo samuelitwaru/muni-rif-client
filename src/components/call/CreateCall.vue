@@ -41,6 +41,7 @@
                 cover
                 transition-show="scale"
                 transition-hide="scale"
+                v-model="showPop"
               >
                 <q-date
                   @range-end="setDateRange"
