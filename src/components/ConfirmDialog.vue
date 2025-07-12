@@ -1,6 +1,6 @@
 <template lang="">
   <div>
-    <q-dialog v-model="confirm" persistent>
+    <q-dialog v-model="show" persistent>
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar :icon="icon" color="primary" text-color="white" />
@@ -9,7 +9,7 @@
 
         <q-card-actions align="right">
           <q-btn flat :label="cancelText" color="primary" v-close-popup />
-          <q-btn flat @click="doCOnfirm" :label="confirmText" color="primary"  />
+          <q-btn flat @click="doConfirm" :label="confirmText" color="primary"  />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -41,13 +41,19 @@ export default {
   },
   data() {
     return {
-      confirm: true,
+      show: false,
     };
   },
   methods: {
+    showDialog() {
+      this.show = true;
+    },
+    hide() {
+      this.show = false;
+    },
     doConfirm() {
       this.$emit("confirm", true);
-      this.confirm = false;
+      this.show = false;
     },
   },
 }

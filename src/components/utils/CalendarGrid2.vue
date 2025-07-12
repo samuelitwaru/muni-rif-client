@@ -1,11 +1,13 @@
 <template>
   <div>
-
-    <div class="row q-gutter-sm justify-center">
-      <DatePicker v-for="item in dateData" :key="item.value" :name="item.name" :label="item.label" :date="item.value" @update:date="onDateChanged($event)"/>
-    </div>
+    <q-form ref="myForm" class="q-gutter-md">
+      <div class="row q-gutter-sm justify-center">
+        <DatePicker v-for="item in dateData" :key="item.value" :rules="[rules[item.name]]" :name="item.name" :label="item.label" :date="item.value" @update:date="onDateChanged($event)"/>
+      </div>
+    </q-form>
 
     <q-separator spaced  />
+
     <div class="row q-mt-sm q-gutter-sm justify-center">
       <MonthView
         v-for="month in calendarMonths"
@@ -25,6 +27,7 @@
 import MonthView from "components/utils/MonthView.vue";
 import { converDateToString } from "src/utils/helpers";
 import DatePicker from "../widgets/DatePicker.vue";
+import { rules } from "eslint-config-prettier";
 export default {
   components: { MonthView, DatePicker },
   data() {
@@ -47,11 +50,11 @@ export default {
 
       rules: {
         required: (value) => !!value || "This field is required",
-        dateRangeFrom: (value) => this.validateDateFrom(value),
-        dateRangeTo: (value) => this.validateDateTo(value),
-        submissionDate: (value) => this.validateSubmisionDate(value),
-        reviewDate: (value) => this.validateReviewDate(value),
-        selectionDate: (value) => this.validateSelectionDate(value),
+        date_from: (value) => this.validateDateFrom(),
+        date_to: (value) => this.validateDateTo(),
+        submission_date: (value) => this.validateSubmisionDate(),
+        review_date: (value) => this.validateReviewDate(),
+        selection_date: (value) => this.validateSelectionDate(),
       },
       formError: {
         title: "",
@@ -82,7 +85,17 @@ export default {
   methods: {
     onDateChanged(data) {
       this.formData[data.name] = data.date;
-      this.updateCall();
+      this.validateDates();
+
+      this.$refs.myForm.validate().then((valid) => {
+        if (valid) {
+          console.log("Form is valid");
+
+          this.updateCall();
+        } else {
+          console.log("Form is invalid");
+        }
+      });
     },
     getCall() {
       this.$api.get(`calls/${this.$route.params.call_id}/`).then((res) => {
@@ -105,55 +118,11 @@ export default {
             date_to: this.call.date_to,
           };
 
-          console.log("formdata >>>", this.formData);
-
         }
       });
     },
     validateDates() {
-      if (
-        this.formData.date_from &&
-        this.formData.date_to &&
-        new Date(this.formData.date_from) > new Date(this.formData.date_to)
-      ) {
-        this.formError.date_from = "Start Date cannot be later than Stop Date.";
-        this.formData.date_to = "";
-      }
-
-      if (
-        this.formData.date_from &&
-        this.formData.submission_date &&
-        new Date(this.formData.submission_date) <
-          new Date(this.formData.date_from)
-      ) {
-        this.formData.submission_date = "";
-      }
-
-      if (
-        this.formData.submission_date &&
-        this.formData.review_date &&
-        new Date(this.formData.review_date) <
-          new Date(this.formData.submission_date)
-      ) {
-        this.formData.review_date = "";
-      }
-
-      if (
-        this.formData.review_date &&
-        this.formData.selection_date &&
-        new Date(this.formData.selection_date) <
-          new Date(this.formData.review_date)
-      ) {
-        this.formData.selection_date = "";
-      }
-
-      if (
-        this.formData.selection_date &&
-        this.formData.date_to &&
-        new Date(this.formData.date_to) < new Date(this.formData.selection_date)
-      ) {
-        this.formData.date_to = "";
-      }
+      this.$refs.myForm.validate();
 
       (this.selectedDates = {
         Start: new Date(this.formData.date_from) || null,
@@ -233,7 +202,6 @@ export default {
       this.generateCalendar()
     },
     updateCall() {
-      this.validateDates();
       // this.$utilsStore.setLoading(true);
       console.log('formdata', this.formData);
       this.$api
@@ -247,50 +215,59 @@ export default {
         });
     },
 
-    validateDateFrom(value) {
-      return (
-        !value ||
-        !this.formData.date_to ||
-        value <= this.formData.date_to ||
-        "Start date must be less than end date"
-      );
+    validateDateFrom() {
+      const { date_from, date_to } = this.formData;
+      if (!date_from) {
+        return "Start date is required";
+      }
+      if (date_from >= date_to) {
+        return "Start date must be less than end date";
+      }
     },
-    validateSubmisionDate(value) {
-      const from = this.formData.date_from
-        .replace("/", "-")
-        .replace("/", "-");
-      const review_date = this.formData.review_date;
-      return (
-        ((!from || value > from) &&
-          (!review_date || value < review_date)) ||
-        "Submission date must be greater than start date and less than review date"
-      );
+    validateSubmisionDate() {
+      const { date_from, date_to, submission_date, review_date, selection_date } = this.formData;
+      if (!submission_date) {
+        return "Submission date is required";
+      }
+      if (submission_date <= date_from || submission_date >= date_to) {
+        return "Out of range";
+      }
+      if (submission_date > review_date) {
+        return "Submission date must be less than review date";
+      }
+      if (submission_date > selection_date) {
+        return "Submission date must be less than selection date";
+      }
     },
-    validateReviewDate(value) {
-      const { submission_date, selection_date } = this.formData;
-      return (
-        ((!submission_date || value > submission_date) &&
-          (!selection_date || value < selection_date)) ||
-        "Review date must be greater than submission date and less than selection date"
-      );
+    validateReviewDate() {
+      const { date_from, date_to, submission_date, review_date, selection_date } = this.formData;
+      if (!review_date) {
+        return "Review date is required";
+      }
+      if (review_date <= date_from || review_date <= submission_date || review_date >= selection_date || review_date >= date_to) {
+        return "Out of range";
+      }
+      if (review_date > selection_date) {
+        return "Submission date must be less than review date";
+      }
     },
-    validateSelectionDate(value) {
-      console.log('formdata', this.formData);
-      const {date_from, submission_date, review_date, selection_date, date_to} = this.formData;
-
-      return (
-        ((!review_date || value > review_date) &&
-          (!date_to || value < date_to)) ||
-        "Selection date must be greater than review date and less than the end date"
-      );
+    validateSelectionDate() {
+      const { date_from, date_to, submission_date, review_date, selection_date } = this.formData;
+      if (!selection_date) {
+        return "Selection date is required";
+      }
+      if (selection_date <= date_from || selection_date <= review_date || selection_date <= submission_date || selection_date >= date_to) {
+        return "Out of range";
+      }
     },
-    validateDateTo(value) {
-      return (
-        !value ||
-        !this.formData.date_from ||
-        value >= this.formData.date_from ||
-        "End date must be greater than start date"
-      );
+    validateDateTo() {
+      const { date_from, date_to } = this.formData;
+      if (!date_to) {
+        return "End date is required";
+      }
+      if (date_to <= date_from) {
+        return "End date must be greater than start date";
+      }
     },
   },
 };

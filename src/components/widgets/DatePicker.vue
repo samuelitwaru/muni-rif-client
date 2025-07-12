@@ -6,6 +6,7 @@
       @click="showDatePicker = true"
       readonly
       outlined
+      :rules="rules"
     >
     <template v-slot:append>
     <q-icon name="event" class="cursor-pointer" @click.stop="showDatePicker = true">
@@ -43,6 +44,9 @@ export default {
     label: {
       type: String,
       default: 'Select Date'
+    },
+    rules: {
+      type: Array,
     }
   },
   data () {

@@ -95,12 +95,7 @@ export default {
     };
   },
   created() {
-    // this.formData = this.selectedDates
-    // loop through the selectedDates and set the formData
-    for (const [key, value] of Object.entries(this.selectedDates)) {
-      this.formData[key] = converDateToString(value);
-    }
-    console.log('this.formsData: ', this.formData)
+
   },
   methods: {
     setSelectedDateValue(key) {
@@ -196,6 +191,17 @@ export default {
       this.$emit("update:selectDates", {
         ...this.selectedDate
       });
+    },
+  },
+  watch: {
+    selectedDates: {
+      handler(newValue) {
+        // loop through the selectedDates and set the formData
+        for (const [key, value] of Object.entries(this.selectedDates)) {
+          this.formData[key] = converDateToString(value);
+        }
+      },
+      deep: true,
     },
   },
   mounted() {

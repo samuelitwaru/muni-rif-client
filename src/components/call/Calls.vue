@@ -6,7 +6,7 @@
       :icon="'delete'"
       :confirmText="'Delete'"
       :cancelText="'Cancel'"
-      @confirm="deleteItem"></ConfirmDialog>
+      @confirm="deleteItem(selectedCallId)"></ConfirmDialog>
 
     <div class="q-ma-md">
       <q-breadcrumbs>
@@ -79,7 +79,7 @@
               icon="delete"
               flat
               color="negative"
-              @click="deleteItem(item.id)"
+              @click="confirmDelete(item.id)"
             />
           </td>
         </tr>
@@ -114,6 +114,7 @@ export default {
       items: [],
       currentCall: {},
       entity: {},
+      selectedCallId: null,
     };
   },
   created() {
@@ -153,31 +154,17 @@ export default {
         }
       });
     },
+    confirmDelete(id) {
+      this.selectedCallId = id;
+      console.log(this.$refs.confirmDialog.show = true);
+      this.$refs.confirmDialog.show();
+    },
     deleteItem(id) {
-      Dialog.create({
-        title: 'Confirm',
-        message: 'Are you sure you want to delete this item?',
-        cancel: true,
-        persistent: true
-      }).onOk(() => {
-        // User confirmed
-        console.log('Item deleted')
-      }).onCancel(() => {
-        // User cancelled
-        console.log('Deletion cancelled')
-      }).onDismiss(() => {
-        // Dialog dismissed (optional)
-        console.log('Dialog dismissed')
-      })
-
-      return
-      if (confirm("Delete this call?")) {
-        this.$api.delete(`calls/${id}`).then((res) => {
-          if (res.status == 204) {
-            window.location = "/calls";
-          }
-        });
-      }
+      this.$api.delete(`calls/${id}`).then((res) => {
+        if (res.status == 204) {
+          window.location = "/calls";
+        }
+      });
     },
   },
 };
