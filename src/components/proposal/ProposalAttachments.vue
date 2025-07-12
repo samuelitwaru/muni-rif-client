@@ -82,8 +82,11 @@ export default {
             var files = res.data;
             this.attachments.filter((att) => att.id == attachment.id)[0].files =
               files;
-            if (index == this.attachments.length - 1)
+            if (index == this.attachments.length - 1) {
+              alert(1)
               this.$bus.emit("attachments-updated", this.validateAttachments());
+            }
+
           });
       }
     },

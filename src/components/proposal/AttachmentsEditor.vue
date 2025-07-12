@@ -88,8 +88,9 @@ export default {
               files;
 
             if (index == this.attachments.length - 1) {
-              let isAttachmentsValid = this.validateAttachments();
-              console.log(index, isAttachmentsValid);
+              setTimeout(() => {
+                let isAttachmentsValid = this.validateAttachments();
+              }, 1000);
             }
           });
       }
@@ -98,9 +99,10 @@ export default {
     validateAttachments() {
       let isAttachmentsValid = true;
       let invalidAttachements = this.attachments.filter(
-        (attachment) => attachment.is_required && attachment.files?.length == 0
+        (attachment) => {
+          return attachment.is_required && !attachment.files?.length
+        }
       );
-      console.log("invalidAttach", invalidAttachements);
       if (invalidAttachements.length) {
         isAttachmentsValid = false;
       } else {

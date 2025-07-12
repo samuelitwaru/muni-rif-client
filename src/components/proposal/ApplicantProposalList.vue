@@ -9,21 +9,21 @@
     </div>
 
     <q-separator spaced />
-    <h2 class="flex justify-between text-h6 q-px-md">
+    <h2 class="flex justify-between text-h6 q-px-sm">
       My Proposals
-      <div class="flex">
-        <q-input
-          dense
-          outlined
-          v-model="search_query"
-          type="text"
-          label="Search"
-          class="q-mr-sm"
-          @input="getCurrentUserProposals()"
-        />
-        <create-proposal-dialog />
-      </div>
     </h2>
+    <div class="flex q-px-sm justify-between items-stretch">
+      <q-input
+        dense
+        outlined
+        v-model="search_query"
+        type="text"
+        label="Search"
+        class="q-mr-sm"
+        @input="getCurrentUserProposals()"
+      />
+      <create-proposal-dialog />
+    </div>
 
     <q-list bordered class="q-ma-sm">
       <router-link

@@ -61,6 +61,11 @@
 
 <script>
 import { authStore } from "src/stores/auth";
+import { utilsStore } from "src/stores/utils";
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
+utilsStore().setLoading(true);
 export default {
   setup() {
     if (authStore().isLoggedIn) {

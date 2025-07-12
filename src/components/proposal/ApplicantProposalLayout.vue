@@ -137,7 +137,7 @@
       <div
         v-if="$proposalStore.currentProposal?.status == 'EDITING'"
         align="center"
-        class="flex justify-center q-mb-lg"
+        class="flex justify-center q-mb-lg q-gutter-sm"
       >
         <router-link class="q-mx-sm" to="/applicant/proposals">
           <q-btn
@@ -218,7 +218,12 @@ export default defineComponent({
     });
 
     this.$bus.on("attachments-updated", (val) => {
-      this.isAttachmentsValid = val;
+      setTimeout(() => {
+        console.log("attachments-updated", val);
+        this.isAttachmentsValid = val;
+      }, 1000);
+      // console.log("attachments-updated", val);
+      // this.isAttachmentsValid = val;
     });
   },
 
@@ -333,6 +338,7 @@ export default defineComponent({
       if (section.name == "attachments") {
         isValid = this.isAttachmentsValid;
         this.validity[section.name] = isValid;
+        // alert(isValid)
         return isValid;
       } else if (section.name == "summary_budget") {
         isValid = this.isBudgetValid;

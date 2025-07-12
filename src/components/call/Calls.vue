@@ -1,5 +1,13 @@
 <template>
   <q-page>
+    <ConfirmDialog
+      ref="confirmDialog"
+      :message="'Are you sure you want to delete this call?'"
+      :icon="'delete'"
+      :confirmText="'Delete'"
+      :cancelText="'Cancel'"
+      @confirm="deleteItem"></ConfirmDialog>
+
     <div class="q-ma-md">
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" to="/" label="Home" />
@@ -93,10 +101,12 @@
 <script>
 import { getCalls } from "src/utils/api";
 import CreateCallModal from "./CreateCallModal.vue";
-
+import ConfirmDialog from "../ConfirmDialog.vue";
+import { Dialog, useQuasar } from 'quasar'
+const $q = useQuasar()
 export default {
   components: {
-    CreateCallModal,
+    CreateCallModal, ConfirmDialog
   },
   name: "DataTable",
   data() {
@@ -144,6 +154,23 @@ export default {
       });
     },
     deleteItem(id) {
+      Dialog.create({
+        title: 'Confirm',
+        message: 'Are you sure you want to delete this item?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        // User confirmed
+        console.log('Item deleted')
+      }).onCancel(() => {
+        // User cancelled
+        console.log('Deletion cancelled')
+      }).onDismiss(() => {
+        // Dialog dismissed (optional)
+        console.log('Dialog dismissed')
+      })
+
+      return
       if (confirm("Delete this call?")) {
         this.$api.delete(`calls/${id}`).then((res) => {
           if (res.status == 204) {

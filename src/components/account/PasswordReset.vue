@@ -63,6 +63,10 @@ export default {
         .post("accounts/reset-password/", this.formData)
         .then((res) => {
           this.$utilsStore.setLoading(false);
+          this.$q.notify({
+            type: "positive",
+            message: "Password reset link sent to your email.",
+          });
           this.message = res.data.detail;
         })
         .catch((err) => {
