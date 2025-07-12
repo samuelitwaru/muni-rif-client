@@ -338,7 +338,6 @@ export default defineComponent({
       if (section.name == "attachments") {
         isValid = this.isAttachmentsValid;
         this.validity[section.name] = isValid;
-        // alert(isValid)
         return isValid;
       } else if (section.name == "summary_budget") {
         isValid = this.isBudgetValid;

@@ -10,7 +10,9 @@ export const dataStore = defineStore({
   }),
   getters: {
     currentCall: (state) => state.call,
-    entity: (state) => state.entity,
+    currentEntity: (state) => {
+      return state.entity
+    },
   },
   actions: {
     setCall(call) {

@@ -6,7 +6,12 @@
       @showPopupChanged="this.showPopup = $event"
     />
 
-    <div class="q-py-xl flex flex-center">
+
+    <div class="q-pt-xl flex flex-center">
+      <DropdownCallMenu v-if="$userHasAnyGroups(['grants_officer'])" />
+    </div>
+    <div class="q-py-lg flex flex-center">
+
       <router-link
         :key="item.name"
         v-for="item in menuItems"
@@ -42,8 +47,12 @@
 
 <script setup>
 import { ref } from "vue";
+import DropdownCallMenu from "../call/DropdownCallMenu.vue";
 defineOptions({
   name: "MainPage",
+  components: {
+    DropdownCallMenu,
+  },
 
   data() {
     return {

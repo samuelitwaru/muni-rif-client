@@ -128,7 +128,6 @@ export default {
       const res = await this.$api.get(`entities/`);
       this.entity = res.data[0];
       this.$dataStore.setEntity(this.entity);
-      console.log("entity", this.entity);
       getCalls().then((res) => {
         console.log("calls", res);
         this.items = res;

@@ -15,7 +15,7 @@
         <q-toolbar-title>
           Muni RIF
 
-          <DropdownCallMenu v-if="$userHasAnyGroups(['grants_officer'])" />
+          <DropdownCallMenu color="" v-if="$userHasAnyGroups(['grants_officer'])" />
           <span v-else>
             <q-icon name="arrow_right" size="md" />
             {{ this.currentCall.title }}</span

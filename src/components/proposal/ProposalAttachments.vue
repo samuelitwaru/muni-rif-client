@@ -83,7 +83,6 @@ export default {
             this.attachments.filter((att) => att.id == attachment.id)[0].files =
               files;
             if (index == this.attachments.length - 1) {
-              alert(1)
               this.$bus.emit("attachments-updated", this.validateAttachments());
             }
 

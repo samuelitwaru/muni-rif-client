@@ -1,10 +1,11 @@
 <template>
   <span v-if="currentCall">
+    Call:
     <q-btn-dropdown
       v-if="currentUser && $userHasAnyGroups(['grants_officer'])"
       split
-      color="white"
-      flat
+      :color="color"
+      outline
       no-caps
       icon="folder"
       :label="currentCall.title"
@@ -23,7 +24,7 @@
               @click="changeCurrentCall(call)"
             >
               <q-item-section>
-                <q-item-label>{{ call.title }}</q-item-label>
+                <q-item-label class="flex justify-between items-center">{{ call.title }} <q-chip v-if="$dataStore.currentEntity.current_call == call.id" color="secondary" size="sm" class="gloss" label="Active" /></q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -55,6 +56,12 @@
 import { getCalls } from "src/utils/api";
 
 export default {
+  props: {
+    color: {
+      type: String,
+      default: "primary",
+    },
+  },
   name: "CallMenu",
   data() {
     return {
@@ -101,11 +108,11 @@ export default {
   created() {
     getCalls().then((res) => {
       this.calls = res;
-      console.log("calls", res);
       if (this.calls.length) {
         var lastCall = this.calls[0];
-        console.log("lastcall", this.$dataStore.currentCall);
-        console.log("lastcall", lastCall);
+        setTimeout(() => {
+          console.log('active call', this.$dataStore.currentEntity);
+        }, 2000);
         this.setCurrentCall(this.$dataStore.currentCall || lastCall);
       } else {
         this.setCurrentCall({ title: "No Call Found" });

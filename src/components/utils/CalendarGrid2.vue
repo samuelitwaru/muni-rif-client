@@ -124,13 +124,13 @@ export default {
     validateDates() {
       this.$refs.myForm.validate();
 
-      (this.selectedDates = {
+      this.selectedDates = {
         Start: new Date(this.formData.date_from) || null,
         Submission: new Date(this.formData.submission_date) || null,
         Review: new Date(this.formData.review_date) || null,
         Selection: new Date(this.formData.selection_date) || null,
         End: new Date(this.formData.date_to) || null,
-      }),
+      },
 
       this.generateCalendar();
     },
@@ -203,7 +203,6 @@ export default {
     },
     updateCall() {
       // this.$utilsStore.setLoading(true);
-      console.log('formdata', this.formData);
       this.$api
         .put(`calls/${this.$route.params.call_id}/`, this.formData)
         .then((res) => {
@@ -229,14 +228,14 @@ export default {
       if (!submission_date) {
         return "Submission date is required";
       }
-      if (submission_date <= date_from || submission_date >= date_to) {
-        return "Out of range";
-      }
       if (submission_date > review_date) {
         return "Submission date must be less than review date";
       }
       if (submission_date > selection_date) {
         return "Submission date must be less than selection date";
+      }
+      if (submission_date <= date_from || submission_date >= date_to) {
+        return "Out of range";
       }
     },
     validateReviewDate() {
@@ -261,12 +260,16 @@ export default {
       }
     },
     validateDateTo() {
-      const { date_from, date_to } = this.formData;
+      const { date_from, date_to, submission_date, review_date, selection_date } = this.formData;
+
       if (!date_to) {
         return "End date is required";
       }
       if (date_to <= date_from) {
         return "End date must be greater than start date";
+      }
+      if (date_to <= submission_date || date_to <= review_date || date_to <= selection_date) {
+        return "End date must be greater than submission, review, and selection dates";
       }
     },
   },

@@ -41,7 +41,7 @@
     <ProposalFilter @filter="getProposals($event)"/>
 
     <div v-if="view === 'proposals'">
-      <q-markup-table class="q-ma-sm" flat bordered>
+      <q-markup-table class="q-ma-sm" separator="cell" flat bordered>
         <thead>
           <tr>
             <th align="left">
@@ -82,10 +82,12 @@
                   flat
                   color="primary"
                 />
+
                 <q-chip v-for="score in item.scores" :key="score.id">
                   {{ score.user__first_name }} {{ score.user__last_name }}
                   <q-icon
-                    name="delete"
+                    name="close"
+                    color="primary"
                     @click="deleteScore(score.id)"
                     class="cursor-pointer"
                   />
@@ -136,12 +138,13 @@ export default {
     };
   },
   created() {
-    this.getProposals();
+    this.getProposals({});
     this.getThemes();
     this.getReviewers();
   },
   methods: {
     getProposals(filterData) {
+      filterData["exclude__status"] = "EDITING"
       this.setView(filterData)
       let queryString = ''
       if (filterData) {
@@ -149,8 +152,9 @@ export default {
       }
       this.$api.get(`proposals/?${queryString}`).then((res) => {
         this.proposals = res.data;
+        this.getProposalScores();
+
         if (this.view === "scores") {
-          this.getProposalScores();
         }
       });
     },
