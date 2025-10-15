@@ -15,7 +15,7 @@
       <div class="flex border">
         <label class="row items-center q-pr-xs">Bulk Upload</label>
         <q-btn color="primary" icon="download" dense flat @click="downloadTemplate"  label="template" />
-        <FileUploader2 uploadUrl="/proposals/upload-bulk/" :multiple="false" :formData="{}" />
+        <FileUploader2 @file-uploaded="getProposals({})" uploadUrl="/proposals/upload-bulk/" :multiple="false" :formData="{}" />
       </div>
       </q-card>
 
@@ -33,9 +33,9 @@
             />
           </q-popup-proxy>
         </div>
-        <router-link to="/go/proposals/reviewed">
+        <!-- <router-link to="/go/proposals/reviewed">
           <q-btn color="primary" flat label="Go To Reviews" class="q-mr-sm" />
-        </router-link>
+        </router-link> -->
       </div>
     </div>
     <ProposalFilter @filter="getProposals($event)"/>
@@ -102,6 +102,9 @@
           </template>
         </tbody>
       </q-markup-table>
+      <div class="q-pa-sm flex flex-center">
+        <q-pagination direction-links v-model="formData.page" :max="maxPageCount" @update:model-value="getProposals(formData)"/>
+      </div>
     </div>
 
     <AssignedProposals v-if="view === 'scores'" :proposals="proposals"/>
@@ -124,9 +127,11 @@ export default {
       formData: {
         theme: null,
         exclude__status: "EDITING",
-        submission_date_lte: "2025-06-24",
-        submission_date_gte: "2025-01-01",
+        // submission_date_lte: "2025-06-24",
+        // submission_date_gte: "2025-01-01",
         call: this.$dataStore.currentCall.id,
+        page: 1,
+        limit: 10
       },
       proposals: [],
       scores:[],
@@ -134,16 +139,22 @@ export default {
       selectedProposals: [],
       selectedProposal: null,
       allSelected: false,
+      maxPageCount: 0,
       view: "proposals", // can be "proposals" or "scores"
     };
   },
   created() {
-    this.getProposals({});
+    this.getProposals(this.formData);
     this.getThemes();
     this.getReviewers();
   },
   methods: {
     getProposals(filterData) {
+      console.log('filerdata', filterData)
+      this.$utilsStore.setLoading(true);
+      filterData.page = this.formData.page
+      filterData.limit = this.formData.limit
+      filterData.call = this.formData.call
       filterData["exclude__status"] = "EDITING"
       this.setView(filterData)
       let queryString = ''
@@ -151,12 +162,13 @@ export default {
         queryString = this.$buildURLQuery(filterData);
       }
       this.$api.get(`proposals/?${queryString}`).then((res) => {
-        this.proposals = res.data;
+        this.proposals = res.data.results;
+        this.page = res.data.page
+        this.maxPageCount = res.data.max_page
         this.getProposalScores();
-
-        if (this.view === "scores") {
-        }
+        this.$utilsStore.setLoading(false);
       });
+
     },
 
     getProposalScores() {

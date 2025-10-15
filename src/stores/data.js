@@ -20,8 +20,6 @@ export const dataStore = defineStore({
       localStorage.setItem("call", JSON.stringify(call || {}));
     },
     setEntity(entity) {
-      // this.entity = entity;
-      console.log('entity', entity)
       localStorage.setItem("entity", JSON.stringify(entity || {}));
     },
   },

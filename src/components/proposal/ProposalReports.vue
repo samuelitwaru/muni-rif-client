@@ -1,109 +1,119 @@
 <template lang="">
-  <div>
-    <div class="q-pa-md">
-      <q-toolbar-title>Reports</q-toolbar-title>
-      <q-markup-table class="q-my-sm" flat bordered>
-        <thead>
-          <tr>
-            <th align="left">Title</th>
-            <th align="left">Deadline</th>
-            <th align="left">Reports</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="date in reportingDates" :key="date.id">
-            <td>{{ date.title }}</td>
-            <td>{{ date.date }}</td>
-            <td>
-              <div v-if="date?.files?.length" class="flex">
-                <div v-for="file in date.files" :key="file.id">
-                  <q-btn
-                    color="primary"
-                    flat
-                    icon="book"
-                    :label="file.title"
-                    :removable="
-                      $userHasAnyGroups(['applicant']) &&
-                      $authStore.currentUser.id ==
-                        $proposalStore.currentProposal.user &&
-                      $proposalStore.currentProposal.status == 'EDITING'
-                    "
-                    @click="openFile(file.file)"
-                  />
-                  <q-btn
-                    color="primary"
-                    flat
-                    icon="close"
-                    @click="deleteFile(file.id)"
-                  />
-                </div>
-              </div>
-              <FileUploader
-                v-else
-                :multiple="false"
-                :uploadUrl="`reports/`"
-                :formData="{
-                  title: date.title,
-                  proposal: $proposalStore.currentProposal.id,
-                  reporting_date: date.id,
-                }"
-                @file-uploaded="getReports"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </q-markup-table>
+  <div class="q-pa-md">
+    <div class="row items-center justify-between">
+      <div class="text-h6 q-pa-sm">Expense Reports</div>
+      <div class="q-gutter-sm">
+        <q-btn color="green" outline flat icon="download" label="export" @click="onClick" />
+      </div>
     </div>
+    <q-markup-table>
+      <thead>
+        <tr>
+          <th class="text-left">Date</th>
+          <th class="text-left">Item</th>
+          <th class="text-left">Quantity</th>
+          <th class="text-left">Units</th>
+          <th class="text-left">Unit Cost</th>
+          <th class="text-left">Total</th>
+          <th class="text-left">Comments</th>
+          <th class="text-left">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-left">
+            <input type="date" name="" value="">
+          </td>
+          <td class="text-left">
+            <input type="text" name="" value="Printing and Binding">
+          </td>
+          <td class="text-left">
+            <input type="number" name="" value="159">
+          </td>
+          <td class="text-left">
+            <input type="text" name="" value="Copies">
+          </td>
+          <td class="text-left">
+            <input type="number" name="" value="20000">
+          </td>
+          <td class="text-left">{{$commaSeparator(159*20000)}} UGX</td>
+          <td class="text-left">
+            <input type="text" name="" value="For distribution to stakeholders">
+          </td>
+          <td class="text-left">
+            <q-btn color="red" label="submit" flat outline />
+          </td>
+        </tr>
+        <tr v-for="expenditure in expenditures" :key="expenditure.id">
+          <td class="text-left">{{ expenditure.date }}</td>
+          <td class="text-left">{{ expenditure.item }}</td>
+          <td class="text-left">{{ expenditure.quantity }}</td>
+          <td class="text-left">{{ expenditure.units }}</td>
+          <td class="text-left">{{ $commaSeparator(expenditure.unit_cost) }} UGX</td>
+          <td class="text-left">{{ expenditure.amount }}</td>
+          <td class="text-left">{{ expenditure.comments }}</td>
+          <td class="text-left">
+            <q-btn color="red" icon="delete" flat outline />
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5" class="text-left"><strong>Total</strong></td>
+          <td class="text-left"><strong>300,000 UGX</strong></td>
+          <td class="text-left"><strong></strong></td>
+          <td class="text-left"><strong></strong></td>
+        </tr>
+      </tfoot>
+    </q-markup-table>
   </div>
 </template>
 <script>
-import FileUploader from "components/widgets/FileUploader.vue";
 export default {
-  components: { FileUploader },
   data() {
     return {
-      reportingDates: [],
-      loading: false,
-    };
+      expenditures: [
+        {
+          id: 1,
+          date: "09-07-2024",
+          item: "Stationery",
+          quantity: 10,
+          units: "Packs",
+          unit_cost: 5000,
+          comments: "For office use",
+          amount: "50,000 UGX"
+        },
+        {
+          id: 2,
+          date: "10-07-2024",
+          item: "Travel",
+          quantity: 1,
+          units: "Trip",
+          unit_cost: 100000,
+          comments: "Client meeting",
+          amount: "100,000 UGX"
+        },
+        {
+          id: 3,
+          date: "11-07-2024",
+          item: "Meals",
+          quantity: 5,
+          units: "Days",
+          unit_cost: 20000,
+          comments: "Team lunch",
+          amount: "100,000 UGX"
+        }
+      ]
+    }
   },
-  created() {
-    this.getReportingDates();
-  },
-  methods: {
-    getReportingDates() {
-      this.$api.get(`reporting-dates/`).then((res) => {
-        this.reportingDates = res.data;
-        this.getReports();
-      });
-    },
-
-    getReports() {
-      for (let index = 0; index < this.reportingDates.length; index++) {
-        const date = this.reportingDates[index];
-        this.$api
-          .get(
-            `reports/?proposal_id=${this.$route.params.proposal_id}&reporting_date_id=${date.id}`
-          )
-          .then((res) => {
-            var files = res.data;
-            console.log(date.title + ">>" + files);
-
-            this.reportingDates.filter((item) => item.id == date.id)[0].files =
-              files;
-          });
-      }
-    },
-    deleteFile(fileId) {
-      if (confirm("Delete this Report?")) {
-        this.$api.delete(`reports/${fileId}/`).then((res) => {
-          this.getReports();
-        });
-      }
-    },
-    openFile(fileURL) {
-      window.open(fileURL);
-    },
-  },
-};
+}
 </script>
-<style lang=""></style>
+<style>
+  input {
+    /* border: none; */
+    /* border-bottom: 1px solid #ccc; */
+    padding: 4px;
+    font-size: 14px;
+    width: 100%;
+  }
+</style>

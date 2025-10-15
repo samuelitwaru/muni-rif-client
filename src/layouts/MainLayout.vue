@@ -110,7 +110,6 @@ export default {
       const res = await this.$api.get(`entities/`);
       this.entity = res.data[0];
       this.$dataStore.setEntity(this.entity);
-      console.log("entity", this.entity);
       this.getCalls();
     },
 
@@ -122,7 +121,6 @@ export default {
             var activeCall = this.calls.find(
               (call) => call.id == this.entity.current_call
             );
-            console.log("ac", activeCall);
             if (activeCall) {
               this.setCurrentCall(activeCall || { title: "No Call Found" });
             } else {

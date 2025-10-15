@@ -16,11 +16,11 @@
       <q-input
         dense
         outlined
-        v-model="search_query"
+        v-model="formData.search_query"
         type="text"
         label="Search"
         class="q-mr-sm"
-        @input="getCurrentUserProposals()"
+        @update:model-value="getCurrentUserProposals()"
       />
       <create-proposal-dialog />
     </div>
@@ -85,7 +85,11 @@ export default {
       loading: false,
       proposals: [],
       teamProposals: [],
-      search_query: "",
+      formData: {
+        search_query: "",
+        page: 1,
+        limit: 10
+      }
     };
   },
 
@@ -99,21 +103,17 @@ export default {
   methods: {
     getCurrentUserProposals() {
       this.loading = true;
-      var query = this.search_query ? `&search=${this.search_query}` : "";
+      this.formData.user = this.$authStore.currentUser.id
+      const queryString = this.$buildURLQuery(this.formData);
       this.$api
-        .get(`proposals?user=${this.$authStore.currentUser.id}${query}`)
+        .get(`proposals?${queryString}`)
         .then((res) => {
-          this.proposals = res.data;
+          this.proposals = res.data.results;
           this.loading = false;
         });
     },
   },
 
-  watch: {
-    search_query(newVal) {
-      this.getCurrentUserProposals();
-    },
-  },
 };
 </script>
 <style lang=""></style>

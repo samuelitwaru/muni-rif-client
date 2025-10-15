@@ -21,7 +21,7 @@
             :key="item.id"
           >
             <q-item-section
-              >{{ item.first_name }} {{ item.last_name }}</q-item-section
+              >{{ item.first_name }} {{ item.last_name }} {{ item.username }}</q-item-section
             >
           </q-item>
         </q-list>

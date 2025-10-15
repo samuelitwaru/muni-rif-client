@@ -138,14 +138,6 @@ export default {
         }
       }
 
-      // formData.append("name", file.name);
-      // formData.append("attachment", this.attachment_id);
-      // formData.append("proposal", this.$route.params["proposal_id"]);
-
-      console.log('form data', formData);
-      console.log('url', this.uploadUrl);
-
-
       // You might want to add more data to the formData if needed
 
       // Perform the actual upload
@@ -153,18 +145,22 @@ export default {
         .post(this.uploadUrl, formData, {
           headers: this.uploadHeaders,
         })
-        .then((response) => {
+        .then((res) => {
           this.uploadedFiles.push(file);
           this.filesToUpload = this.filesToUpload.filter(
             (element) => element.key != file.key
           );
-          console.log(file);
-          console.log(this.filesToUpload);
           this.uploadedFiles = [];
           this.modalVisible = false;
           this.$emit("file-uploaded");
         })
         .catch((error) => {
+          this.uploadedFiles = [];
+          this.modalVisible = false;
+          this.$q.notify({
+            type: "negative",
+            message: "Failed to read file. Check your file and try again",
+          });
           // Handle errors
           console.log(error);
         });

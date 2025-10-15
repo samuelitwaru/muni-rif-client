@@ -75,7 +75,6 @@ export default {
         this.theme = response.data;
         this.formData.title = this.theme.title;
         this.formData.call = this.theme.call;
-        console.log(">>>>>>>>", this.theme);
       } catch (error) {
         this.$q.notify({
           type: "negative",

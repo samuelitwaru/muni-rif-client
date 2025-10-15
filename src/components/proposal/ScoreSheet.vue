@@ -1,7 +1,6 @@
 <template>
   <div v-if="score && score.status == 'IN PROGRESS' && $userHasAnyGroups(['reviewer'])">
     <q-btn color="primary" label="Submit Review" @click="startDialog" />
-
     <q-dialog v-model="showDialog" persistent full-height>
       <q-card style="min-width: 22rem">
         <q-card-section class="flex justify-between">
@@ -16,7 +15,7 @@
         </q-card-section>
         <q-separator />
         <q-card-section class="scroll">
-          <q-markup-table flat dense bordered separator="vertical">
+          <q-markup-table separator="cell" flat dense bordered >
             <thead>
               <tr>
                 <th class="text-left">Section</th>
@@ -42,6 +41,10 @@
                   </td>
                 </tr>
               </template>
+              <tr class="bg-grey-4">
+                <td>Total percentage score</td>
+                <td colspan="2">{{ percentageScore }}%</td>
+              </tr>
             </tbody>
           </q-markup-table>
         </q-card-section>
@@ -120,6 +123,16 @@ export default {
   created() {
     this.getScore();
     this.getSections();
+  },
+  computed: {
+    percentageScore() {
+      const scores = this.sections?.map(section => section.max_score)
+      const section_scores = this.sections?.map(section => this.score[section.name] || 0)
+      console.log(section_scores)
+      const total_section_scores = section_scores.reduce((acc,curr) => acc + curr, 0)
+      const total = scores.reduce((acc,curr) => acc + curr, 0)
+      return (total_section_scores/total) * 100
+    }
   },
   methods: {
     getScore() {

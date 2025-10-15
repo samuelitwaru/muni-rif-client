@@ -1,6 +1,5 @@
 <template lang>
   <div>
-    <!-- <accept-review :proposal="proposal" :score="score" /> -->
     <div v-for="section in sections" :key="section.id">
       <hr :id="section.name" class="section-separator" />
       <div class="q-pa-sm">

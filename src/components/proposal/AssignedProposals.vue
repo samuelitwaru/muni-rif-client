@@ -34,7 +34,11 @@
                       />
                     </td>
                     <td class="inner">
-                      <span>{{ item.title }} ({{ item.status }})</span>
+                      <span>
+                       <router-link :to="`/proposals/${item.id}`">
+                        {{ item.title }} ({{ item.status }})
+                       </router-link>
+                      </span>
                     </td>
                   </tr>
                 </tbody>
@@ -145,7 +149,7 @@ export default {
     selectProposal($event, ProposalId) {
       const is_selected = $event.target.checked;
       this.$api
-        .patch(`proposals/${ProposalId}/`, { is_selected: is_selected })
+        .patch(`proposals/${ProposalId}/`, { is_selected: is_selected, status:'SELECTED' })
         .then((res) => {
           var message = "Proposal added to selected proposals";
           if (!is_selected) {

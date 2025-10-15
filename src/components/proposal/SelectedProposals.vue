@@ -68,6 +68,8 @@ export default {
         theme: null,
         is_selected: true,
         call: this.$dataStore.currentCall.id,
+        page: 1,
+        limit: 20
       },
       proposals: [],
       themes: [],
@@ -84,7 +86,8 @@ export default {
     getProposals() {
       var queryString = this.$buildURLQuery(this.formData);
       this.$api.get(`proposals/?${queryString}`).then((res) => {
-        this.proposals = res.data;
+        console.log
+        this.proposals = res.data.results;
       });
     },
     getThemes() {

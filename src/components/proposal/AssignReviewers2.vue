@@ -18,7 +18,7 @@
             @click="selectReviewer(item.id)"
             clickable
             :active="selectedReviewers.includes(item.id)"
-            v-for="item in reviewers"
+            v-for="item in reviewers.filter((item)=>item.is_active==true)"
             :key="item.id"
           >
             <input
@@ -27,7 +27,7 @@
               :checked="selectedReviewers.includes(item.id)"
             />
             <q-item-section
-              >{{ item.first_name }} {{ item.last_name }}</q-item-section
+              >{{ item.first_name }} {{ item.last_name }} ({{ item.email }})</q-item-section
             >
           </q-item>
         </q-list>

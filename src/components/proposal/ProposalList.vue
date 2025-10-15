@@ -52,7 +52,7 @@
             {{ proposal.title }}
           </router-link>
         </q-item-section>
-        <div>
+        <!-- <div>
           <q-btn
             color="primary"
             dense
@@ -60,7 +60,7 @@
             label="Go To Reviews"
             @click="$router.push(`/proposals/${proposal.id}/reviewers`)"
           />
-        </div>
+        </div> -->
         <div style="width: 100px">
           <q-chip
             color="secondary"

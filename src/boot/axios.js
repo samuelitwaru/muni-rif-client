@@ -21,7 +21,7 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token"); // Replace with your token key
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Token ${token}`;
     }
     return config;
   },
@@ -39,6 +39,11 @@ api.interceptors.response.use(
     // Handle response errors globally
 
     console.log("API Error:", error);
+
+    if (error.response.status === 401) {
+      localStorage.clear()
+      window.location = '/'
+    }
 
     if (error.response.status === 500) {
       error.response.data = { error: ["Internal Server Error"] };

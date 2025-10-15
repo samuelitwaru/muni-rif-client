@@ -140,6 +140,7 @@ export default {
     getProposals() {
       var queryString = this.$buildURLQuery(this.formData);
       this.$api.get(`proposals/?${queryString}`).then((res) => {
+        console.log('proposals', res.data)
         this.proposals = res.data;
         this.getProposalScores();
       });

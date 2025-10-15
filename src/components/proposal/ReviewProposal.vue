@@ -77,21 +77,32 @@
       </div>
     </div>
     <hr id="solution" class="section-separator" />
+    <div class="q-pa-sm" align="center">
+        <div>Total Score</div>
+        <q-card-section>
+          <q-circular-progress
+          show-value
+          font-size="12px"
+          :value="percentageScore"
+          size="100px"
+          :thickness="0.5"
+          color="teal"
+          track-color="grey-3"
+          class="q-ma-md"
+        >
+          {{ percentageScore }}%
+        </q-circular-progress>
+      </q-card-section>
+    </div>
   </div>
 </template>
 <script>
-// import proposalattachments from "components/proposal/ProposalAttachments.vue";
-// import BudgetItems from "components/proposal/BudgetItems.vue";
-// import TeamMembers from "components/proposal/TeamMembers.vue";
 import ProposalHeader from "components/proposal/ProposalHeader.vue";
 import ScoreView from "components/proposal/ScoreView.vue";
 import SectionView from "./SectionView.vue";
 export default {
   name: "ReviewProposal",
   components: {
-    // proposalattachments,
-    // BudgetItems,
-    // TeamMembers,
     ProposalHeader,
     ScoreView,
     SectionView,
@@ -102,6 +113,7 @@ export default {
       sections: [],
       proposal: {},
       score: null,
+      // percentageScore: 0,
       content: `
       <p>
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Obcaecati
@@ -115,9 +127,21 @@ export default {
   created() {
     this.getProposal();
     this.getSections();
+    this.$bus.on("score-updated", (val) => {
+      this.score[val.section] = val.score
+    });
   },
 
   computed: {
+    percentageScore () {
+      if (this.sections?.length == 0 || !this.score?.id) return 0
+      const scores = this.sections?.map(section => section.max_score)
+      const section_scores = this.sections?.map(section => this.score[section.name] || 0)
+      console.log(section_scores)
+      const total_section_scores = section_scores.reduce((acc,curr) => acc + curr, 0)
+      const total = scores.reduce((acc,curr) => acc + curr, 0)
+      return (total_section_scores/total) * 100
+    },
     scoresAreValid() {
       if (this.score && this.sections) {
         console.log(this.score);
@@ -164,6 +188,8 @@ export default {
     getSections() {
       this.$api.get(`sections/`).then((res) => {
         this.sections = res.data;
+
+        setTimeout(this.calculateTotalPercentageScore, 1000)
       });
     },
   },

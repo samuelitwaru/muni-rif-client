@@ -23,6 +23,7 @@
           @keyup.enter="filter()"
           @blur="filter()"
           dense
+          clearable
         />
 
         <div v-else-if="field.type == 'dateRange'" flat class="no-wrap">
@@ -34,6 +35,18 @@
             readonly
           >
             <template v-slot:append>
+              <q-icon v-if="formData2[field.name]" name="close"
+                @click="
+                  formData2[field.name]=null;
+                  formData2[field.range_input_name]=null;
+                  setDateRange(
+                        field.name,
+                        field.range_input_name,
+                        field.range_from_name,
+                        field.range_to_name
+                      );
+                  filter();"
+                />
               <q-icon name="event" class="cursor-pointer q-my-xs" icon="event" flat dense color="primary">
                 <q-popup-proxy
                   cover
@@ -126,11 +139,11 @@ export default {
     },
 
     setDateRange(name, range_input_name, range_from_name, range_to_name) {
-      this.formData[range_from_name] = this.formData2[name].from;
-      this.formData[range_to_name] = this.formData2[name].to;
+      this.formData[range_from_name] = this.formData2[name]?.from;
+      this.formData[range_to_name] = this.formData2[name]?.to;
       this.formData2[
         range_input_name
-      ] = `${this.formData2[name].from} - ${this.formData2[name].to}`;
+      ] = `${this.formData2[name]?.from || ''} - ${this.formData2[name]?.to || ''}`;
       this.popups[name] = false;
     },
 
