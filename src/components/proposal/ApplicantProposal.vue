@@ -52,6 +52,10 @@
       </div>
     </div>
 
+    <hr />
+    <ExpenseReports />
+    <ProposalReportsEditor />
+
     <hr id="solution" class="section-separator" />
   </div>
 </template>
@@ -60,9 +64,11 @@ import budgeteditor from "components/proposal/BudgetEditor.vue";
 import teameditor from "components/proposal/TeamEditor.vue";
 import sectioneditor2 from "components/proposal/SectionEditor2.vue";
 import attachmentseditor from "components/proposal/AttachmentsEditor.vue";
+import ExpenseReports from "./ExpenseReports.vue";
+import ProposalReportsEditor from "./ProposalReportsEditor.vue";
 
 export default {
-  components: { budgeteditor, teameditor, sectioneditor2, attachmentseditor },
+  components: { budgeteditor, teameditor, sectioneditor2, attachmentseditor, ExpenseReports, ProposalReportsEditor },
   data() {
     return {
       sections: [],

@@ -150,6 +150,7 @@ export default {
         if (res.status == 200) {
           this.init();
           this.$utilsStore.setLoading(false);
+          window.location.href = "/"
         }
       });
     },

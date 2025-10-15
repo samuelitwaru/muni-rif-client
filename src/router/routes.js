@@ -105,7 +105,7 @@ const routes = [
       },
       {
         path: ":proposal_id/reports",
-        component: () => import("components/proposal/ProposalReports.vue"),
+        component: () => import("src/components/proposal/ExpenseReports.vue"),
       },
       {
         path: ":proposal_id/team",
@@ -147,7 +147,7 @@ const routes = [
       },
       {
         path: ":proposal_id/reports",
-        component: () => import("components/proposal/ProposalReports.vue"),
+        component: () => import("src/components/proposal/ExpenseReports.vue"),
       },
       {
         path: ":proposal_id/team",

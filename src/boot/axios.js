@@ -37,7 +37,6 @@ api.interceptors.response.use(
   },
   (error) => {
     // Handle response errors globally
-
     console.log("API Error:", error);
 
     if (error.response.status === 401) {

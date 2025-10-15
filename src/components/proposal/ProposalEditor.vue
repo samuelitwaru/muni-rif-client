@@ -31,6 +31,10 @@
         </q-card>
       </div>
     </div>
+    <hr />
+    <ProposalScoreSheets />
+    <ExpenseReports />
+    <ProposalReportsEditor />
     <hr id="solution" class="section-separator" />
   </div>
 </template>
@@ -38,8 +42,11 @@
 import ProposalAttachments from "components/proposal/ProposalAttachments.vue";
 import TeamMembers from "components/proposal/TeamMembers.vue";
 import BudgetItems from "components/proposal/BudgetItems.vue";
+import ExpenseReports from "./ExpenseReports.vue";
+import ProposalScoreSheets from "./ProposalScoreSheets.vue";
+import ProposalReportsEditor from "./ProposalReportsEditor.vue";
 export default {
-  components: { ProposalAttachments, TeamMembers, BudgetItems },
+  components: { ProposalAttachments, TeamMembers, BudgetItems, ExpenseReports, ProposalScoreSheets, ProposalReportsEditor },
   data() {
     return {
       sections: [],
@@ -121,6 +128,6 @@ export default {
 <style>
 body,
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
 }
 </style>
