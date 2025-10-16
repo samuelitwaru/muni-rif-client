@@ -4,7 +4,7 @@
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" to="/" label="Home" />
 
-        <q-breadcrumbs-el label="Proposal Reviews" icon="note" />
+        <q-breadcrumbs-el label="Proposal Reviews" icon="reviews" />
       </q-breadcrumbs>
     </div>
     <q-separator spaced />

@@ -51,10 +51,12 @@
         </div>
       </div>
     </div>
-
-    <hr />
-    <ExpenseReports />
-    <ProposalReportsEditor />
+    <div v-if="this.$authStore.currentUser.id ==
+                    this.$proposalStore.currentProposal.user && this.$proposalStore.currentProposal.is_selected">
+      <hr />
+      <ExpenseReports />
+      <ProposalReportsEditor />
+    </div>
 
     <hr id="solution" class="section-separator" />
   </div>

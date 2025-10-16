@@ -42,8 +42,8 @@
           <td class="text-center">{{ item.average_score }}</td>
 
           <td>
-            <q-btn color="green" label="Award" />
-            <q-btn color="red" class="q-mx-sm" label="reject" />
+            <!-- <q-btn color="green" label="Award" />
+            <q-btn color="red" class="q-mx-sm" label="reject" /> -->
             <router-link :to="`/proposals/${item.id}`">
               <q-btn
                 label="View"

@@ -1,6 +1,6 @@
 <template>
   <span v-if="currentCall">
-    Call:
+    <!-- Call: -->
     <q-btn-dropdown
       v-if="currentUser && $userHasAnyGroups(['grants_officer'])"
       split
@@ -9,7 +9,7 @@
       no-caps
       icon="folder"
       :label="currentCall.title"
-      @click="this.$router.push(`/calls/${currentCall.id}`)"
+      @click="this.$router.push(`/calls/`)"
     >
       <div v-if="$userHasAnyGroups(['grants_officer'])">
         <div v-if="calls.length">
@@ -24,7 +24,7 @@
               @click="changeCurrentCall(call)"
             >
               <q-item-section>
-                <q-item-label class="flex justify-between items-center">{{ call.title }} <q-chip v-if="$dataStore.currentEntity.current_call == call.id" color="secondary" size="sm" class="gloss" label="Active" /></q-item-label>
+                <q-item-label class="flex justify-between items-center">{{ call.title }} <q-chip v-if="activeCall?.id == call.id" color="secondary" size="sm" class="gloss" label="Active" /></q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -48,12 +48,10 @@
         </q-list>
       </div>
     </q-btn-dropdown>
-    <span v-else> > {{ currentCall.title }} </span>
   </span>
 </template>
 
 <script>
-import { getCalls } from "src/utils/api";
 
 export default {
   props: {
@@ -75,6 +73,9 @@ export default {
       if (this.currentCall)
         return this.calls.filter((call) => call.id != this.currentCall.id);
       return [];
+    },
+    activeCall(){
+      return this.calls.find(call=>call.id==this.entity.current_call)
     },
     menuItems() {
       if (this.$userHasAnyGroups(["applicant"])) {
@@ -106,20 +107,30 @@ export default {
   },
 
   created() {
-    getCalls().then((res) => {
-      this.calls = res;
-      if (this.calls.length) {
-        var lastCall = this.calls[0];
-        setTimeout(() => {
-          console.log('active call', this.$dataStore.currentEntity);
-        }, 2000);
-        this.setCurrentCall(this.$dataStore.currentCall || lastCall);
-      } else {
-        this.setCurrentCall({ title: "No Call Found" });
-      }
-    });
+    this.getEntity()
   },
   methods: {
+    async getEntity() {
+      const res = await this.$api.get(`entities/`);
+      this.entity = res.data[0];
+      this.$dataStore.setEntity(this.entity);
+      this.getCalls();
+    },
+    getCalls() {
+      this.$api.get('calls/').then(res=>{
+        this.calls = res.data;
+        if (this.calls.length) {
+          var activeCall = this.getActiveCall()
+          console.log('current call: ', this.$dataStore.currentCall.title)
+          this.setCurrentCall(this.$dataStore.currentCall || activeCall);
+        } else {
+          this.setCurrentCall({ title: "No Call Found" });
+        }
+      })
+    },
+    getActiveCall(){
+      return this.calls.find(call=>call.id==this.entity.current_call)
+    },
     navigateTo(route) {
       this.$router.push(route);
     },

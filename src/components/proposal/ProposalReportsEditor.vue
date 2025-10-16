@@ -24,12 +24,7 @@
                 class="glossy"
                 icon="attachment"
                 :label="getFileNameFromUrl(file.file)"
-                :removable="
-                  $userHasAnyGroups(['applicant']) &&
-                  $authStore.currentUser.id ==
-                    $proposalStore.currentProposal.user &&
-                  $proposalStore.currentProposal.status == 'SELECTED'
-                "
+                :removable="isEditing"
                 clickable
                 @remove="deleteReport(file.id)"
                 @click="openFile(file.file)"
@@ -37,10 +32,7 @@
             </div>
           </td>
           <td>
-            <FileUploader2 v-if="$userHasAnyGroups(['applicant']) &&
-                  $authStore.currentUser.id ==
-                    $proposalStore.currentProposal.user &&
-                  $proposalStore.currentProposal.status == 'SELECTED'" @file-uploaded="getReports()" uploadUrl="/reports/" :multiple="false" :formData="{title:schedule.title, reporting_date:schedule.id, proposal:$route.params.proposal_id}" />
+            <FileUploader2 v-if="isEditing" @file-uploaded="getReports()" uploadUrl="/reports/" :multiple="false" :formData="{title:schedule.title, reporting_date:schedule.id, proposal:$route.params.proposal_id}" />
           </td>
         </tr>
         <tr v-if="reporting_dates.length==0" align="center">
@@ -62,7 +54,11 @@ export default {
   data() {
     return {
       reports: [],
-      reporting_dates: []
+      reporting_dates: [],
+      isEditing: this.$userHasAnyGroups(['applicant']) &&
+                  this.$authStore.currentUser.id ==
+                    this.$proposalStore.currentProposal.user &&
+                  this.$proposalStore.currentProposal.is_selected,
     };
   },
   created() {
@@ -71,7 +67,7 @@ export default {
   },
   methods: {
     getReports() {
-      this.$api.get(`reports/`).then((res) => {
+      this.$api.get(`reports/?proposal=${this.$route.params.proposal_id}`).then((res) => {
         this.reports = res.data;
         console.log('reports:', res.data)
       });

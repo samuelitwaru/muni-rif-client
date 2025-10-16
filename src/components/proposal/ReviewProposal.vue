@@ -140,7 +140,7 @@ export default {
       console.log(section_scores)
       const total_section_scores = section_scores.reduce((acc,curr) => acc + curr, 0)
       const total = scores.reduce((acc,curr) => acc + curr, 0)
-      return (total_section_scores/total) * 100
+      return Math.round((total_section_scores/total) * 100)
     },
     scoresAreValid() {
       if (this.score && this.sections) {

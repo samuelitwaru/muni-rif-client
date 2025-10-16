@@ -39,9 +39,14 @@ api.interceptors.response.use(
     // Handle response errors globally
     console.log("API Error:", error);
 
+    // if error.request.reponse
+
     if (error.response.status === 401) {
-      localStorage.clear()
-      window.location = '/'
+      const currentPathName = window.location.pathname
+      if (!currentPathName.startsWith('/index/account')) {
+        localStorage.clear()
+        window.location = '/'
+      }
     }
 
     if (error.response.status === 500) {

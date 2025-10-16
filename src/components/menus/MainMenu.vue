@@ -24,18 +24,10 @@
           :class="`text-center q-pa-md q-ma-sm text-${item.color}`"
           style="width: 10rem; height: 10rem"
         >
-          <q-badge
-            class="q-pa-sm justify-center"
-            style="width: 30px"
-            v-if="counts[item.name]"
-            color="primary"
-            floating
-            rounded
-            >{{ counts[item.name] }}</q-badge
-          >
+          <q-badge style="position: absolute; top:4px; right:4px" v-if="counts[item.name]" :label="counts[item.name]" />
           <q-icon :name="item.icon" size="xl" />
           <q-card-section>
-            <div class="text-h6">{{ item.name }}</div>
+            <div class="text-h6">{{ item.display_name }}</div>
           </q-card-section>
         </q-btn>
       </router-link>
@@ -59,10 +51,11 @@ defineOptions({
       showPopup: false,
       menuItems: ref([
         {
-          name: "SUBMISSIONS",
+          name: "PROPOSALS",
+          display_name: "ALL PROPOSALS",
           route: "/go/proposals/submitted",
           icon: "description",
-          color: "secondary",
+          color: "orange",
           roles: ["grants_officer"],
           count: 0,
           click: () => {
@@ -74,16 +67,8 @@ defineOptions({
         },
 
         {
-          name: "CALLS",
-          route: "/calls",
-          icon: "campaign",
-          color: "secondary",
-          roles: ["grants_officer"],
-          count: 0,
-        },
-
-        {
-          name: "REVIEWES",
+          name: "REVIEWED",
+          display_name: "REVIEWED",
           route: "/go/proposals/reviewed",
           icon: "search",
           color: "secondary",
@@ -98,9 +83,10 @@ defineOptions({
 
         {
           name: "SELECTED",
+          display_name: "SELECTED",
           route: "/go/proposals/selected",
           icon: "check_circle_outline",
-          color: "secondary",
+          color: "pink",
           roles: ["grants_officer"],
           click: () => {
             this.$utilsStore.setStateData(
@@ -110,42 +96,63 @@ defineOptions({
           },
         },
 
+
+
+        {
+          name: "CALLS",
+          display_name: "CALLS",
+          route: "/calls",
+          icon: "campaign",
+          color: "blue",
+          roles: ["grants_officer"],
+          count: 0,
+        },
+
+
+
+
         {
           name: "THEMES",
+          display_name: "THEMES",
           route: "/themes",
           icon: "apps",
-          color: "secondary",
+          color: "indigo",
           roles: ["grants_officer"],
         },
 
         {
           name: "REVIEWERS",
+          display_name: "REVIEWERS",
           route: "/reviewers",
-          icon: "people",
-          color: "secondary",
+          icon: "school",
+          color: "green",
           roles: ["grants_officer"],
         },
 
         {
           name: "APPLICANTS",
+          display_name: "APPLICANTS",
           route: "/applicants",
           icon: "people",
-          color: "secondary",
+          color: "purple",
           roles: ["grants_officer"],
         },
 
         {
           name: "MY PROPOSALS",
+          display_name: "MY PROPOSALS",
           route: "/applicant/proposals",
-          icon: "search",
-          color: "secondary",
+          icon: "description",
+          color: "indigo",
           roles: ["applicant"],
         },
+
         {
-          name: "Apply",
+          name: "APPLY",
+          display_name: "APPLY",
           route: "",
           icon: "app_registration",
-          color: "secondary",
+          color: "red",
           roles: ["applicant"],
           click: () => {
             this.showPopup = true;
@@ -153,17 +160,18 @@ defineOptions({
         },
 
         {
-          name: "Proposal Reviews",
+          name: "PROPOSAL REVIEWS",
+          display_name: "PROPOSAL REVIEWS",
           route: "/proposal-reviews",
-          icon: "search",
-          color: "secondary",
+          icon: "reviews",
+          color: "green",
           roles: ["reviewer"],
         },
       ]),
 
       counts: {
         SELECTED: 0,
-        SUBMISSIONS: 0,
+        PROPOSALS: 0,
       },
     };
   },
@@ -208,7 +216,16 @@ defineOptions({
         )
         .then((res) => {
           if ((res.status = 200)) {
-            this.counts.SUBMISSIONS = res.data.count;
+            this.counts.PROPOSALS = res.data.count;
+          }
+        });
+      this.$api
+        .get(
+          `proposals/count/?call=${this.$dataStore.currentCall.id}&status=REVIEWED`
+        )
+        .then((res) => {
+          if ((res.status = 200)) {
+            this.counts.REVIEWED = res.data.count;
           }
         });
     },

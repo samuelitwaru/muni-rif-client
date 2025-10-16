@@ -8,7 +8,6 @@
     </div>
     <q-separator spaced />
     <!-- filters section -->
-
     <!-- other controls -->
     <div class="q-ma-sm row items-center">
       <q-card class="my-card q-pa-xs" flat bordered>
@@ -18,7 +17,6 @@
         <FileUploader2 @file-uploaded="getProposals({})" uploadUrl="/proposals/upload-bulk/" :multiple="false" :formData="{}" />
       </div>
       </q-card>
-
       <div class="col">
       </div>
       <div class="col">

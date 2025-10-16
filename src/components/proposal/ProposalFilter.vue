@@ -116,7 +116,7 @@ export default {
         { id: "SUBMITTED", title: "SUBMITTED" },
         { id: "REVIEWING", title: "REVIEWING" },
         { id: "REVIEWED", title: "REVIEWED" },
-        { id: "SELECTED", title: "SELECTED" },
+        // { id: "SELECTED", title: "SELECTED" },
       ];
     },
     async getUsers() {

@@ -210,6 +210,23 @@ export default {
         password: "",
         themes: [],
       },
+      emailRules: [
+        (v) => !!v || "Email is required",
+        (v) => /.+@.+\..+/.test(v) || "Email must be valid",
+      ],
+      nameRules: [(v) => !!v || "Field is required"],
+      phoneRules: [
+        (v) => !!v || "Telephone number is required",
+        (v) => /^[0-9]{10}$/.test(v) || "Telephone number must be 10 digits",
+      ],
+      passwordRules: [
+        (v) => !!v || "Password is required",
+        (v) => v.length >= 8 || "Password must be at least 8 characters long",
+      ],
+      confirmPasswordRules: [
+        (v) => !!v || "Confirm Password is required",
+        (v) => v === this.formData.password || "Passwords do not match",
+      ],
     };
   },
   created() {
@@ -228,7 +245,10 @@ export default {
       this.$api.post("users/create-reviewer/", this.formData).then((res) => {
         this.$router.push(`/reviewers/`);
         this.$utilsStore.setLoading(false);
-      });
+      })
+      .catch(err => {
+        this.$utilsStore.setLoading(false);
+      })
     },
 
     getThemes() {

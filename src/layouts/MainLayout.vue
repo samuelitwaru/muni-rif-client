@@ -15,10 +15,10 @@
         <q-toolbar-title>
           Muni RIF
 
-          <DropdownCallMenu color="" v-if="$userHasAnyGroups(['grants_officer'])" />
-          <span v-else>
+          <!-- <DropdownCallMenu color="" v-if="$userHasAnyGroups(['grants_officer'])" /> -->
+          <span>
             <q-icon name="arrow_right" size="md" />
-            {{ this.currentCall.title }}</span
+            {{ activeCall.title }}</span
           >
         </q-toolbar-title>
 
@@ -56,13 +56,19 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" class="bg-grey-2" bordered :width="220">
-      <q-img
-        src="~assets/logo.jpeg"
-        spinner-color="primary"
-        spinner-size="72px"
-      />
-      <CallMenu />
+    <q-drawer v-model="leftDrawerOpen" class="bg-grey-2" bordered :width="300">
+      <div class="q-pa-sm" align="center">
+        <DropdownCallMenu />
+      </div>
+      <div align="center">
+        <q-img
+          src="~assets/logo.png"
+          spinner-color="primary"
+          spinner-size="72px"
+          width="100px"
+        />
+      </div>
+      <UserMenu />
     </q-drawer>
     <q-page-container>
       <router-view />
@@ -72,15 +78,14 @@
 
 <script>
 import { getCalls } from "src/utils/api";
-import CallMenu from "src/components/call/CallMenu.vue";
 import DropdownCallMenu from "src/components/call/DropdownCallMenu.vue";
-
+import UserMenu from "src/components/menus/UserMenu.vue";
 export default {
   name: "MainLayout",
-  components: { CallMenu, DropdownCallMenu },
+  components: { DropdownCallMenu, UserMenu },
   data() {
     return {
-      leftDrawerOpen: false,
+      leftDrawerOpen: true,
       calls: [],
       currentCall: null,
     };
@@ -92,6 +97,9 @@ export default {
         return this.calls.filter((call) => call.id != this.currentCall.id);
       return [];
     },
+    activeCall(){
+      return this.calls.find(call=>call.id==this.entity.current_call)
+    },
   },
 
   created() {
@@ -99,6 +107,9 @@ export default {
       location.href = "/index/account/signin";
     }
     this.getEntity();
+    this.$bus.on('set-active-call', (data => {
+      this.getEntity()
+    }))
   },
 
   methods: {

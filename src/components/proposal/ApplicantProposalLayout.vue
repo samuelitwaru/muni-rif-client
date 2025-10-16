@@ -47,7 +47,7 @@
             label="download"
             @click="downloadProposal"
           />
-          <proposal-options />
+          <!-- <proposal-options /> -->
         </div>
       </q-toolbar>
     </q-header>
@@ -97,40 +97,6 @@
     </q-drawer>
 
     <q-page-container>
-      <!-- <div class="q-pa-md">
-        <q-toolbar-title class="flex justify-between">
-          <div class="flex">Background Information</div>
-        </q-toolbar-title>
-        <div>
-          <q-markup-table flat bordered class="q-ma-sm">
-            <tbody>
-              <tr class="q-tr--no-hover">
-                <td class="text-left">Title</td>
-                <td class="text-left">
-                  <q-input
-                    style="min-width: 20rem"
-                    v-if="$proposalStore.currentProposal?.status == 'EDITING'"
-                    @blur="editProposalTitle"
-                    v-model="formData.title"
-                    type="text"
-                    outlined
-                    dense
-                  />
-                  <label v-else>
-                    {{ $proposalStore.currentProposal.title }}
-                  </label>
-                </td>
-              </tr>
-              <tr class="q-tr--no-hover">
-                <td class="text-left">Theme</td>
-                <td class="text-left">
-                  {{ $proposalStore.currentProposal.theme_title }}
-                </td>
-              </tr>
-            </tbody>
-          </q-markup-table>
-        </div>
-      </div> -->
       <ProposalHeader />
       <router-view></router-view>
 

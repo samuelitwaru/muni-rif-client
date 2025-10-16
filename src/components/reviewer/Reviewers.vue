@@ -3,13 +3,13 @@
     <div class="q-ma-md">
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" to="/" label="Home" />
-        <q-breadcrumbs-el label="Reviewers" icon="people" />
+        <q-breadcrumbs-el label="Reviewers" icon="school" />
       </q-breadcrumbs>
     </div>
     <q-separator spaced />
     <div align="right" class="q-ma-sm">
       <router-link to="/reviewers/create">
-        <q-btn color="primary" outline label="add reviewer" @click="onClick" />
+        <q-btn color="primary" outline label="add reviewer" />
       </router-link>
     </div>
     <q-markup-table class="q-ma-sm" flat bordered>

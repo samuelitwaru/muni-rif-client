@@ -33,7 +33,7 @@
     >
       <thead>
         <tr>
-          <th align="left">Title</th>
+          <th align="left">Selection Status</th>
           <th v-for="section in sections" :key="section.id">
             {{ section.title }}
           </th>
@@ -141,7 +141,7 @@ export default {
       var queryString = this.$buildURLQuery(this.formData);
       this.$api.get(`proposals/?${queryString}`).then((res) => {
         console.log('proposals', res.data)
-        this.proposals = res.data;
+        this.proposals = res.data.results;
         this.getProposalScores();
       });
     },
@@ -170,6 +170,7 @@ export default {
             message = "Proposal removed from selected proposals";
           }
           this.$q.notify(message);
+          this.$bus.emit('proposal-selected', {})
         });
     },
   },

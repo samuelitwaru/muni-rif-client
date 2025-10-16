@@ -3,17 +3,17 @@
 
     <div class="row items-center justify-between">
       <div class="text-h6">Expense Reports</div>
-      <div class="q-gutter-sm">
-        <q-btn color="green" outline flat icon="download" label="export" @click="exportExpenditures" />
-      </div>
+      <!-- <div class="q-gutter-sm">
+        <q-btn color="primary" outline flat icon="download" label="export" @click="exportExpenditures" />
+      </div> -->
     </div>
     <q-markup-table flat bordered>
       <thead>
         <tr>
           <th class="text-left">Date</th>
           <th class="text-left">Item</th>
-          <th class="text-left">Quantity</th>
           <th class="text-left">Units</th>
+          <th class="text-left">Quantity</th>
           <th class="text-left">Unit Cost</th>
           <th class="text-right">Total</th>
           <th class="text-left">Comments</th>
@@ -42,7 +42,13 @@
             <input type="text"  v-model="formData.remarks">
           </td>
           <td class="text-left">
-            <q-btn color="red" label="submit" flat outline @click="createExpenditure" />
+            <q-btn v-if="!isSubmitting" color="red" icon="check" flat outline @click="createExpenditure" />
+            <q-spinner
+            v-else
+              color="primary"
+              size="1.5rem"
+              :thickness="5"
+            />
           </td>
         </tr>
         <tr v-for="expenditure in expenditures" :key="expenditure.id">
@@ -57,13 +63,18 @@
             <q-btn color="red" icon="delete" @click="deleteExpenditure(expenditure.id)" flat outline />
           </td>
         </tr>
+        <tr>
+          <td align="center" v-if="expenditures.length == 0" colspan="7">
+            No entries
+          </td>
+        </tr>
       </tbody>
-      <tfoot>
+      <tfoot v-if="expenditures.length">
         <tr>
           <td colspan="5" class="text-left"><strong>Total</strong></td>
           <td class="text-right"><strong>{{$commaSeparator(totalAmount)}} UGX</strong></td>
           <td class="text-left"><strong></strong></td>
-          <td v-if="isEditing"  class="text-left"><strong></strong></td>
+          <td v-if="isEditing" class="text-left"><strong></strong></td>
         </tr>
       </tfoot>
     </q-markup-table>
@@ -88,7 +99,8 @@ export default {
       },
       expenditures: [],
       isEditing: this.$userHasAnyGroups(['applicant']) && this.$authStore.currentUser.id ==
-                    this.$proposalStore.currentProposal.user && this.$proposalStore.currentProposal.status == 'SELECTED'
+                    this.$proposalStore.currentProposal.user && this.$proposalStore.currentProposal.is_selected,
+      isSubmitting: false,
     }
   },
   created(){
@@ -107,17 +119,19 @@ export default {
       });
     },
     createExpenditure(){
+      this.isSubmitting = true
       this.$api.post(`expenditures/`, this.formData)
       .then((res) => {
         console.log('res: ', res.status)
         if (res.status == 201) {
           this.expenditures.push(res.data)
           this.resetFormData()
+          this.isSubmitting = false
         }
       })
       .catch(err => {
         console.log('err', err.response.data)
-        this.$utilsStore.setLoading(false);
+        this.isSubmitting = false
       })
     },
     deleteExpenditure(expenseId){
