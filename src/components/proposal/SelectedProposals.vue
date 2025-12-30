@@ -31,27 +31,26 @@
           <th align="left">Date Submitted</th>
           <th align="center">Total Score</th>
           <th align="center">Average Score</th>
-          <th align="left"></th>
+          <th align="left">Budget Allocation</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in proposals" :key="item.id">
-          <td>{{ item.title }}</td>
+          <td>
+            <router-link :to="`/proposals/${item.id}`">
+              {{ item.title }}
+            </router-link>
+          </td>
           <td>{{ item.submission_date }}</td>
           <td class="text-center">{{ item.total_score }}</td>
           <td class="text-center">{{ item.average_score }}</td>
-
-          <td>
-            <!-- <q-btn color="green" label="Award" />
-            <q-btn color="red" class="q-mx-sm" label="reject" /> -->
-            <router-link :to="`/proposals/${item.id}`">
-              <q-btn
-                label="View"
-                flat
-                color="primary"
-                @click="editItem(item)"
-              />
-            </router-link>
+          <td class="text-center">
+              <div class="flex items-center">
+                <span class="q-pr-sm">
+                  {{ $commaSeparator(item.budget_allocation) }}
+                </span>
+                <award-project-dialog :proposal="item" />
+              </div>
           </td>
         </tr>
       </tbody>
@@ -60,8 +59,14 @@
 </template>
 
 <script>
+import AwardProjectDialog from './AwardProjectDialog.vue';
+
+
 export default {
-  name: "ReviewerList",
+  name: "SelectedProposals",
+  components: {
+    AwardProjectDialog,
+  },
   data() {
     return {
       formData: {

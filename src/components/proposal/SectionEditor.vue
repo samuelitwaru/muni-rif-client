@@ -67,8 +67,8 @@
 </template>
 
 <script>
-// import wordCount from "html-word-count";
-import cheerio from "cheerio";
+import { removeHTMLTags } from 'src/utils/helpers';
+
 export default {
   props: {
     proposal: {
@@ -112,10 +112,8 @@ export default {
     },
 
     countWordsInHtml(htmlString) {
-      const $ = cheerio.load(htmlString);
-
       // Get the text content without HTML tags
-      const cleanText = $("body").text();
+      const cleanText = removeHTMLTags(htmlString);
 
       // Split the text into words and count them
       const words = cleanText.split(/\s+/);

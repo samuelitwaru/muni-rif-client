@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <ProposalAttachments v-if="section.name == 'attachments'" />
-    <BudgetItems v-else-if="section.name == 'summary_budget'" />
+    <BudgetItems v-else-if="section.name == 'summary_budget'" :proposal_id="$route.params.proposal_id" />
     <TeamMembers v-else-if="section.name == 'team'" />
     <div v-else>
       <q-card flat bordered class="q-pa-sm q-my-sm">

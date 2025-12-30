@@ -1,0 +1,1 @@
+import{m as a,ae as c}from"./index.e39be684.js";const u=/^on[A-Z]/;function l(s,r){const e={listeners:a({}),attributes:a({})};function n(){const o={},i={};for(const t in s)t!=="class"&&t!=="style"&&u.test(t)===!1&&(o[t]=s[t]);for(const t in r.props)u.test(t)===!0&&(i[t]=r.props[t]);e.attributes.value=o,e.listeners.value=i}return c(n),n(),e}export{l as u};

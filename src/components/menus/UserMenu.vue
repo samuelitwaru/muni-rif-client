@@ -88,6 +88,15 @@ export default {
           },
         },
 
+        {
+          name: "FINANCIAL REPORTS",
+          display_name: "FINANCIAL REPORTS",
+          route: "/financial-reports",
+          icon: "assessment",
+          color: "secondary",
+          roles: ["grants_officer"],
+        },
+
 
 
         {

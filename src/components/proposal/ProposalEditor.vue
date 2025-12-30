@@ -18,7 +18,7 @@
         </div>
 
         <div v-else-if="section.name == 'summary_budget'">
-          <BudgetItems />
+          <BudgetItems :proposal_id="$route.params.proposal_id"/>
         </div>
 
         <q-card v-else flat bordered class="q-pa-sm">

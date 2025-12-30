@@ -127,7 +127,7 @@
 import { defineComponent, ref } from "vue";
 import { protectFile } from "src/utils/helpers";
 import ProposalHeader from "components/proposal/ProposalHeader.vue";
-import cheerio from "cheerio";
+import { removeHTMLTags } from "src/utils/helpers";
 
 export default defineComponent({
   components: {
@@ -287,11 +287,8 @@ export default defineComponent({
     },
 
     countWordsInHtml(htmlString) {
-      const $ = cheerio.load(htmlString);
-
       // Get the text content without HTML tags
-      const cleanText = $("body").text();
-
+      const cleanText = removeHTMLTags(htmlString);
       // Split the text into words and count them
       const words = cleanText.split(/\s+/);
       const numWords = words.length;

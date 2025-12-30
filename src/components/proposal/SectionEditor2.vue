@@ -38,7 +38,8 @@
 </template>
 
 <script>
-import cheerio from "cheerio";
+import { removeHTMLTags } from 'src/utils/helpers';
+
 export default {
   name: "SectionEditor2",
   props: {
@@ -79,10 +80,8 @@ export default {
     },
 
     countWordsInHtml(htmlString) {
-      const $ = cheerio.load(htmlString);
-
       // Get the text content without HTML tags
-      const cleanText = $("body").text();
+      const cleanText = removeHTMLTags(htmlString);
 
       // Split the text into words and count them
       const words = cleanText.split(/\s+/);

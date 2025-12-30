@@ -32,6 +32,12 @@
 <script>
 export default {
   name: "BudgetItems",
+  props: {
+    proposal_id: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       items: [],
@@ -56,8 +62,9 @@ export default {
       this.getBudgets();
     },
     getBudgets() {
+      const proposalId = this.proposal_id;
       this.$api
-        .get(`budgets/?proposal=${this.$route.params.proposal_id}`)
+        .get(`budgets/?proposal=${proposalId}`)
         .then((res) => {
           this.items = res.data;
         });

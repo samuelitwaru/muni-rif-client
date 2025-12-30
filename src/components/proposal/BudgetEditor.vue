@@ -4,6 +4,7 @@
       <thead>
         <tr>
           <th align="left">Item</th>
+          <th align="left">Budget Category</th>
           <th align="left">Quantity</th>
           <th align="left">Units</th>
           <th align="left">Unit Cost (UGX)</th>
@@ -27,6 +28,13 @@
               style="display: block; width: 100%"
               type="text"
             />
+          </td>
+          <td class="text-left">
+            <select id="budget_category_selector" v-model="formData.budget_category">
+              <option :value="cat.id" v-for="cat in budget_categories" :key="cat.id">
+                {{cat.title}}
+              </option>
+            </select>
           </td>
           <td>
             <input
@@ -56,6 +64,7 @@
         </tr>
         <tr class="q-tr--no-hover" v-for="item in items" :key="item.id">
           <td>{{ item.item }}</td>
+          <td>{{ item.budget_category_title }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.units }}</td>
           <td>{{ $commaSeparator(item.unit_cost) }} UGX</td>
@@ -70,7 +79,7 @@
           </td>
         </tr>
         <tr class="q-tr--no-hover">
-          <th class="text-left" colspan="4">Total</th>
+          <th class="text-left" colspan="5">Total</th>
           <th class="text-left">{{ $commaSeparator(totalBudget) }} UGX</th>
           <td></td>
         </tr>
@@ -90,6 +99,7 @@ export default {
         units: "",
         unit_cost: 0,
         proposal: this.$route.params.proposal_id,
+        budget_category: null,
       },
       updateFormData: {
         id: 0,
@@ -100,6 +110,7 @@ export default {
         proposal: this.$route.params.proposal_id,
       },
       items: [],
+      budget_categories: [{id: null, title: 'None'}],
     };
   },
   computed: {
@@ -118,6 +129,7 @@ export default {
   methods: {
     init() {
       this.getBudgets();
+      this.getBudgetCategories();
     },
     getBudgets() {
       this.$api
@@ -125,6 +137,11 @@ export default {
         .then((res) => {
           this.items = res.data;
         });
+    },
+    getBudgetCategories() {
+      this.$api.get(`budget-categories/`).then((res) => {
+        this.budget_categories = this.budget_categories.concat(res.data)
+      });
     },
     createBudget() {
       this.$api.post(`budgets/`, this.formData).then((res) => {

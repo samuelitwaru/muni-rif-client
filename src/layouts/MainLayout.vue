@@ -85,7 +85,7 @@ export default {
   components: { DropdownCallMenu, UserMenu },
   data() {
     return {
-      leftDrawerOpen: true,
+      leftDrawerOpen: window.innerWidth > 1024,
       calls: [],
       currentCall: null,
     };

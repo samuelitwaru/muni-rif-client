@@ -1,20 +1,21 @@
 <template lang="">
   <div class="q-pa-md">
 
-    <div class="row items-center justify-between">
+    <div id="reports" class="row items-center justify-between q-mb-sm">
       <div class="text-h6">Expense Reports</div>
-      <!-- <div class="q-gutter-sm">
+      <div class="q-gutter-sm">
         <q-btn color="primary" outline flat icon="download" label="export" @click="exportExpenditures" />
-      </div> -->
+      </div>
     </div>
     <q-markup-table flat bordered>
       <thead>
         <tr>
           <th class="text-left">Date</th>
+          <th class="text-left">Expense Category</th>
           <th class="text-left">Item</th>
           <th class="text-left">Units</th>
-          <th class="text-left">Quantity</th>
-          <th class="text-left">Unit Cost</th>
+          <th class="text-right">Quantity</th>
+          <th class="text-right">Unit Cost</th>
           <th class="text-right">Total</th>
           <th class="text-left">Comments</th>
           <th class="text-left" v-if="isEditing">Action</th>
@@ -26,12 +27,19 @@
             <input type="date" v-model="formData.date">
           </td>
           <td class="text-left">
+            <select id="budget_category_selector" v-model="formData.budget_category">
+              <option :value="cat.id" v-for="cat in budget_categories" :key="cat.id">
+                {{cat.title}}
+              </option>
+            </select>
+          </td>
+          <td class="text-left">
             <input type="text"  v-model="formData.item">
           </td>
           <td class="text-left">
             <input type="text"  v-model="formData.units">
           </td>
-          <td class="text-left">
+          <td class="text-right">
             <input type="number"  v-model="formData.quantity">
           </td>
           <td class="text-left">
@@ -53,9 +61,10 @@
         </tr>
         <tr v-for="expenditure in expenditures" :key="expenditure.id">
           <td class="text-left">{{ expenditure.date }}</td>
+          <td class="text-left">{{ expenditure.budget_category_title || '-' }}</td>
           <td class="text-left">{{ expenditure.item }}</td>
           <td class="text-left">{{ expenditure.units }}</td>
-          <td class="text-center">{{ expenditure.quantity }}</td>
+          <td class="text-right">{{ expenditure.quantity }}</td>
           <td class="text-right">{{ $commaSeparator(expenditure.unit_cost) }} UGX</td>
           <td class="text-right">{{ $commaSeparator(expenditure.quantity * expenditure.unit_cost) }} UGX</td>
           <td class="text-left">{{ expenditure.remarks }}</td>
@@ -71,7 +80,7 @@
       </tbody>
       <tfoot v-if="expenditures.length">
         <tr>
-          <td colspan="5" class="text-left"><strong>Total</strong></td>
+          <td colspan="6" class="text-left"><strong>Total</strong></td>
           <td class="text-right"><strong>{{$commaSeparator(totalAmount)}} UGX</strong></td>
           <td class="text-left"><strong></strong></td>
           <td v-if="isEditing" class="text-left"><strong></strong></td>
@@ -96,7 +105,9 @@ export default {
         date: formattedDate,
         proposal: this.$route.params.proposal_id,
         remarks: "",
+        budget_category: null,
       },
+      budget_categories: [{id: null, title: 'None'}],
       expenditures: [],
       isEditing: this.$userHasAnyGroups(['applicant']) && this.$authStore.currentUser.id ==
                     this.$proposalStore.currentProposal.user && this.$proposalStore.currentProposal.is_selected,
@@ -105,6 +116,7 @@ export default {
   },
   created(){
     this.getExpenditures()
+    this.getBudgetCategories()
   },
   computed: {
     totalAmount(){
@@ -118,8 +130,16 @@ export default {
         this.expenditures = res.data;
       });
     },
+
+    getBudgetCategories() {
+      this.$api.get(`budget-categories/`).then((res) => {
+        this.budget_categories = this.budget_categories.concat(res.data)
+      });
+    },
+
     createExpenditure(){
       this.isSubmitting = true
+      console.log('formData: ', this.formData)
       this.$api.post(`expenditures/`, this.formData)
       .then((res) => {
         console.log('res: ', res.status)
@@ -165,6 +185,11 @@ export default {
     /* border-bottom: 1px solid #ccc; */
     padding: 4px;
     font-size: 14px;
+    width: 100%;
+  }
+
+  #budget_category_selector {
+    height: 35px;
     width: 100%;
   }
 </style>

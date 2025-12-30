@@ -5,6 +5,7 @@
       <thead>
         <tr>
           <th align="left">Title</th>
+          <th align="left">Template</th>
           <th align="left">Due Date</th>
           <th align="left" colspan="2">Files</th>
         </tr>
@@ -13,6 +14,17 @@
         <tr v-for="schedule in reporting_dates" :key="schedule.id">
           <td>
             {{ schedule.title }}
+          </td>
+          <td>
+            <q-chip
+                v-if="schedule.template"
+                dense
+                class="glossy"
+                icon="attachment"
+                label="Template"
+                clickable
+                @click="openFile(schedule.template)"
+              />
           </td>
           <td>{{ schedule.date }}</td>
           <td>

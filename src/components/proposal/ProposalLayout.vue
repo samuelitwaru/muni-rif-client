@@ -58,32 +58,34 @@
         </router-link>
       </q-card>
       <q-list>
-        <a
+        <span
           v-for="(section, index) in sections"
           :key="section.id"
           :href="`/proposals/${$route.params.proposal_id}${section.ref}`"
         >
-          <q-item clickable v-ripple>
+          <q-item clickable v-ripple @click="scrollInToView(section.name)">
             <div class="q-px-sm border q-my-auto q-mr-sm">
               {{ index + 1 }}
             </div>
             <q-item-section>{{ section.title }}</q-item-section>
           </q-item>
           <q-separator />
-        </a>
+        </span>
       </q-list>
 
       <q-list>
-        <a
+        <span
           v-for="item in menuItems"
           :key="item.name"
-          :href="`/proposals/${$route.params.proposal_id}${item.link}`"
         >
-          <q-item clickable v-ripple>
-            <q-item-section>{{ item.label }}</q-item-section>
+          <q-item class="row q-gutter-x-sm justify-center items-center" clickable v-ripple @click=scrollInToView(item.name)>
+            <q-icon :name="item.icon" size="1.5rem" />
+            <q-item-section>
+            {{ item.label }}
+            </q-item-section>
           </q-item>
           <q-separator />
-        </a>
+        </span>
       </q-list>
     </q-drawer>
 
@@ -98,6 +100,7 @@
 import { defineComponent, ref } from "vue";
 import { protectFile } from "src/utils/helpers";
 import ProposalHeader from "components/proposal/ProposalHeader.vue";
+import { scroll } from "quasar";
 export default defineComponent({
   components: { ProposalHeader },
   name: "ProposalLayout",
@@ -110,8 +113,8 @@ export default defineComponent({
       score: {},
       sections: [],
       menuItems: [
-        {icon: "bluetooth", label: "Reviews", link: "/reviews"},
-        {icon: "bluetooth", label: "Reports", link: "/reports"},
+        {icon: "reviews", label: "Reviews", name: "reviews", link: "#reviews"},
+        {icon: "assignment", label: "Reports", name: "reports", link: "#reports"},
       ]
     };
   },
@@ -180,6 +183,15 @@ export default defineComponent({
             window.open(res.data.file_url, "_blank");
           }
         });
+    },
+
+    scrollInToView(section_name) {
+      // alert(section_name)
+      document.getElementById(section_name).scrollIntoView({
+        behavior: 'smooth',   // enables smooth scrolling
+        block: 'start',      // align in the middle (you can use 'start', 'center', 'end', or 'nearest')
+      });
+
     },
 
     openFile(fileURL) {

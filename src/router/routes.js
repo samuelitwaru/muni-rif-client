@@ -176,6 +176,17 @@ const routes = [
   },
 
   {
+    path: "/financial-reports",
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        path: ":",
+        component: () => import("components/reports/FinancialReports.vue"),
+      },
+    ],
+  },
+
+  {
     path: "/index",
     component: () => import("layouts/IndexLayout.vue"),
     children: [

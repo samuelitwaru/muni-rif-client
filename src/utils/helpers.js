@@ -49,10 +49,22 @@ function parseDate(ymdString) {
   return new Date(year, month - 1, day); // Month is 0-based in JS
 }
 
+function removeHTMLTags(htmlString) {
+	// Create a new DOMParser instance
+	const parser = new DOMParser();
+	// Parse the HTML string
+	const doc = parser.parseFromString(htmlString, 'text/html');
+	// Extract text content
+	const textContent = doc.body.textContent || "";
+	// Trim whitespace
+	return textContent.trim();
+}
+
 export {
   protectFile,
   generateRandomString,
   userHasAnyGroups,
   converDateToString,
   parseDate,
+  removeHTMLTags,
 };

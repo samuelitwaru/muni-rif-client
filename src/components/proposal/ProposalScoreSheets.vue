@@ -1,5 +1,5 @@
 <template>
-  <div v-if="scores.length" class="q-pa-sm">
+  <div id="reviews" v-if="scores.length" class="q-pa-sm">
     <div class="flex q-py-xs">
       <q-toolbar-title>Score Sheet</q-toolbar-title>
       <q-btn
