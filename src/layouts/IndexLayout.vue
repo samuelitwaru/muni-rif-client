@@ -33,7 +33,7 @@
         id="bg"
         class="row q-py-md"
         style="
-          background-image: url('https://munirif.pythonanywhere.com/media/static/bg.jpg');
+          background-image: url('https://munirif.vps.webdock.cloud/media/static/bg.jpg');
           background-position: center;
           min-height: 40rem;
         "

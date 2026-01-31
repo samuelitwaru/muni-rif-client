@@ -30,6 +30,9 @@ export default boot(({ app }) => {
   };
 
   app.config.globalProperties.$commaSeparator = (number) => {
+    if (number === null || number === undefined) {
+      number = 0;
+    }
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 

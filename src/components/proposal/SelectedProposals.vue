@@ -47,9 +47,9 @@
           <td class="text-center">
               <div class="flex items-center">
                 <span class="q-pr-sm">
-                  {{ $commaSeparator(item.budget_allocation) }}
+                  {{ $commaSeparator(item.budget_allocation || 0) }}
                 </span>
-                <award-project-dialog :proposal="item" />
+                <award-project-dialog @budget-allocated="replaceProposalInList" :proposal="item" />
               </div>
           </td>
         </tr>
@@ -99,6 +99,14 @@ export default {
       this.$api.get("themes/").then((res) => {
         this.themes = res.data;
       });
+    },
+    replaceProposalInList(updatedProposal) {
+      const index = this.proposals.findIndex(
+        (proposal) => proposal.id === updatedProposal.id
+      );
+      if (index !== -1) {
+        this.proposals.splice(index, 1, updatedProposal);
+      }
     },
   },
 };

@@ -41,6 +41,9 @@
                 @remove="deleteReport(file.id)"
                 @click="openFile(file.file)"
               />
+              <span v-if="reports.filter(rep=>rep.reporting_date===schedule.id).length==0">
+                -
+              </span>
             </div>
           </td>
           <td>

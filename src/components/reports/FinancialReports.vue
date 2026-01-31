@@ -23,55 +23,91 @@
         />
       </div>
       <div class="col"></div>
-    </div>
-    <q-markup-table class="q-ma-sm" flat bordered>
-      <thead>
-        <tr>
-          <th align="left">Project</th>
-          <th align="left">Last Updated</th>
-          <th align="center">Budget Allocation</th>
-          <th align="center">Total Expenses</th>
-          <th align="center">Budget Balance</th>
-          <th align="left"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in proposals" :key="item.id">
-          <td>{{ item.title }}</td>
-          <td>{{ item.submission_date }}</td>
-          <td class="text-center">{{ $commaSeparator(item.budget_allocation) }}</td>
-          <td class="text-center">{{ item.average_score }}</td>
-          <td class="text-center">{{ item.average_score }}</td>
+      <table>
+        <thead>
+          <tr>
+            <th align="left">Project</th>
+            <th align="left">Last Updated</th>
+            <th align="center">Allocated</th>
+            <th align="center">Accounted</th>
+            <th align="center">Balance</th>
+            <th align="center"></th>
+          </tr>
+        </thead>
 
-          <td>
-            <!-- <q-btn color="green" label="Award" />
-            <q-btn color="red" class="q-mx-sm" label="reject" /> -->
-            <router-link :to="`/proposals/${item.id}`">
-              <q-btn
-                label="Details"
-                flat
-                color="primary"
-                @click="editItem(item)"
-              />
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
-    </q-markup-table>
+        <tbody>
+          <template v-for="(item, index) in proposals" :key="index">
+            <!-- Main Row -->
+            <tr class="expandable">
+              <td>
+                <router-link to="/"
+                  ><b>{{ item.title }}</b></router-link
+                >
+              </td>
+              <td>{{ item.submission_date }}</td>
+              <td class="text-center">
+                {{ $commaSeparator(item.budget_allocation || 0) }} UGX
+              </td>
+              <td class="text-center">
+                {{ $commaSeparator(item.total_expenditure || 0) }} UGX
+              </td>
+              <td class="text-center">
+                {{
+                  $commaSeparator(
+                    item.budget_allocation - item.total_expenditure || 0
+                  )
+                }}
+                UGX
+              </td>
+              <td class="text-center">
+                <q-btn
+                  flat
+                  round
+                  dense
+                  icon="expand_more"
+                  @click="toggle(index)"
+                />
+              </td>
+            </tr>
+
+            <!-- Expanded Content -->
+            <tr v-if="expandedIndex === index" class="expand-content">
+              <td colspan="6">
+                <ProposalExpenses :expenditures="item.expenditures" />
+              </td>
+            </tr>
+          </template>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4"><b>Total:</b></td>
+            <td colspan="2">
+              <b>{{ $commaSeparator(totalAmount) }} UGX</b>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!--  -->
   </q-page>
 </template>
 
 <script>
+import ProposalExpenses from "./ProposalExpenses.vue";
+
 export default {
   name: "ReviewerList",
+  components: { ProposalExpenses },
   data() {
     return {
+      expandedIndex: null,
       formData: {
         theme: null,
         is_selected: true,
         call: this.$dataStore.currentCall.id,
         page: 1,
-        limit: 20
+        limit: 20,
       },
       proposals: [],
       themes: [],
@@ -88,7 +124,7 @@ export default {
     getProposals() {
       var queryString = this.$buildURLQuery(this.formData);
       this.$api.get(`proposals/?${queryString}`).then((res) => {
-        console.log
+        console.log(res.data.results);
         this.proposals = res.data.results;
       });
     },
@@ -97,10 +133,47 @@ export default {
         this.themes = res.data;
       });
     },
+    toggle(index) {
+      this.expandedIndex = this.expandedIndex === index ? null : index;
+    },
   },
 };
 </script>
 
 <style scoped>
-/* Add any component-specific styles here */
+.table-wrapper {
+  max-width: 800px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px;
+  border: 1px solid rgb(146, 143, 143);
+  text-align: left;
+}
+
+th {
+  /* background-color: #f4f4f4; */
+}
+
+.expandable {
+  cursor: pointer;
+  /* background-color: #fafafa; */
+  border-bottom: 2px solid black !important;
+}
+
+.expand-content {
+  background-image: linear-gradient(to bottom, rgb(100, 100, 100), white);
+  border-bottom: 2px solid black !important;
+  border-left: 2px solid black !important;
+  border-right: 2px solid black !important;
+  border-collapse: collapse !important;
+}
 </style>

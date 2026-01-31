@@ -29,11 +29,11 @@ export default {
       files: [
         {
           name: "MUNIRIF_PROPOSAL_GUIDELINES_Round_2",
-          url: "https://munirif.pythonanywhere.com/media/MUNIRIF_PROPOSAL_GUIDELINES_Round_2.pdf",
+          url: "https://munirif.vps.webdock.cloud/media/MUNIRIF_PROPOSAL_GUIDELINES_Round_2.pdf",
         },
         {
           name: "MUNIRIF_Round_Two_Call_Final",
-          url: "https://munirif.pythonanywhere.com/media/MUNIRIF_Round_Two_Call_Final.pdf",
+          url: "https://munirif.vps.webdock.cloud/media/MUNIRIF_Round_Two_Call_Final.pdf",
         },
       ],
     };

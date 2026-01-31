@@ -111,6 +111,7 @@ export default {
           console.log('res: ', res)
           this.$utilsStore.setLoading(false);
           this.showDialog = false;
+          this.$emit("budget-allocated", res.data);
         })
         .catch((err) => {
           this.formErrors = err.response.data;
