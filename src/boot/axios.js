@@ -14,11 +14,35 @@ var baseURL = process.env.DEBUG
 
 var apiURL = `${baseURL}/api`;
 
+const cache = new Map();
+const TTL = 30 * 1000;
+
 const api = axios.create({ baseURL: apiURL });
 
 // Add a request interceptor to add the token to all requests
 api.interceptors.request.use(
   (config) => {
+    const key = JSON.stringify({
+      url: config.url,
+      method: config.method,
+      params: config.params,
+      data: config.data,
+    });
+    const cached = cache.get(key);
+    if (cached && Date.now() - cached.timestamp < TTL) {
+      // Cancel the request and return cached data
+      config.adapter = () => {
+        return Promise.resolve({
+          data: cached.data,
+          status: 200,
+          statusText: "OK (from cache)",
+          headers: {},
+          config,
+        });
+      };
+    }
+    config.__cacheKey = key;
+
     const token = localStorage.getItem("token"); // Replace with your token key
     if (token) {
       config.headers.Authorization = `Token ${token}`;
@@ -32,6 +56,11 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
+    const key = response.config.__cacheKey;
+    cache.set(key, {
+      data: response.data,
+      timestamp: Date.now(),
+    });
     // Return the successful response
     return response;
   },
@@ -42,10 +71,10 @@ api.interceptors.response.use(
     // if error.request.reponse
 
     if (error.response.status === 401) {
-      const currentPathName = window.location.pathname
-      if (!currentPathName.startsWith('/index/account')) {
-        localStorage.clear()
-        window.location = '/'
+      const currentPathName = window.location.pathname;
+      if (!currentPathName.startsWith("/index/account")) {
+        localStorage.clear();
+        window.location = "/";
       }
     }
 
