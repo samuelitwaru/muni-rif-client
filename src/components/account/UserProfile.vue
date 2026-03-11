@@ -23,7 +23,7 @@
               {{ user.profile?.designation }}
             </div>
 
-            <q-markup-table flat bordered separator="cell">
+            <q-markup-table flat bordered separator="cell" wrap-cells>
               <tbody>
                 <tr>
                   <td class="text-left">

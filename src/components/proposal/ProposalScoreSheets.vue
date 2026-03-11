@@ -11,7 +11,7 @@
       />
     </div>
 
-    <q-markup-table separator="cell" flat dense bordered>
+    <q-markup-table wrap-cells separator="cell" flat dense bordered>
       <tbody>
         <tr class="bg-grey-2">
           <td class="text-left"></td>

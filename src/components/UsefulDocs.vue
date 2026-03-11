@@ -7,7 +7,7 @@
       </q-card-section>
       <q-separator />
       <q-card-actions vertical style="overflow-x: auto">
-        <q-markup-table flat separator="cell" bordered>
+        <q-markup-table flat separator="cell" bordered wrap-cells>
           <tbody>
             <tr v-for="file in files" :key="file.id" class="q-tr--no-hover">
               <td class="text-left">{{ file.title }}</td>

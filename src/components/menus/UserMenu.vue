@@ -61,7 +61,7 @@ export default {
         },
 
         {
-          name: "REVIEWS",
+          name: "SCREENED",
           display_name: "EXTERNAL REVIEWS",
           route: "/go/proposals/reviews",
           icon: "search",
@@ -228,6 +228,16 @@ export default {
         .then((res) => {
           if ((res.status = 200)) {
             this.counts.REVIEWED = res.data.count;
+          }
+        });
+
+      this.$api
+        .get(
+          `proposals/count/?call=${this.$dataStore.currentCall.id}&is_recommended=true`
+        )
+        .then((res) => {
+          if ((res.status = 200)) {
+            this.counts.SCREENED = res.data.count;
           }
         });
     },

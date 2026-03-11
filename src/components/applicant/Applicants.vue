@@ -8,7 +8,7 @@
     </div>
     <q-separator spaced />
 
-    <q-markup-table class="q-ma-sm" flat bordered>
+    <q-markup-table class="q-ma-sm" flat bordered wrap-cells>
       <thead>
         <tr>
           <th align="left">First Name</th>

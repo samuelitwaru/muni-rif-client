@@ -3,7 +3,7 @@
     <proposal-score-sheets />
     <div class="q-pa-sm">
       <q-toolbar-title>Reviewers</q-toolbar-title>
-      <q-markup-table flat bordered>
+      <q-markup-table wrap-cells flat bordered>
         <tbody>
           <tr v-for="score in scores" :key="score.id">
             <td class="text-left">

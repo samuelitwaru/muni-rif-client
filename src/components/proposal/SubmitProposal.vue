@@ -18,7 +18,7 @@
         <q-separator />
 
         <q-card-section>
-          <q-markup-table flat dense bordered separator="vertical">
+          <q-markup-table wrap-cells flat dense bordered separator="vertical">
             <thead>
               <tr class="bg-grey-3">
                 <th class="text-left">Section</th>

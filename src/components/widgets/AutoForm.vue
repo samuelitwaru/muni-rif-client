@@ -1,22 +1,30 @@
 <template lang>
   <div>
     <q-form class="col-md-6 q-gutter-md">
-      <q-markup-table flat bordered dense>
-
+      <q-markup-table wrap-cells flat bordered dense>
         <tbody>
           <tr class="q-tr--no-hover" v-for="field in fields" :key="field.name">
-            <td class="text-left">{{field.label}}</td>
+            <td class="text-left">{{ field.label }}</td>
             <td class="text-left">
-
-              <q-select v-if="field.choices" v-model="formData[field.name]"
+              <q-select
+                v-if="field.choices"
+                v-model="formData[field.name]"
                 :options="field.choices"
                 option-value="name"
                 option-label="value"
                 map-options
-                emit-value outlined dense />
+                emit-value
+                outlined
+                dense
+              />
 
-              <q-input v-else dense outlined v-model="formData[field.name]"
-                :type="field.type" />
+              <q-input
+                v-else
+                dense
+                outlined
+                v-model="formData[field.name]"
+                :type="field.type"
+              />
             </td>
           </tr>
 
@@ -32,7 +40,7 @@
 </template>
 <script>
 export default {
-  props:["fields"],
+  props: ["fields"],
   data() {
     return {
       formData: {},
@@ -67,9 +75,9 @@ export default {
   },
 
   methods: {
-    onConfirm(){
-      this.$emit('onConfirm', this.formData)
-    }
+    onConfirm() {
+      this.$emit("onConfirm", this.formData);
+    },
   },
 };
 </script>

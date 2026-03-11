@@ -7,7 +7,7 @@
     "
     class="q-mb-sm q-mt-sm"
   >
-    <q-markup-table bordered flat square style="background: #f5f5f5">
+    <q-markup-table wrap-cells bordered flat square style="background: #f5f5f5">
       <thead>
         <tr>
           <th class="text-left">Score</th>
@@ -102,7 +102,10 @@ export default {
 
       this.formData[this.section["name"]] = this.mark;
       this.$api.patch(`scores/${scoreId}/`, this.formData).then((res) => {});
-      this.$bus.emit('score-updated', {section: this.section.name, score:this.mark})
+      this.$bus.emit("score-updated", {
+        section: this.section.name,
+        score: this.mark,
+      });
     },
 
     updateSectionComment(scoreId) {

@@ -1,6 +1,6 @@
 <template lang="">
   <div>
-    <q-markup-table flat bordered separator="cell">
+    <q-markup-table wrap-cells flat bordered separator="cell">
       <thead>
         <tr>
           <th class="text-left">Date</th>

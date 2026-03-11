@@ -6,6 +6,13 @@
         <q-breadcrumbs-el label="Screened Proposals" icon="list" />
       </q-breadcrumbs>
     </div>
+    <ScoreSheetDialog
+      :show="showScoreSheet"
+      v-if="proposal"
+      :proposal="proposal"
+      @close-dialog="showScoreSheet = false"
+    />
+
     <q-separator spaced />
     <!-- filters section -->
     <!-- other controls -->
@@ -13,15 +20,16 @@
       <div class="col"></div>
       <div class="col">
         <div>
-          <q-popup-proxy v-model="show" :breakpoint="1000">
-            <AssignReviewers2
-              :reviewers="reviewers"
-              @reviewers-selected="
-                createScores($event);
-                show = false;
-              "
-            />
-          </q-popup-proxy>
+          <!-- <q-popup-proxy v-model="show" :breakpoint="1000"> -->
+          <AssignReviewers2
+            @reviewers-selected="
+              createScores($event);
+              show = false;
+            "
+            @close-dialog="show = false"
+            :show-dialog="show"
+          />
+          <!-- </q-popup-proxy> -->
         </div>
         <!-- <router-link to="/go/proposals/reviewed">
           <q-btn color="primary" flat label="Go To Reviews" class="q-mr-sm" />
@@ -31,7 +39,7 @@
     <ProposalFilter @filter="getProposals($event)" />
 
     <div v-if="view === 'proposals'">
-      <q-markup-table class="q-ma-sm" separator="cell" flat bordered>
+      <q-markup-table wrap-cells class="q-ma-sm" separator="cell" flat bordered>
         <thead>
           <tr>
             <th align="left">No</th>
@@ -51,7 +59,7 @@
                 {{ index + 1 }}
               </td>
               <td>
-                <router-link :to="`/proposals/screening/${item.id}`"
+                <router-link :to="`/proposals/${item.id}`"
                   ><b>{{ item.title }}</b></router-link
                 >
               </td>
@@ -85,6 +93,20 @@
                           </q-item-section>
                         </q-item>
                         <q-separator />
+
+                        <q-item
+                          @click="viewScore(item)"
+                          clickable
+                          v-close-popup
+                        >
+                          <q-item-section>
+                            <div>
+                              <!-- <q-icon name="close" /> -->
+                              View Scores
+                            </div>
+                          </q-item-section>
+                        </q-item>
+
                         <q-item
                           v-if="score.status == 'PENDING'"
                           clickable
@@ -141,6 +163,7 @@
 <script>
 import AssignReviewers2 from "components/proposal/AssignReviewers2.vue";
 import AssignedProposals from "components/proposal/AssignedProposals.vue";
+import ScoreSheetDialog from "./ScoreSheetDialog.vue";
 
 // import InlineProposalReviewers from "./InlineProposalReviewers.vue";
 
@@ -148,11 +171,13 @@ export default {
   components: {
     AssignReviewers2,
     AssignedProposals,
+    ScoreSheetDialog,
   },
   name: "ReviewerList",
   data() {
     return {
       show: false,
+      showScoreSheet: false,
       formData: {
         theme: null,
         exclude__status: "EDITING",
@@ -203,6 +228,11 @@ export default {
           this.proposals[index].scores = res.data;
         });
       }
+    },
+
+    viewScore(proposal) {
+      this.proposal = proposal;
+      this.showScoreSheet = true;
     },
 
     getThemes() {

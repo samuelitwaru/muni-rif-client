@@ -2,7 +2,7 @@
   <div>
     <div class="q-pa-sm">
       <q-toolbar-title>Reviewers</q-toolbar-title>
-      <q-markup-table v-if="scores.length" flat bordered>
+      <q-markup-table wrap-cells v-if="scores.length" flat bordered>
         <tbody>
           <tr v-for="score in scores" :key="score.id">
             <td class="text-left">

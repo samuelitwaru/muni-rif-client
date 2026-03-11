@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="text-h6">Other Reports</div>
-    <q-markup-table class="q-my-sm" flat bordered>
+    <q-markup-table wrap-cells class="q-my-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Title</th>
@@ -17,20 +17,22 @@
           </td>
           <td>
             <q-chip
-                v-if="schedule.template"
-                dense
-                class="glossy"
-                icon="attachment"
-                label="Template"
-                clickable
-                @click="openFile(schedule.template)"
-              />
+              v-if="schedule.template"
+              dense
+              class="glossy"
+              icon="attachment"
+              label="Template"
+              clickable
+              @click="openFile(schedule.template)"
+            />
           </td>
           <td>{{ schedule.date }}</td>
           <td>
             <div class="flex">
               <q-chip
-                v-for="file in reports.filter(rep=>rep.reporting_date===schedule.id)"
+                v-for="file in reports.filter(
+                  (rep) => rep.reporting_date === schedule.id
+                )"
                 dense
                 :key="file.id"
                 class="glossy"
@@ -41,19 +43,32 @@
                 @remove="deleteReport(file.id)"
                 @click="openFile(file.file)"
               />
-              <span v-if="reports.filter(rep=>rep.reporting_date===schedule.id).length==0">
+              <span
+                v-if="
+                  reports.filter((rep) => rep.reporting_date === schedule.id)
+                    .length == 0
+                "
+              >
                 -
               </span>
             </div>
           </td>
           <td>
-            <FileUploader2 v-if="isEditing" @file-uploaded="getReports()" uploadUrl="/reports/" :multiple="false" :formData="{title:schedule.title, reporting_date:schedule.id, proposal:$route.params.proposal_id}" />
+            <FileUploader2
+              v-if="isEditing"
+              @file-uploaded="getReports()"
+              uploadUrl="/reports/"
+              :multiple="false"
+              :formData="{
+                title: schedule.title,
+                reporting_date: schedule.id,
+                proposal: $route.params.proposal_id,
+              }"
+            />
           </td>
         </tr>
-        <tr v-if="reporting_dates.length==0" align="center">
-          <td colspan="3">
-            No report schedules found.
-          </td>
+        <tr v-if="reporting_dates.length == 0" align="center">
+          <td colspan="3">No report schedules found.</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -61,31 +76,34 @@
 </template>
 
 <script>
-import FileUploader2 from '../widgets/FileUploader2.vue';
+import FileUploader2 from "../widgets/FileUploader2.vue";
 
 export default {
   name: "ProposalReportsEditor",
-  components: {FileUploader2},
+  components: { FileUploader2 },
   data() {
     return {
       reports: [],
       reporting_dates: [],
-      isEditing: this.$userHasAnyGroups(['applicant']) &&
-                  this.$authStore.currentUser.id ==
-                    this.$proposalStore.currentProposal.user &&
-                  this.$proposalStore.currentProposal.is_selected,
+      isEditing:
+        this.$userHasAnyGroups(["applicant"]) &&
+        this.$authStore.currentUser.id ==
+          this.$proposalStore.currentProposal.user &&
+        this.$proposalStore.currentProposal.is_selected,
     };
   },
   created() {
-    this.getReports()
-    this.getReportingSchedules()
+    this.getReports();
+    this.getReportingSchedules();
   },
   methods: {
     getReports() {
-      this.$api.get(`reports/?proposal=${this.$route.params.proposal_id}`).then((res) => {
-        this.reports = res.data;
-        console.log('reports:', res.data)
-      });
+      this.$api
+        .get(`reports/?proposal=${this.$route.params.proposal_id}`)
+        .then((res) => {
+          this.reports = res.data;
+          console.log("reports:", res.data);
+        });
     },
 
     getReportingSchedules() {
@@ -96,11 +114,9 @@ export default {
 
     validateAttachments() {
       let isAttachmentsValid = true;
-      let invalidAttachements = this.attachments.filter(
-        (attachment) => {
-          return attachment.is_required && !attachment.files?.length
-        }
-      );
+      let invalidAttachements = this.attachments.filter((attachment) => {
+        return attachment.is_required && !attachment.files?.length;
+      });
       if (invalidAttachements.length) {
         isAttachmentsValid = false;
       } else {
@@ -124,9 +140,9 @@ export default {
       window.open(fileURL);
     },
     getFileNameFromUrl(url) {
-      const splits = url.split('/')
-      return splits[splits.length-1]
-    }
+      const splits = url.split("/");
+      return splits[splits.length - 1];
+    },
   },
 };
 </script>

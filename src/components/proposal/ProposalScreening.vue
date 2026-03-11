@@ -83,6 +83,23 @@
     <hr />
     <hr id="solution" class="section-separator" />
     <div class="q-pa-sm" align="center">
+      <div>Total Score</div>
+      <q-card-section>
+        <q-circular-progress
+          show-value
+          font-size="12px"
+          :value="percentageScore"
+          size="100px"
+          :thickness="0.5"
+          color="teal"
+          track-color="grey-3"
+          class="q-ma-md"
+        >
+          {{ percentageScore }}%
+        </q-circular-progress>
+      </q-card-section>
+    </div>
+    <div class="q-pa-sm" align="center">
       <FinishScreening :proposal="proposal" />
     </div>
   </div>
@@ -118,6 +135,16 @@ export default {
 
   created() {
     this.getProposal();
+  },
+
+  computed: {
+    percentageScore() {
+      let total = 0;
+      this.sections.forEach((section) => {
+        total += this.proposal[`${section.name}_score`];
+      });
+      return total;
+    },
   },
 
   methods: {

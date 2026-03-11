@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-markup-table class="q-my-sm" separator="cell" flat bordered>
+    <q-markup-table wrap-cells class="q-my-sm" separator="cell" flat bordered>
       <thead>
         <tr>
           <th align="left">Title</th>

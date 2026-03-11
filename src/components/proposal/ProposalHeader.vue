@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <div class="text-h6 q-pa-sm">Background Information</div>
-    <q-markup-table flat bordered class="q-ma-sm">
+    <q-markup-table wrap-cells flat bordered class="q-ma-sm">
       <tbody>
         <tr class="q-tr--no-hover">
           <td class="text-left">

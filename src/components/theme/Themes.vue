@@ -7,7 +7,7 @@
       </q-breadcrumbs>
     </div>
     <q-separator spaced />
-    <q-markup-table class="q-ma-sm" flat bordered>
+    <q-markup-table wrap-cells class="q-ma-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Title</th>
