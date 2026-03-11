@@ -12,7 +12,13 @@
           <q-card style="width: 500px">
             <q-card-section class="row justify-between">
               <div class="text-h6">New Call</div>
-              <q-btn color="primary" icon="close" dense flat @click="cancelCreate" />
+              <q-btn
+                color="primary"
+                icon="close"
+                dense
+                flat
+                @click="cancelCreate"
+              />
             </q-card-section>
             <q-separator />
             <q-card-section class="q-pt-lg q-pb-md">
@@ -45,29 +51,53 @@
                     label="To?"
                     outlined
                     :disable="true"
-
                   />
 
                   <q-btn icon="event" outline color="primary">
                     <q-popup-proxy
-                          cover
-                          transition-show="scale"
-                          transition-hide="scale"
-                          v-model="showPop"
-                        >
-                          <q-date
-                            @range-end="setDateRange"
-                            v-model="formData.date_range"
-                            range
-                          />
-                        </q-popup-proxy>
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                      v-model="showPop"
+                    >
+                      <q-date
+                        @range-end="setDateRange"
+                        v-model="formData.date_range"
+                        range
+                      />
+                    </q-popup-proxy>
                   </q-btn>
                 </div>
+              </div>
+
+              <div class="q-mt-md">
+                <q-select
+                  v-model="formData.themes"
+                  label="Themes"
+                  multiple
+                  use-input
+                  use-chips
+                  outlined
+                  :options="filterOptions"
+                  @filter="filterFn"
+                  input-debounce="0"
+                  @remove="updateCall"
+                  @add="updateCall"
+                  option-value="id"
+                  option-label="title"
+                  emit-value
+                  map-options
+                />
               </div>
             </q-card-section>
             <q-separator spaced />
             <q-card-actions align="right">
-              <q-btn flat color="primary" label="Cancel" @click="cancelCreate" />
+              <q-btn
+                flat
+                color="primary"
+                label="Cancel"
+                @click="cancelCreate"
+              />
               <q-btn color="primary" label="Create" @click="createCall" />
             </q-card-actions>
           </q-card>
@@ -78,8 +108,6 @@
 </template>
 
 <script>
-import { getThemes } from "src/utils/api";
-
 export default {
   props: {
     showButton: {
@@ -95,12 +123,16 @@ export default {
       showDialog: false,
       showPop: false,
       themes: [],
+      themeOptions: [],
+      filterOptions: [],
       formData: {
         title: "",
         is_active: false,
         date_range: { from: "", to: "" },
         date_from: "",
         date_to: "",
+        themes: [],
+        entity: this.$dataStore.currentEntity?.id,
       },
       formErrors: {},
       rules: {
@@ -115,15 +147,38 @@ export default {
           !this.formData.date_range.from ||
           value >= this.formData.date_range.from ||
           "End date must be greater than start date",
-      }
+      },
     };
   },
   created() {
     if (process.env.DEBUG) this.setFormData();
-    getThemes().then((data) => (this.themes = data));
+    this.getThemes();
     this.formData.call = this.$dataStore?.currentCall?.id;
   },
   methods: {
+    getThemes() {
+      this.$api.get(`themes/`).then((res) => {
+        if (res.status == 200) {
+          this.themeOptions = res.data;
+          this.filterOptions = this.themeOptions;
+        }
+      });
+    },
+    filterFn(val, update) {
+      if (val === "") {
+        update(() => {
+          this.filterOptions = this.themeOptions;
+        });
+        return;
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.filterOptions = this.themeOptions.filter(
+          (v) => v.title.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
     createCall() {
       this.formData.date_from = this.formData.date_range.from.replaceAll(
         "/",

@@ -1,5 +1,10 @@
 import { boot } from "quasar/wrappers";
 import axios from "axios";
+import { utilsStore } from "stores/utils";
+import { authStore } from "src/stores/auth";
+import { Notify } from "quasar";
+
+const useUtilsStore = utilsStore();
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -10,7 +15,7 @@ import axios from "axios";
 
 var baseURL = process.env.DEBUG
   ? "http://127.0.0.1:8000"
-  : "https://munirif.vps.webdock.cloud";
+  : "https://munirif.ecdouganda.org";
 
 var apiURL = `${baseURL}/api`;
 
@@ -37,15 +42,33 @@ api.interceptors.response.use(
   },
   (error) => {
     // Handle response errors globally
-    console.log("API Error:", error);
+    console.log("API Error:", error.message);
+    // notify error
+    if (error.message === "Network Error") {
+      Notify.create({
+        type: "negative",
+        message: error.message,
+        timeout: 0,
+        actions: [
+          {
+            icon: "refresh",
+            color: "white",
+            handler: () => {
+              window.location.reload();
+            },
+          },
+        ],
+      });
+    }
 
     // if error.request.reponse
 
     if (error.response.status === 401) {
-      const currentPathName = window.location.pathname
-      if (!currentPathName.startsWith('/index/account')) {
-        localStorage.clear()
-        window.location = '/'
+      const currentPathName = window.location.pathname;
+      if (!currentPathName.startsWith("/index/account")) {
+        localStorage.clear();
+        window.location = "/";
+        // window.location = "/session-expired";
       }
     }
 

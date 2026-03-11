@@ -1,63 +1,59 @@
 <template>
   <div align="center">
-      <q-card class="q-mt-l" style="min-width: 22rem; height:25rem">
-        <q-card-section>
-          <q-form @submit="login" ref="form" @reset="resetForm">
-            <h2 class="text-h6">Login</h2>
+    <q-card class="q-mt-l" style="min-width: 22rem; height: 25rem">
+      <q-card-section>
+        <q-form @submit="login" ref="form" @reset="resetForm">
+          <h2 class="text-h6">Login</h2>
 
-            <div>
-              <small class="text-caption text-red"
-                ><strong>{{ formErrors.email }}</strong></small
-              >
+          <div>
+            <small class="text-caption text-red"
+              ><strong>{{ formErrors.email }}</strong></small
+            >
+          </div>
+
+          <q-input
+            outlined
+            dense
+            v-model="formData.email"
+            label="Email"
+            type="email"
+            :rules="emailRules"
+            required
+          ></q-input>
+
+          <q-input
+            class="error-1"
+            outlined
+            dense
+            v-model="formData.password"
+            label="Password"
+            type="password"
+            :rules="passwordRules"
+            required
+          ></q-input>
+
+          <small class="text-caption text-red">
+            {{ formErrors.password }}
+          </small>
+          <div class="">
+            <div class="flex justify-between">
+              <div></div>
+              <q-btn type="submit" color="primary" label="Login"></q-btn>
             </div>
 
-            <q-input
-              outlined
-              dense
-              v-model="formData.email"
-              label="Email"
-              type="email"
-              :rules="emailRules"
-              required
-            ></q-input>
-
-            <q-input
-              outlined
-              dense
-              v-model="formData.password"
-              label="Password"
-              type="password"
-              :rules="passwordRules"
-              required
-            ></q-input>
-
-            <small class="text-caption text-red">
-              {{ formErrors.password }}
-            </small>
-            <div class="">
-              <div class="flex justify-between">
-                <div></div>
-                <q-btn type="submit" color="primary" label="Login"></q-btn>
-              </div>
-
-              <q-separator spaced />
-              Don't have an account?
-              <router-link to="/index/account/signup">
-                <q-btn
-                  type="submit"
-                  flat
-                  color="primary"
-                  label="Sign up"
-                ></q-btn>
-              </router-link>
-            </div>
-            <q-separator spaced style="width: 40%" />
-            <router-link to="/index/account/password-reset" class="q-my-auto">
-              <small>FORGOT PASSWORD</small>
+            <q-separator spaced />
+            Don't have an account?
+            <router-link to="/index/account/signup">
+              <q-btn type="submit" flat color="primary" label="Sign up"></q-btn>
             </router-link>
-          </q-form>
-        </q-card-section>
-      </q-card>
+          </div>
+          <q-separator spaced style="width: 40%" />
+          <router-link to="/index/account/password-reset" class="q-my-auto">
+            <small>FORGOT PASSWORD</small>
+          </router-link>
+        </q-form>
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 
@@ -82,6 +78,7 @@ export default {
     };
   },
   created() {
+    localStorage.clear();
     if (process.env.DEBUG) this.setFormData();
   },
   methods: {

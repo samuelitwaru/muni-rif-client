@@ -3,20 +3,28 @@
     <q-btn
       color="primary"
       icon="upload"
-      label="Upload"
+      :label="label"
       dense
       flat
       @click="modalVisible = true"
     />
     <q-dialog v-model="modalVisible">
-      <q-card style="min-width: 400px">
+      <q-card style="min-width: 400px" flat bordered>
         <q-card-section class="q-pa-sm text-center flex justify-between">
           <div class="text-h6">File Upload</div>
-          <q-btn color="primary" icon="close" flat @click="uploadedFiles = [];modalVisible = false;" />
+          <q-btn
+            color="primary"
+            icon="close"
+            flat
+            @click="
+              uploadedFiles = [];
+              modalVisible = false;
+            "
+          />
         </q-card-section>
         <q-separator spaced />
         <q-card-section class="q-pa-sm">
-          <div>
+          <div style="border: 1px dashed #ccc">
             <q-uploader
               :url="uploadUrl"
               :multiple="multiple"
@@ -101,7 +109,25 @@
 <script>
 export default {
   name: "FileUploader",
-  props: ["uploadUrl", "multiple", "formData"],
+  props: {
+    uploadUrl: {
+      type: String,
+      required: true,
+    },
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
+    formData: {
+      type: Object,
+      default: () => ({}),
+    },
+    label: {
+      type: String,
+      default: "Upload",
+    },
+  },
+  // props: ["uploadUrl", "multiple", "formData"],
   data() {
     return {
       modalVisible: false,
@@ -115,7 +141,6 @@ export default {
   },
   methods: {
     onFileAdded(files) {
-      console.log('file added', files);
       files.forEach((file) => {
         this.uploadFile(file);
       });
@@ -123,14 +148,11 @@ export default {
     },
     onBrowse(event) {
       var files = Array.from(event.target.files);
-      console.log('file added', files);
       this.onFileAdded(files);
     },
     uploadFile(file) {
-      console.log('>>>>', file)
       const formData = new FormData();
       formData.append("file", file);
-      console.log('just added file >> form data', formData);
 
       for (const key in this.formData) {
         if (this.formData.hasOwnProperty(key)) {
@@ -139,7 +161,6 @@ export default {
       }
 
       // You might want to add more data to the formData if needed
-
       // Perform the actual upload
       this.$api
         .post(this.uploadUrl, formData, {
@@ -153,9 +174,14 @@ export default {
           this.uploadedFiles = [];
           this.modalVisible = false;
           this.$emit("file-uploaded");
+          this.$q.notify({
+            type: "positive",
+            message: "File uploaded successfully",
+          });
         })
         .catch((error) => {
           this.uploadedFiles = [];
+          this.filesToUpload = [];
           this.modalVisible = false;
           this.$q.notify({
             type: "negative",
@@ -163,6 +189,10 @@ export default {
           });
           // Handle errors
           console.log(error);
+        })
+        .finally(() => {
+          this.uploadedFiles = [];
+          this.filesToUpload = [];
         });
     },
   },

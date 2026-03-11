@@ -6,12 +6,10 @@
       @showPopupChanged="this.showPopup = $event"
     />
 
-
-    <div class="q-pt-xl flex flex-center">
+    <!-- <div class="q-pt-xl flex flex-center">
       <DropdownCallMenu v-if="$userHasAnyGroups(['grants_officer'])" />
-    </div>
+    </div> -->
     <div class="q-py-lg flex flex-center">
-
       <router-link
         :key="item.name"
         v-for="item in menuItems"
@@ -24,7 +22,11 @@
           :class="`text-center q-pa-md q-ma-sm text-${item.color}`"
           style="width: 10rem; height: 10rem"
         >
-          <q-badge style="position: absolute; top:4px; right:4px" v-if="counts[item.name]" :label="counts[item.name]" />
+          <q-badge
+            style="position: absolute; top: 4px; right: 4px"
+            v-if="counts[item.name]"
+            :label="counts[item.name]"
+          />
           <q-icon :name="item.icon" size="xl" />
           <q-card-section>
             <div class="text-h6">{{ item.display_name }}</div>
@@ -34,16 +36,19 @@
     </div>
 
     <useful-docs />
+    <VideoTutorials />
   </q-page>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import DropdownCallMenu from "../call/DropdownCallMenu.vue";
+// import DropdownCallMenu from "../call/DropdownCallMenu.vue";
+import VideoTutorials from "../VideoTutorials.vue";
 defineOptions({
   name: "MainPage",
   components: {
-    DropdownCallMenu,
+    // DropdownCallMenu,
+    VideoTutorials,
   },
 
   data() {
@@ -52,9 +57,9 @@ defineOptions({
       menuItems: ref([
         {
           name: "PROPOSALS",
-          display_name: "ALL PROPOSALS",
+          display_name: "SCREENING",
           route: "/go/proposals/submitted",
-          icon: "description",
+          icon: "search",
           color: "orange",
           roles: ["grants_officer"],
           count: 0,
@@ -67,10 +72,26 @@ defineOptions({
         },
 
         {
-          name: "REVIEWED",
-          display_name: "REVIEWED",
-          route: "/go/proposals/reviewed",
+          name: "SCREENED",
+          display_name: "EXTERNAL REVIEWS",
+          route: "/go/proposals/reviews",
           icon: "search",
+          color: "mint",
+          roles: ["grants_officer"],
+          count: 0,
+          click: () => {
+            this.$utilsStore.setStateData(
+              "ProposalList_status_query",
+              "SUBMITTED"
+            );
+          },
+        },
+
+        {
+          name: "REVIEWED",
+          display_name: "SELECTION",
+          route: "/go/proposals/reviewed",
+          icon: "check_circle_outline",
           color: "secondary",
           roles: ["grants_officer"],
           click: () => {
@@ -83,9 +104,9 @@ defineOptions({
 
         {
           name: "SELECTED",
-          display_name: "SELECTED",
+          display_name: "AWARD",
           route: "/go/proposals/selected",
-          icon: "check_circle_outline",
+          icon: "auto_awesome",
           color: "pink",
           roles: ["grants_officer"],
           click: () => {
@@ -96,7 +117,20 @@ defineOptions({
           },
         },
 
-
+        {
+          name: "REPORTS",
+          display_name: "FINANCIAL REPORTS",
+          route: "/financial-reports",
+          icon: "bar_chart",
+          color: "indigo",
+          roles: ["grants_officer"],
+          click: () => {
+            this.$utilsStore.setStateData(
+              "ProposalList_status_query",
+              "FINANCIAL_REPORTS"
+            );
+          },
+        },
 
         {
           name: "CALLS",
@@ -107,9 +141,6 @@ defineOptions({
           roles: ["grants_officer"],
           count: 0,
         },
-
-
-
 
         {
           name: "THEMES",
@@ -184,10 +215,7 @@ defineOptions({
     getCalls() {
       this.$api.get(`calls/`).then((res) => {
         this.calls = res.data;
-
         if (this.calls.length) {
-          var lastCall = this.calls[0];
-          this.setCurrentCall(this.$dataStore.currentCall || lastCall);
           this.getCounts();
         } else {
           this.setCurrentCall({ title: "No Call Found" });
@@ -226,6 +254,15 @@ defineOptions({
         .then((res) => {
           if ((res.status = 200)) {
             this.counts.REVIEWED = res.data.count;
+          }
+        });
+      this.$api
+        .get(
+          `proposals/count/?call=${this.$dataStore.currentCall.id}&is_recommended=true`
+        )
+        .then((res) => {
+          if ((res.status = 200)) {
+            this.counts.SCREENED = res.data.count;
           }
         });
     },

@@ -23,24 +23,24 @@
               {{ user.profile?.designation }}
             </div>
 
-            <q-markup-table flat bordered>
+            <q-markup-table flat bordered separator="cell">
               <tbody>
                 <tr>
                   <td class="text-left">
                     <strong>Faculty</strong>
-                    <div>{{ user.profile?.faculty?.name }}</div>
+                    <div>{{ user.profile?.faculty_name }}</div>
                   </td>
                 </tr>
                 <tr>
                   <td class="text-left">
                     <strong>Department</strong>
-                    <div>{{ user.profile?.department?.name }}</div>
+                    <div>{{ user.profile?.department_name }}</div>
                   </td>
                 </tr>
                 <tr>
                   <td class="text-left">
                     <strong>Qualification</strong>
-                    <div>{{ user.profile?.qualification?.name }}</div>
+                    <div>{{ user.profile?.qualification_name }}</div>
                   </td>
                 </tr>
                 <tr>
@@ -56,8 +56,8 @@
         <q-card-actions align="right"> </q-card-actions>
       </q-card>
     </div>
-    <div class="row">
-      <div class="col-md-6" align="center">
+    <div class="row flex justify-center">
+      <div class="col-md-4" align="center">
         <update-user />
       </div>
       <div class="col-md-4 col-sm-6">

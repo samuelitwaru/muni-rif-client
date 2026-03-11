@@ -40,7 +40,7 @@
           <th align="center">Total</th>
           <th align="center">Reviewer</th>
           <th align="center">Average Score</th>
-          <th align="left"></th>
+          <!-- <th align="left"></th> -->
         </tr>
       </thead>
       <tbody>
@@ -54,11 +54,14 @@
                       <input
                         @click="selectProposal($event, item.id)"
                         type="checkbox"
+                        class="selection-checkbox"
                         :checked="item.is_selected"
                       />
                     </td>
                     <td class="inner">
-                      <span>{{ item.title }} ({{ item.status }})</span>
+                      <router-link :to="`/proposals/${item.id}`">
+                        <b>{{ item.title }} ({{ item.status }})</b>
+                      </router-link>
                     </td>
                   </tr>
                 </tbody>
@@ -80,11 +83,11 @@
             </td>
 
             <td :rowspan="item.scores?.length">{{ item.average_score }}</td>
-            <td :rowspan="item.scores?.length">
+            <!-- <td :rowspan="item.scores?.length">
               <router-link :to="`/proposals/${item.id}`">
                 <q-btn color="primary" icon="remove_red_eye" flat dense />
               </router-link>
-            </td>
+            </td> -->
           </tr>
 
           <tr
@@ -112,6 +115,7 @@
 <script>
 // import { useQuasar } from "quasar";
 import { useQuasar } from "quasar";
+import router from "src/router";
 export default {
   name: "ReviewerList",
   data() {
@@ -133,17 +137,25 @@ export default {
   },
   methods: {
     getSections() {
+      this.$utilsStore.setLoading(true);
       this.$api.get(`sections/`).then((res) => {
         this.sections = res.data.filter((sec) => sec.max_score > 0);
       });
     },
     getProposals() {
+      this.$utilsStore.setLoading(true);
+
       var queryString = this.$buildURLQuery(this.formData);
-      this.$api.get(`proposals/?${queryString}`).then((res) => {
-        console.log('proposals', res.data)
-        this.proposals = res.data.results;
-        this.getProposalScores();
-      });
+      this.$api
+        .get(`proposals/?${queryString}`)
+        .then((res) => {
+          console.log("proposals", res.data);
+          this.proposals = res.data.results;
+          this.getProposalScores();
+        })
+        .finally(() => {
+          setTimeout(() => this.$utilsStore.setLoading(false), 500);
+        });
     },
     getProposalScores() {
       for (let index = 0; index < this.proposals.length; index++) {
@@ -170,7 +182,7 @@ export default {
             message = "Proposal removed from selected proposals";
           }
           this.$q.notify(message);
-          this.$bus.emit('proposal-selected', {})
+          this.$bus.emit("proposal-selected", {});
         });
     },
   },
@@ -204,6 +216,10 @@ td:first-child:not(.exclude) {
 td:not(.inner),
 th {
   border-right: 1px solid #ddd;
+}
+.selection-checkbox {
+  width: 18px;
+  height: 18px;
 }
 /* Add any component-specific styles here */
 </style>

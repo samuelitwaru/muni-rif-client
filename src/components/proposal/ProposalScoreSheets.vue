@@ -1,18 +1,17 @@
 <template>
   <div id="reviews" v-if="scores.length" class="q-pa-sm">
     <div class="flex q-py-xs">
-      <q-toolbar-title>Score Sheet</q-toolbar-title>
+      <q-toolbar-title class="text-h6">Reviews</q-toolbar-title>
       <q-btn
         color="primary"
         icon="download"
-
         label="export"
         flat
         @click="downloadScoreSheet"
       />
     </div>
 
-    <q-markup-table flat dense bordered separator="vertical">
+    <q-markup-table separator="cell" flat dense bordered>
       <tbody>
         <tr class="bg-grey-2">
           <td class="text-left"></td>
@@ -21,35 +20,38 @@
             {{ score.user__username }}
           </td>
         </tr>
-        <tr v-for="(section, index) in sections" :key="section.id">
-          <td class="text-left">{{ index }} - {{ section.title }}</td>
-          <td v-for="score in scores" :key="score" class="text-left">
-            <q-card
-              flat
-              bordered
-              class="q-mx-sm text-center"
-              style="width: 1.5rem; display: inline-block"
-            >
-              {{ score[section.name] }}
-            </q-card>
-            <q-btn
-              v-if="score[`${section.name}_comment`]"
-              color="secondary"
-              dense
-              size="xs"
-              icon="comment"
-            >
-              <q-popup-proxy>
-                <q-banner>
-                  <template v-slot:avatar>
-                    <q-icon name="comment" color="secondary" />
-                  </template>
-                  {{ score[`${section.name}_comment`] }}
-                </q-banner>
-              </q-popup-proxy>
-            </q-btn>
-          </td>
-        </tr>
+
+        <template v-for="(section, index) in sections" :key="section.id">
+          <tr class="q-tr--no-hover" v-if="section.max_score">
+            <td class="text-left">{{ index }} - {{ section.title }}</td>
+            <td v-for="score in scores" :key="score" class="text-left">
+              <q-card
+                flat
+                bordered
+                class="q-mx-sm text-center"
+                style="width: 1.5rem; display: inline-block"
+              >
+                {{ score[section.name] }}
+              </q-card>
+              <q-btn
+                v-if="score[`${section.name}_comment`]"
+                color="secondary"
+                dense
+                size="xs"
+                icon="comment"
+              >
+                <q-popup-proxy>
+                  <q-banner>
+                    <template v-slot:avatar>
+                      <q-icon name="comment" color="secondary" />
+                    </template>
+                    {{ score[`${section.name}_comment`] }}
+                  </q-banner>
+                </q-popup-proxy>
+              </q-btn>
+            </td>
+          </tr>
+        </template>
         <!-- <tfoot> -->
         <tr class="bg-grey-3">
           <td class="text-left">Total</td>

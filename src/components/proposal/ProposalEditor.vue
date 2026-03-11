@@ -8,19 +8,13 @@
             {{ section.title }}
           </div>
         </q-toolbar-title>
-
         <div v-if="section.name == 'attachments'">
           <ProposalAttachments />
         </div>
-
-        <div v-else-if="section.name == 'team'">
-          <TeamMembers />
-        </div>
-
+        <div v-else-if="section.name == 'team'"><TeamMembers /></div>
         <div v-else-if="section.name == 'summary_budget'">
-          <BudgetItems :proposal_id="$route.params.proposal_id"/>
+          <BudgetItems :proposal_id="$route.params.proposal_id" />
         </div>
-
         <q-card v-else flat bordered class="q-pa-sm">
           <div>
             <div
@@ -32,9 +26,7 @@
       </div>
     </div>
     <hr />
-    <ProposalScoreSheets />
-    <ExpenseReports />
-    <ProposalReportsEditor />
+    <ProposalScoreSheets /> <ExpenseReports /> <ProposalReportsEditor />
     <hr id="solution" class="section-separator" />
   </div>
 </template>
@@ -46,7 +38,14 @@ import ExpenseReports from "./ExpenseReports.vue";
 import ProposalScoreSheets from "./ProposalScoreSheets.vue";
 import ProposalReportsEditor from "./ProposalReportsEditor.vue";
 export default {
-  components: { ProposalAttachments, TeamMembers, BudgetItems, ExpenseReports, ProposalScoreSheets, ProposalReportsEditor },
+  components: {
+    ProposalAttachments,
+    TeamMembers,
+    BudgetItems,
+    ExpenseReports,
+    ProposalScoreSheets,
+    ProposalReportsEditor,
+  },
   data() {
     return {
       sections: [],
@@ -70,6 +69,7 @@ export default {
 
   methods: {
     getProposal() {
+      this.$utilsStore.setLoading(true);
       this.$api
         .get(`proposals/${this.$route.params.proposal_id}/`)
         .then((res) => {
@@ -77,6 +77,9 @@ export default {
           this.$proposalStore.setProposal(this.proposal);
           this.getScore();
           this.getAttachments();
+        })
+        .finally(() => {
+          this.$utilsStore.setLoading(false);
         });
     },
 
@@ -103,7 +106,6 @@ export default {
     },
 
     getScore() {
-      console.log(this.$authStore.currentUser?.id || 0);
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${

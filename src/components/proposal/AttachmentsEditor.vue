@@ -98,11 +98,9 @@ export default {
 
     validateAttachments() {
       let isAttachmentsValid = true;
-      let invalidAttachements = this.attachments.filter(
-        (attachment) => {
-          return attachment.is_required && !attachment.files?.length
-        }
-      );
+      let invalidAttachements = this.attachments.filter((attachment) => {
+        return attachment.is_required && !attachment.files?.length;
+      });
       if (invalidAttachements.length) {
         isAttachmentsValid = false;
       } else {

@@ -48,7 +48,6 @@
             <strong>{{ $commaSeparator(totalAmount) }} UGX</strong>
           </td>
           <td class="text-left"><strong></strong></td>
-          <td v-if="isEditing" class="text-left"><strong></strong></td>
         </tr>
       </tfoot>
     </q-markup-table>

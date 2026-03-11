@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-markup-table dense class="q-my-sm" flat bordered>
+    <q-markup-table separator="cell" class="q-my-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Item</th>
@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items" :key="item.id">
+        <tr class="q-tr--no-hover" v-for="item in items" :key="item.id">
           <td>{{ item.item }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.units }}</td>
@@ -20,7 +20,7 @@
             {{ $commaSeparator(item.unit_cost * item.quantity) }}
           </td>
         </tr>
-        <tr>
+        <tr class="q-tr--no-hover">
           <td colspan="4">Total</td>
           <td align="right">{{ $commaSeparator(totalBudget) }}</td>
         </tr>
@@ -63,11 +63,9 @@ export default {
     },
     getBudgets() {
       const proposalId = this.proposal_id;
-      this.$api
-        .get(`budgets/?proposal=${proposalId}`)
-        .then((res) => {
-          this.items = res.data;
-        });
+      this.$api.get(`budgets/?proposal=${proposalId}`).then((res) => {
+        this.items = res.data;
+      });
     },
   },
 };

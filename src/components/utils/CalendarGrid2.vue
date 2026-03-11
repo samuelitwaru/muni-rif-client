@@ -1,12 +1,55 @@
 <template>
   <div>
-    <q-form ref="myForm" class="q-gutter-md">
-      <div class="row q-gutter-sm justify-center">
-        <DatePicker v-for="item in dateData" :key="item.value" :rules="[rules[item.name]]" :name="item.name" :label="item.label" :date="item.value" @update:date="onDateChanged($event)"/>
+    <q-form ref="myForm" class="flex q-gutter-md justify-center">
+      <div
+        class="flex q-gutter-sm justify-center align-items-center"
+        style="width: 90%"
+      >
+        <DatePicker
+          v-for="item in dateData"
+          :key="item.value"
+          :rules="[rules[item.name]]"
+          :name="item.name"
+          :label="item.label"
+          :date="item.value"
+          @update:date="onDateChanged($event)"
+        />
+      </div>
+
+      <div
+        style="width: 70%"
+        class="flex justify-center items-center q-pb-md q-gutter-sm"
+      >
+        <q-select
+          v-model="formData.themes"
+          label="Themes"
+          multiple
+          use-input
+          use-chips
+          outlined
+          :options="filterOptions"
+          @filter="filterFn"
+          input-debounce="0"
+          @remove="updateCall"
+          @add="updateCall"
+          option-value="id"
+          option-label="title"
+          emit-value
+          map-options
+        />
+        <q-btn
+          color="primary"
+          outline
+          flat
+          icon="check"
+          label="done"
+          class=""
+          @click="done"
+        />
       </div>
     </q-form>
 
-    <q-separator spaced  />
+    <q-separator spaced />
 
     <div class="row q-mt-sm q-gutter-sm justify-center">
       <MonthView
@@ -46,7 +89,11 @@ export default {
         review_date: "",
         selection_date: "",
         date_to: "",
+        themes: [],
       },
+
+      themeOptions: [],
+      filterOptions: [],
 
       rules: {
         required: (value) => !!value || "This field is required",
@@ -70,27 +117,66 @@ export default {
   },
   created() {
     this.getCall();
+    this.getThemes();
   },
   computed: {
     dateData() {
       return [
-        { name: "date_from", label: "Start Date", value: this.formData.date_from },
-        { name: "submission_date", label: "Submission Date", value: this.formData.submission_date },
-        { name: "review_date", label: "Review Date", value: this.formData.review_date },
-        { name: "selection_date", label: "Selection Date", value: this.formData.selection_date },
+        {
+          name: "date_from",
+          label: "Start Date",
+          value: this.formData.date_from,
+        },
+        {
+          name: "submission_date",
+          label: "Submission Date",
+          value: this.formData.submission_date,
+        },
+        {
+          name: "review_date",
+          label: "Review Date",
+          value: this.formData.review_date,
+        },
+        {
+          name: "selection_date",
+          label: "Selection Date",
+          value: this.formData.selection_date,
+        },
         { name: "date_to", label: "End Date", value: this.formData.date_to },
       ];
     },
   },
   methods: {
+    filterFn(val, update) {
+      if (val === "") {
+        update(() => {
+          this.filterOptions = this.themeOptions;
+        });
+        return;
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.filterOptions = this.themeOptions.filter(
+          (v) => v.title.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+    createValue(val, done) {},
+    getThemes() {
+      this.$api.get(`themes/`).then((res) => {
+        if (res.status == 200) {
+          this.themeOptions = res.data;
+          this.filterOptions = this.themeOptions;
+        }
+      });
+    },
     onDateChanged(data) {
       this.formData[data.name] = data.date;
       this.validateDates();
 
       this.$refs.myForm.validate().then((valid) => {
         if (valid) {
-          console.log("Form is valid");
-
           this.updateCall();
         } else {
           console.log("Form is invalid");
@@ -116,23 +202,22 @@ export default {
             review_date: this.call.review_date,
             selection_date: this.call.selection_date,
             date_to: this.call.date_to,
+            themes: this.call.themes,
           };
-
         }
       });
     },
     validateDates() {
       this.$refs.myForm.validate();
 
-      this.selectedDates = {
+      (this.selectedDates = {
         Start: new Date(this.formData.date_from) || null,
         Submission: new Date(this.formData.submission_date) || null,
         Review: new Date(this.formData.review_date) || null,
         Selection: new Date(this.formData.selection_date) || null,
         End: new Date(this.formData.date_to) || null,
-      },
-
-      this.generateCalendar();
+      }),
+        this.generateCalendar();
     },
     generateCalendar() {
       if (!this.formData.date_from || !this.formData.date_to) {
@@ -193,16 +278,20 @@ export default {
     },
     updateSelectedDates(selectedDates) {
       this.selectedDates = selectedDates;
-      this.formData.date_from = converDateToString(selectedDates.Start, '-');
-      this.formData.submission_date = converDateToString(selectedDates.Submission, '-');
-      this.formData.review_date = converDateToString(selectedDates.Review, '-');
-      this.formData.selection_date = converDateToString(selectedDates.Selection, '-');
-      this.formData.date_to = converDateToString(selectedDates.End, '-');
-      console.log('final formdata', this.formData);
-      this.generateCalendar()
+      this.formData.date_from = converDateToString(selectedDates.Start, "-");
+      this.formData.submission_date = converDateToString(
+        selectedDates.Submission,
+        "-"
+      );
+      this.formData.review_date = converDateToString(selectedDates.Review, "-");
+      this.formData.selection_date = converDateToString(
+        selectedDates.Selection,
+        "-"
+      );
+      this.formData.date_to = converDateToString(selectedDates.End, "-");
+      this.generateCalendar();
     },
     updateCall() {
-      // this.$utilsStore.setLoading(true);
       this.$api
         .put(`calls/${this.$route.params.call_id}/`, this.formData)
         .then((res) => {
@@ -212,6 +301,11 @@ export default {
             this.$utilsStore.setLoading(false);
           }
         });
+    },
+
+    done() {
+      this.updateCall();
+      this.$router.go(-1);
     },
 
     validateDateFrom() {
@@ -224,7 +318,13 @@ export default {
       }
     },
     validateSubmisionDate() {
-      const { date_from, date_to, submission_date, review_date, selection_date } = this.formData;
+      const {
+        date_from,
+        date_to,
+        submission_date,
+        review_date,
+        selection_date,
+      } = this.formData;
       if (!submission_date) {
         return "Submission date is required";
       }
@@ -239,11 +339,22 @@ export default {
       }
     },
     validateReviewDate() {
-      const { date_from, date_to, submission_date, review_date, selection_date } = this.formData;
+      const {
+        date_from,
+        date_to,
+        submission_date,
+        review_date,
+        selection_date,
+      } = this.formData;
       if (!review_date) {
         return "Review date is required";
       }
-      if (review_date <= date_from || review_date <= submission_date || review_date >= selection_date || review_date >= date_to) {
+      if (
+        review_date <= date_from ||
+        review_date <= submission_date ||
+        review_date >= selection_date ||
+        review_date >= date_to
+      ) {
         return "Out of range";
       }
       if (review_date > selection_date) {
@@ -251,16 +362,33 @@ export default {
       }
     },
     validateSelectionDate() {
-      const { date_from, date_to, submission_date, review_date, selection_date } = this.formData;
+      const {
+        date_from,
+        date_to,
+        submission_date,
+        review_date,
+        selection_date,
+      } = this.formData;
       if (!selection_date) {
         return "Selection date is required";
       }
-      if (selection_date <= date_from || selection_date <= review_date || selection_date <= submission_date || selection_date >= date_to) {
+      if (
+        selection_date <= date_from ||
+        selection_date <= review_date ||
+        selection_date <= submission_date ||
+        selection_date >= date_to
+      ) {
         return "Out of range";
       }
     },
     validateDateTo() {
-      const { date_from, date_to, submission_date, review_date, selection_date } = this.formData;
+      const {
+        date_from,
+        date_to,
+        submission_date,
+        review_date,
+        selection_date,
+      } = this.formData;
 
       if (!date_to) {
         return "End date is required";
@@ -268,7 +396,11 @@ export default {
       if (date_to <= date_from) {
         return "End date must be greater than start date";
       }
-      if (date_to <= submission_date || date_to <= review_date || date_to <= selection_date) {
+      if (
+        date_to <= submission_date ||
+        date_to <= review_date ||
+        date_to <= selection_date
+      ) {
         return "End date must be greater than submission, review, and selection dates";
       }
     },

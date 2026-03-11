@@ -12,13 +12,15 @@
         <q-btn color="primary" outline label="add reviewer" />
       </router-link>
     </div>
-    <q-markup-table class="q-ma-sm" flat bordered>
+
+    <q-markup-table wrap-cells class="q-ma-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">First Name</th>
           <th align="left">Last Name</th>
           <th align="left">Email</th>
           <th align="left">Telephone</th>
+          <th align="left">Institution</th>
           <th align="left">Qualification</th>
           <th align="left">Status</th>
           <th align="left"></th>
@@ -30,34 +32,37 @@
           <td>{{ item.last_name }}</td>
           <td>{{ item.email }}</td>
           <td>{{ item.profile.phone }}</td>
+          <td>{{ item.profile.institution }}</td>
           <td>{{ item.profile.qualification_name }}</td>
           <td>
             <span class="text-green" v-if="item.is_active">ACTIVE</span
             ><span class="text-red" v-else>INACTIVE</span>
           </td>
           <td>
-            <router-link :to="`/reviewers/${item.id}`">
+            <div class="flex">
+              <router-link :to="`/reviewers/${item.id}`">
+                <q-btn
+                  icon="edit"
+                  flat
+                  color="primary"
+                  @click="editItem(item)"
+                />
+              </router-link>
+
               <q-btn
-                label="View"
+                icon="delete"
                 flat
                 color="primary"
-                @click="editItem(item)"
+                @click="deleteItem(item.id)"
               />
-            </router-link>
-
-            <q-btn
-              icon="delete"
-              flat
-              color="primary"
-              @click="deleteItem(item.id)"
-            />
-            <q-btn
-              v-if="!item.is_active"
-              label="Invite"
-              flat
-              color="secondary"
-              @click="inviteUser(item)"
-            />
+              <q-btn
+                v-if="!item.is_active"
+                label="Invite"
+                flat
+                color="secondary"
+                @click="inviteUser(item)"
+              />
+            </div>
           </td>
         </tr>
       </tbody>
@@ -91,8 +96,8 @@ export default {
 
     inviteUser(user) {
       if (confirm("Confirm send invite?")) {
-        const data = {email:user.email}
-        console.log('user', user)
+        const data = { email: user.email };
+        console.log("user", user);
         this.$api.post(`users/send-invite/`, data).then((res) => {
           if (res.status == 200) {
             var message = "Invitation email has been sent";

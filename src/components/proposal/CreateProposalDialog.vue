@@ -9,8 +9,15 @@
     <q-form @submit="createProposal" class="q-gutter-md">
       <q-dialog v-model="showDialog" persistent>
         <q-card style="width: 500px">
-          <q-card-section>
+          <q-card-section class="flex justify-between">
             <div class="text-h6">New Project Proposal</div>
+            <q-btn
+              color="primary"
+              dense
+              flat
+              icon="close"
+              @click="cancelCreate"
+            />
           </q-card-section>
           <q-separator />
           <q-card-section class="q-pt-lg q-pb-md">
@@ -56,8 +63,6 @@
 </template>
 
 <script>
-import { getThemes } from "src/utils/api";
-
 export default {
   props: {
     showButton: {
@@ -86,12 +91,11 @@ export default {
   },
   created() {
     if (process.env.DEBUG) this.setFormData();
-    getThemes().then((data) => (this.themes = data));
+    this.getThemes();
     this.formData.call = this.$dataStore?.currentCall?.id;
   },
   methods: {
     createProposal() {
-      console.log(this.formData);
       this.$utilsStore.setLoading(true);
       this.formErrors = {};
       this.formData["user"] = this.$authStore.currentUser.id;
@@ -106,6 +110,13 @@ export default {
           this.formErrors = err.response.data;
           this.$utilsStore.setLoading(false);
         });
+    },
+    getThemes() {
+      this.$api.get("themes/").then((res) => {
+        this.themes = res.data.filter((theme) =>
+          theme.calls.includes(this.formData.call)
+        );
+      });
     },
     cancelCreate() {
       // Cancel the creation and close the dialog.

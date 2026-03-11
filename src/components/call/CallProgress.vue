@@ -73,43 +73,41 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from "vue";
 
 export default {
   data() {
     return {
       call: this.$dataStore.currentCall,
-    }
+    };
   },
   computed: {
     vertical() {
-      return window.innerWidth < 600
+      return window.innerWidth < 600;
     },
     step() {
-      const today = new Date()
-      const dateFrom = new Date(this.call.date_from)
-      const submissionDate = new Date(this.call.submission_date)
-      const reviewDate = new Date(this.call.review_date)
-      const selectionDate = new Date(this.call.selection_date)
-      const dateTo = new Date(this.call.date_to)
+      const today = new Date();
+      const dateFrom = new Date(this.call.date_from);
+      const submissionDate = new Date(this.call.submission_date);
+      const reviewDate = new Date(this.call.review_date);
+      const selectionDate = new Date(this.call.selection_date);
+      const dateTo = new Date(this.call.date_to);
 
       if (today < dateFrom) {
-        return 1
+        return 1;
       } else if (today >= dateFrom && today < submissionDate) {
-        return 2
+        return 2;
       } else if (today >= submissionDate && today < reviewDate) {
-        return 3
+        return 3;
       } else if (today >= reviewDate && today < selectionDate) {
-        return 4
+        return 4;
       } else if (today >= selectionDate && today <= dateTo) {
-        return 5
+        return 5;
       } else {
-        return 6 // Call has ended
+        return 6; // Call has ended
       }
-    }
+    },
   },
-  methods: {
-
-  },
-}
+  methods: {},
+};
 </script>

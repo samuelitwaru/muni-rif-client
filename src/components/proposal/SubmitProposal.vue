@@ -12,7 +12,8 @@
       @click="modalVisible = true"
     />
     <q-dialog v-model="modalVisible">
-      <q-card>
+      <!-- header -->
+      <q-card v-if="$dataStore.currentCall.period == 'APPLICATION'">
         <q-card-section> </q-card-section>
         <q-separator />
 
@@ -76,15 +77,25 @@
           />
         </q-card-section>
       </q-card>
+      <q-card v-else>
+        <q-card-section>
+          <p class="q-pa-md">
+            You can only submit proposals during the application period.
+            <!-- <CallProgress /> -->
+          </p>
+        </q-card-section>
+      </q-card>
     </q-dialog>
   </div>
 </template>
 
 <script>
-import { removeHTMLTags } from 'src/utils/helpers';
-
+import { removeHTMLTags } from "src/utils/helpers";
 
 export default {
+  components: {
+    // CallProgress,
+  },
   props: {
     proposal: { type: Object, required: true },
     disabled: { type: Boolean, required: true },

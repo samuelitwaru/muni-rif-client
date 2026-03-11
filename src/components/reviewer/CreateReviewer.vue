@@ -73,6 +73,19 @@
 
             <div class="row q-col-gutter-xs q-my-sm">
               <div class="col">
+                <q-input
+                  outlined
+                  dense
+                  v-model="formData.institution"
+                  label="Institution"
+                  :rules="nameRules"
+                  required
+                ></q-input>
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-xs q-my-sm">
+              <div class="col">
                 <q-select
                   outlined
                   dense
@@ -203,6 +216,7 @@ export default {
         last_name: "",
         phone: "",
         gender: "",
+        institution: "",
         designation: "",
         faculty: null,
         department: null,
@@ -242,13 +256,15 @@ export default {
       this.formData["password"] = generateRandomString(10);
       this.$utilsStore.setLoading(true);
       console.log(this.formData);
-      this.$api.post("users/create-reviewer/", this.formData).then((res) => {
-        this.$router.push(`/reviewers/`);
-        this.$utilsStore.setLoading(false);
-      })
-      .catch(err => {
-        this.$utilsStore.setLoading(false);
-      })
+      this.$api
+        .post("users/create-reviewer/", this.formData)
+        .then((res) => {
+          this.$router.push(`/reviewers/`);
+          this.$utilsStore.setLoading(false);
+        })
+        .catch((err) => {
+          this.$utilsStore.setLoading(false);
+        });
     },
 
     getThemes() {

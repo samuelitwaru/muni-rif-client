@@ -34,6 +34,7 @@
             color="primary"
             icon="download"
             dense
+            outline
             label="download"
             @click="downloadProposal"
           />
@@ -63,19 +64,19 @@
       </q-card>
       <q-separator />
       <q-list>
-        <a
+        <span
           v-for="(section, index) in sections"
           :key="section.id"
           :href="`/proposal-reviews/${$route.params.proposal_id}${section.ref}`"
         >
-          <q-item clickable v-ripple>
+          <q-item @click="scrollInToView(section.name)" clickable v-ripple>
             <div class="q-px-sm border q-my-auto q-mr-sm">
               {{ index + 1 }}
             </div>
             <q-item-section>{{ section.title }}</q-item-section>
           </q-item>
           <q-separator />
-        </a>
+        </span>
       </q-list>
     </q-drawer>
 
@@ -194,6 +195,12 @@ export default defineComponent({
 
     openFile(fileURL) {
       window.open(fileURL);
+    },
+    scrollInToView(section_name) {
+      document.getElementById(section_name).scrollIntoView({
+        behavior: "smooth", // enables smooth scrolling
+        block: "start", // align in the middle (you can use 'start', 'center', 'end', or 'nearest')
+      });
     },
   },
 });

@@ -70,6 +70,7 @@
       </div>
       <UserMenu />
     </q-drawer>
+
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -77,9 +78,9 @@
 </template>
 
 <script>
-import { getCalls } from "src/utils/api";
 import DropdownCallMenu from "src/components/call/DropdownCallMenu.vue";
 import UserMenu from "src/components/menus/UserMenu.vue";
+import SupportButton from "src/components/SupportButton.vue";
 export default {
   name: "MainLayout",
   components: { DropdownCallMenu, UserMenu },
@@ -97,8 +98,8 @@ export default {
         return this.calls.filter((call) => call.id != this.currentCall.id);
       return [];
     },
-    activeCall(){
-      return this.calls.find(call=>call.id==this.entity.current_call)
+    activeCall() {
+      return this.calls.find((call) => call.id == this.entity.current_call);
     },
   },
 
@@ -107,9 +108,9 @@ export default {
       location.href = "/index/account/signin";
     }
     this.getEntity();
-    this.$bus.on('set-active-call', (data => {
-      this.getEntity()
-    }))
+    this.$bus.on("set-active-call", (data) => {
+      this.getEntity();
+    });
   },
 
   methods: {
@@ -125,26 +126,33 @@ export default {
     },
 
     getCalls() {
-      getCalls().then((res) => {
-        this.calls = res;
+      this.$api.get(`calls/`).then((res) => {
+        this.calls = res.data;
         if (this.calls.length) {
+          var activeCall = this.calls.find(
+            (call) => call.id == this.entity.current_call
+          );
           if (this.$userHasAnyGroups(["applicant", "reviewer"])) {
-            var activeCall = this.calls.find(
-              (call) => call.id == this.entity.current_call
-            );
             if (activeCall) {
               this.setCurrentCall(activeCall || { title: "No Call Found" });
             } else {
               this.$router.push("/no-call-found");
             }
           } else {
-            var lastCall = this.calls[0];
-            this.setCurrentCall(this.$dataStore.currentCall || lastCall);
+            console.log("datastore", this.$dataStore.currentCall);
+            if (activeCall) {
+              this.setCurrentCall(
+                this.$dataStore.currentCall ||
+                  activeCall || { title: "No Call Found" }
+              );
+            } else {
+              this.$router.push("/no-call-found");
+            }
           }
         } else {
           this.setCurrentCall({ title: "No Call Found" });
           if (this.$userHasAnyGroups(["grants_officer"])) {
-            this.$router.push("/calls");
+            this.setCurrentCall(activeCall || { title: "No Call Found" });
           } else {
             this.$router.push("/no-call-found");
           }

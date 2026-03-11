@@ -24,7 +24,15 @@
               @click="changeCurrentCall(call)"
             >
               <q-item-section>
-                <q-item-label class="flex justify-between items-center">{{ call.title }} <q-chip v-if="activeCall?.id == call.id" color="secondary" size="sm" class="gloss" label="Active" /></q-item-label>
+                <q-item-label class="flex justify-between items-center"
+                  >{{ call.title }}
+                  <q-chip
+                    v-if="activeCall?.id == call.id"
+                    color="secondary"
+                    size="sm"
+                    class="gloss"
+                    label="Active"
+                /></q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -52,8 +60,8 @@
 </template>
 
 <script>
-
 export default {
+  name: "DropdownCallMenu",
   props: {
     color: {
       type: String,
@@ -74,8 +82,8 @@ export default {
         return this.calls.filter((call) => call.id != this.currentCall.id);
       return [];
     },
-    activeCall(){
-      return this.calls.find(call=>call.id==this.entity.current_call)
+    activeCall() {
+      return this.calls.find((call) => call.id == this.entity.current_call);
     },
     menuItems() {
       if (this.$userHasAnyGroups(["applicant"])) {
@@ -107,7 +115,7 @@ export default {
   },
 
   created() {
-    this.getEntity()
+    this.getEntity();
   },
   methods: {
     async getEntity() {
@@ -117,19 +125,17 @@ export default {
       this.getCalls();
     },
     getCalls() {
-      this.$api.get('calls/').then(res=>{
+      this.$api.get("calls/").then((res) => {
         this.calls = res.data;
         if (this.calls.length) {
-          var activeCall = this.getActiveCall()
-          console.log('current call: ', this.$dataStore.currentCall.title)
-          this.setCurrentCall(this.$dataStore.currentCall || activeCall);
+          this.setCurrentCall(this.$dataStore.currentCall);
         } else {
           this.setCurrentCall({ title: "No Call Found" });
         }
-      })
+      });
     },
-    getActiveCall(){
-      return this.calls.find(call=>call.id==this.entity.current_call)
+    getActiveCall() {
+      return this.calls.find((call) => call.id == this.entity.current_call);
     },
     navigateTo(route) {
       this.$router.push(route);

@@ -3,7 +3,9 @@
     <div>
       <q-list>
         <q-item
-          v-for="item in menuItems.filter(item=>$userHasAnyGroups(item.roles) || item.roles.length == 0)"
+          v-for="item in menuItems.filter(
+            (item) => $userHasAnyGroups(item.roles) || item.roles.length == 0
+          )"
           :key="item.name"
           :active="isMenuActive(item)"
           active-class="bg-primary text-white"
@@ -44,9 +46,25 @@ export default {
         },
         {
           name: "PROPOSALS",
-          display_name: "ALL PROPOSALS",
+          display_name: "SCREENING",
           route: "/go/proposals/submitted",
-          icon: "description",
+          icon: "search",
+          color: "secondary",
+          roles: ["grants_officer"],
+          count: 0,
+          click: () => {
+            this.$utilsStore.setStateData(
+              "ProposalList_status_query",
+              "SUBMITTED"
+            );
+          },
+        },
+
+        {
+          name: "REVIEWS",
+          display_name: "EXTERNAL REVIEWS",
+          route: "/go/proposals/reviews",
+          icon: "search",
           color: "secondary",
           roles: ["grants_officer"],
           count: 0,
@@ -60,9 +78,9 @@ export default {
 
         {
           name: "REVIEWED",
-          display_name: "REVIEWED",
+          display_name: "SELECTION",
           route: "/go/proposals/reviewed",
-          icon: "search",
+          icon: "check_circle_outline",
           color: "secondary",
           roles: ["grants_officer"],
           click: () => {
@@ -75,9 +93,9 @@ export default {
 
         {
           name: "SELECTED",
-          display_name: "SELECTED",
+          display_name: "AWARD",
           route: "/go/proposals/selected",
-          icon: "check_circle_outline",
+          icon: "auto_awesome",
           color: "secondary",
           roles: ["grants_officer"],
           click: () => {
@@ -97,8 +115,6 @@ export default {
           roles: ["grants_officer"],
         },
 
-
-
         {
           name: "CALLS",
           display_name: "CALLS",
@@ -108,9 +124,6 @@ export default {
           roles: ["grants_officer"],
           count: 0,
         },
-
-
-
 
         {
           name: "THEMES",
@@ -167,19 +180,16 @@ export default {
 
   created() {
     this.getCalls();
-    this.$bus.on('proposal-selected', (data)=>{
-      this.getCounts()
-    })
+    this.$bus.on("proposal-selected", (data) => {
+      this.getCounts();
+    });
   },
 
   methods: {
     getCalls() {
       this.$api.get(`calls/`).then((res) => {
-        this.items = res.data;
-
-        if (this.items.length) {
-          var lastCall = this.items[0];
-          this.setCurrentCall(this.$dataStore.currentCall || lastCall);
+        this.calls = res.data;
+        if (this.calls.length) {
           this.getCounts();
         } else {
           this.setCurrentCall({ title: "No Call Found" });
@@ -222,11 +232,11 @@ export default {
         });
     },
 
-    isMenuActive(item){
+    isMenuActive(item) {
       if (item.name == "HOME") {
-        return this.$route.path == "/"
-      }else{
-        return this.$route.path.startsWith(item.route)
+        return this.$route.path == "/";
+      } else {
+        return this.$route.path.startsWith(item.route);
       }
     },
 

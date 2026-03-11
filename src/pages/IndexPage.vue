@@ -7,22 +7,26 @@
       </q-breadcrumbs>
     </div>
     <q-separator spaced />
+    <div class="q-pt-xl flex flex-center">
+      <DropdownCallMenu v-if="$userHasAnyGroups(['grants_officer'])" />
+    </div>
     <CallProgress />
     <main-menu />
-
-    <!-- <user-menu-2 class="my-card q-ma-sm" /> -->
-
-    <!-- <developer-menu-2></developer-menu-2> -->
+    <!-- <SupportButton @action="handleSupport" /> -->
   </q-page>
 </template>
 
 <script>
 import CallProgress from "src/components/call/CallProgress.vue";
 import { defineComponent } from "vue";
+import DropdownCallMenu from "src/components/call/DropdownCallMenu.vue";
+
+// import { DropdownCallMenu } from "src/components/call/DropdownCallMenu.vue";
+// import SupportButton from "src/components/SupportButton.vue";
 
 export default defineComponent({
   name: "IndexPage",
-  components: {CallProgress},
+  components: { CallProgress, DropdownCallMenu },
   data() {
     return {
       call: this.$dataStore?.currentCall,

@@ -202,9 +202,9 @@ export default {
         first_name: this.user.first_name,
         last_name: this.user.last_name,
         phone: this.user.profile?.phone,
-        faculty: this.user.profile?.faculty?.id,
-        department: this.user.profile?.department?.id,
-        qualification: this.user.profile?.qualification?.id,
+        faculty: this.user.profile?.faculty,
+        department: this.user.profile?.department,
+        qualification: this.user.profile?.qualification,
         designation: this.user.profile?.designation,
       };
     },

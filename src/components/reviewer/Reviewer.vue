@@ -81,6 +81,17 @@
 
             <div class="row q-col-gutter-xs q-my-sm">
               <div class="col">
+                <q-input
+                  outlined
+                  dense
+                  v-model="formData.institution"
+                  label="Institution"
+                ></q-input>
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-xs q-my-sm">
+              <div class="col">
                 <q-select
                   outlined
                   dense
@@ -220,6 +231,7 @@ export default {
         is_active: false,
         phone: "",
         gender: "Female",
+        institution: "",
         designation: "",
         faculty: null,
         department: null,
@@ -227,6 +239,23 @@ export default {
         password: "",
         themes: [],
       },
+      emailRules: [
+        (v) => !!v || "Email is required",
+        (v) => /.+@.+\..+/.test(v) || "Email must be valid",
+      ],
+      nameRules: [(v) => !!v || "Field is required"],
+      phoneRules: [
+        (v) => !!v || "Telephone number is required",
+        (v) => /^[0-9]{10}$/.test(v) || "Telephone number must be 10 digits",
+      ],
+      passwordRules: [
+        (v) => !!v || "Password is required",
+        (v) => v.length >= 8 || "Password must be at least 8 characters long",
+      ],
+      confirmPasswordRules: [
+        (v) => !!v || "Confirm Password is required",
+        (v) => v === this.formData.password || "Passwords do not match",
+      ],
     };
   },
   created() {
@@ -247,9 +276,11 @@ export default {
     updateReviewer() {
       this.formData["username"] = this.formData["email"];
       this.$utilsStore.setLoading(true);
+      console.log(this.formData);
       this.$api
         .put(`users/${this.reviewer.id}/update-reviewer/`, this.formData)
         .then((res) => {
+          console.log("res", res.data);
           this.$router.push(`/reviewers/`);
           this.$utilsStore.setLoading(false);
         });
@@ -295,7 +326,6 @@ export default {
     },
 
     setFormData() {
-      console.log(this.reviewer.profile);
       this.formData = {
         first_name: this.reviewer.first_name,
         last_name: this.reviewer.last_name,
@@ -303,6 +333,7 @@ export default {
         email: this.reviewer.email,
         phone: this.reviewer.profile.phone,
         gender: this.reviewer.profile.gender,
+        institution: this.reviewer.profile.institution,
         designation: this.reviewer.profile.designation,
         qualification: this.reviewer.profile.qualification,
         department: this.reviewer.profile.department,

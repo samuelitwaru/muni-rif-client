@@ -28,6 +28,7 @@
           <q-btn
             v-if="$proposalStore.currentProposal?.status != 'EDITING'"
             color="primary"
+            outline
             icon="download"
             dense
             label="download"
@@ -45,17 +46,18 @@
       bordered
       :width="220"
     >
-      <q-card flat class="q-py-sm">
-        <router-link to="/go/proposals/submitted">
-          <q-btn
-            class="q-mx-sm"
-            block
-            color="primary"
-            flat
-            icon="arrow_back"
-            label="Back"
-          />
-        </router-link>
+      <q-card align="center" flat class="q-py-sm">
+        <!-- <router-link to="/go/proposals/submitted"> -->
+        <q-btn
+          class="q-mx-sm"
+          block
+          color="primary"
+          flat
+          icon="arrow_back"
+          label="Back"
+          @click="$router.back()"
+        />
+        <!-- </router-link> -->
       </q-card>
       <q-list>
         <span
@@ -74,14 +76,16 @@
       </q-list>
 
       <q-list>
-        <span
-          v-for="item in menuItems"
-          :key="item.name"
-        >
-          <q-item class="row q-gutter-x-sm justify-center items-center" clickable v-ripple @click=scrollInToView(item.name)>
+        <span v-for="item in menuItems" :key="item.name">
+          <q-item
+            class="row q-gutter-x-sm justify-center items-center"
+            clickable
+            v-ripple
+            @click="scrollInToView(item.name)"
+          >
             <q-icon :name="item.icon" size="1.5rem" />
             <q-item-section>
-            {{ item.label }}
+              {{ item.label }}
             </q-item-section>
           </q-item>
           <q-separator />
@@ -100,7 +104,7 @@
 import { defineComponent, ref } from "vue";
 import { protectFile } from "src/utils/helpers";
 import ProposalHeader from "components/proposal/ProposalHeader.vue";
-import { scroll } from "quasar";
+
 export default defineComponent({
   components: { ProposalHeader },
   name: "ProposalLayout",
@@ -113,9 +117,19 @@ export default defineComponent({
       score: {},
       sections: [],
       menuItems: [
-        {icon: "reviews", label: "Reviews", name: "reviews", link: "#reviews"},
-        {icon: "assignment", label: "Reports", name: "reports", link: "#reports"},
-      ]
+        {
+          icon: "reviews",
+          label: "Reviews",
+          name: "reviews",
+          link: "#reviews",
+        },
+        {
+          icon: "assignment",
+          label: "Reports",
+          name: "reports",
+          link: "#reports",
+        },
+      ],
     };
   },
 
@@ -135,7 +149,6 @@ export default defineComponent({
           this.getProposalFiles();
           this.getSections();
           this.getScore();
-          this.$utilsStore.setLoading(false);
         });
     },
 
@@ -186,12 +199,16 @@ export default defineComponent({
     },
 
     scrollInToView(section_name) {
-      // alert(section_name)
-      document.getElementById(section_name).scrollIntoView({
-        behavior: 'smooth',   // enables smooth scrolling
-        block: 'start',      // align in the middle (you can use 'start', 'center', 'end', or 'nearest')
-      });
+      if (window.innerWidth < 1024) {
+        this.leftDrawerOpen = false;
+      }
 
+      setTimeout(() => {
+        document.getElementById(section_name).scrollIntoView({
+          behavior: "smooth", // enables smooth scrolling
+          block: "start", // align in the middle (you can use 'start', 'center', 'end', or 'nearest')
+        });
+      }, 100);
     },
 
     openFile(fileURL) {

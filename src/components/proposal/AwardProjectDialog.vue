@@ -6,58 +6,32 @@
       color="primary"
       @click="showDialog = true"
       dense
+      size="sm"
       flat
     />
-    <q-form @submit="allocateBudget">
+    <q-form @submit="awardProject">
       <q-dialog v-model="showDialog" persistent>
-        <q-card style="width: 500px">
+        <q-card style="width: 700px">
           <q-card-section class="flex justify-between">
-            <div class="text-h6">Budget Allocation</div>
+            <div class="text-h6">Award Project</div>
             <!-- close btn -->
-            <q-btn
-              icon="close"
-              flat
-              dense
-              round
-              @click="cancelUpdate"
-            />
+            <q-btn icon="close" flat dense round @click="closeDialog" />
           </q-card-section>
           <q-separator />
 
           <q-card-section class="q-pt-lg q-pb-md">
-            <div class="text-h5">Budget</div>
-            <BudgetItems :proposal_id="proposal.id" />
-          </q-card-section>
-
-          <q-card-section class="q-pt-lg q-pb-md">
-            <label>Budget Allocation</label>
-
-            <q-input
-              v-model.number="formData.budget_allocation"
-              type="number"
-              outlined
-              required
-              class="text-h5"
-            />
-            <div class="text-red">
-              <ul class="q-ma-xs">
-                <li v-for="err in formErrors?.budget_allocation" :key="err">{{ err }}</li>
-              </ul>
-            </div>
-
-            <br />
-
-
-            <div class="text-red">
-              <ul class="q-ma-xs">
-                <li v-for="err in formErrors?.budget_allocation" :key="err">{{ err }}</li>
-              </ul>
-            </div>
+            <div class="q-pb-sm"><label class="text-grey">Message</label></div>
+            <q-editor v-model="formData.message" />
           </q-card-section>
           <q-separator spaced />
           <q-card-actions align="right">
-            <q-btn flat color="primary" label="Cancel" @click="cancelUpdate" />
-            <q-btn color="primary" label="Allocate" @click="allocateBudget" :disable="!formData.budget_allocation"/>
+            <q-btn flat color="primary" label="Cancel" @click="closeDialog" />
+            <q-btn
+              color="primary"
+              label="Award Project"
+              @click="awardProject"
+              :disable="!formData.message"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -66,12 +40,8 @@
 </template>
 
 <script>
-import BudgetItems from "./BudgetItems.vue";
-
 export default {
-  components: {
-    BudgetItems,
-  },
+  components: {},
   props: {
     proposal: {
       type: Object,
@@ -80,7 +50,7 @@ export default {
     showButton: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
     showPopup: {
       type: Boolean,
@@ -91,41 +61,50 @@ export default {
   data() {
     return {
       loading: false,
-      showDialog: false,
+      showDialog: this.showPopup,
       formData: {
-        budget_allocation: null,
+        message: "",
       },
       formErrors: {},
     };
   },
   created() {
-    if (process.env.DEBUG) this.setFormData();
+    this.setFormData();
   },
   methods: {
-    allocateBudget() {
-      console.log(this.formData);
+    awardProject() {
       this.$utilsStore.setLoading(true);
       this.$api
-        .patch(`proposals/${this.proposal.id}/`, this.formData)
+        .post(`proposals/${this.proposal.id}/award/`, this.formData)
         .then((res) => {
-          console.log('res: ', res)
+          console.log("res: ", res);
           this.$utilsStore.setLoading(false);
-          this.showDialog = false;
-          this.$emit("budget-allocated", res.data);
+          this.closeDialog();
+          this.$emit("project-awarded", res.data);
         })
         .catch((err) => {
           this.formErrors = err.response.data;
           this.$utilsStore.setLoading(false);
         });
     },
-    cancelUpdate() {
+    closeDialog() {
       // Cancel the creation and close the dialog.
       this.showDialog = false;
+      this.$emit("close");
     },
 
     setFormData() {
       this.formData = {
-        budget_allocation: null,
+        message: `
+        <p>Congratulations!</p>
+
+        <p>Your proposal <b>"${this.proposal.title}"</b> has been selected for funding. We are excited to support your project and look forward to seeing the positive impact it will have on our community.</p>
+
+        <p>Please let us know if you have any questions or need further assistance as you move forward with your project.</p>
+
+        <p>Best regards, </p>
+        <p>The Grants Management Office.</p>
+        `,
       };
     },
   },

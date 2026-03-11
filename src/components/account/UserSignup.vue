@@ -13,7 +13,11 @@
               label="First Name"
               :rules="nameRules"
               required
-            ></q-input>
+            >
+              <template v-slot:label>
+                First Name <span class="text-red">*</span>
+              </template>
+            </q-input>
           </div>
           <div class="col">
             <q-input
@@ -23,7 +27,11 @@
               label="Last Name"
               :rules="nameRules"
               required
-            ></q-input>
+            >
+              <template v-slot:label>
+                Last Name <span class="text-red">*</span>
+              </template>
+            </q-input>
           </div>
         </div>
 
@@ -37,7 +45,11 @@
               type="email"
               :rules="emailRules"
               required
-            ></q-input>
+            >
+              <template v-slot:label>
+                Email <span class="text-red">*</span>
+              </template>
+            </q-input>
           </div>
           <div class="col">
             <q-input
@@ -48,7 +60,11 @@
               type="tel"
               :rules="phoneRules"
               required
-            ></q-input>
+            >
+              <template v-slot:label>
+                Telephone Number <span class="text-red">*</span>
+              </template>
+            </q-input>
           </div>
         </div>
 
@@ -98,6 +114,7 @@
         <div class="row q-col-gutter-xs">
           <div class="col">
             <q-select
+              class="error-1"
               dense
               outlined
               v-model="formData.qualification"
@@ -180,6 +197,15 @@ export default {
         password: "",
         confirm_password: "",
       },
+      required_fields: [
+        "email",
+        "first_name",
+        "last_name",
+        "phone",
+        "gender",
+        "password",
+        "confirm_password",
+      ],
       emailRules: [
         (v) => !!v || "Email is required",
         (v) => /.+@.+\..+/.test(v) || "Email must be valid",

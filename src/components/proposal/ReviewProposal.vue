@@ -1,9 +1,6 @@
 <template lang>
   <div>
-    <accept-review :proposal="proposal" :score="score" />
-
-    <ProposalHeader />
-
+    <accept-review :proposal="proposal" :score="score" /> <ProposalHeader />
     <div v-for="section in sections" :key="section.id">
       <hr :id="section.name" class="section-separator" />
       <div class="q-pa-sm">
@@ -12,9 +9,9 @@
             {{ section.title }}
           </div>
         </q-toolbar-title>
-
         <div v-if="section.max_score > 0">
-          <!-- Tab Navigation Buttons -->
+          <!-- Tab Navigation Buttons
+  -->
           <div>
             <q-btn-toggle
               class="q-mt-xs"
@@ -36,15 +33,14 @@
               ]"
             />
           </div>
-
-          <!-- Section Content  -->
+          <!-- Section Content -->
           <SectionView
             :proposal="proposal"
             :section="section"
             v-show="tab == 'proposal'"
           />
-
-          <!-- Score Editor -->
+          <!-- Score Editor
+  -->
           <score-editor
             v-show="tab == 'scores'"
             v-if="section.max_score > 0"
@@ -54,8 +50,8 @@
             :section="section"
             :score="score"
           />
-
-          <!-- Score View -->
+          <!--
+  Score View -->
           <ScoreView
             v-show="tab == 'scores' && score?.status == 'COMPLETED'"
             :section="section"
@@ -72,15 +68,14 @@
             </q-card>
           </div>
         </div>
-
         <SectionView v-else :proposal="proposal" :section="section" />
       </div>
     </div>
     <hr id="solution" class="section-separator" />
     <div class="q-pa-sm" align="center">
-        <div>Total Score</div>
-        <q-card-section>
-          <q-circular-progress
+      <div>Total Score</div>
+      <q-card-section>
+        <q-circular-progress
           show-value
           font-size="12px"
           :value="percentageScore"
@@ -128,19 +123,24 @@ export default {
     this.getProposal();
     this.getSections();
     this.$bus.on("score-updated", (val) => {
-      this.score[val.section] = val.score
+      this.score[val.section] = val.score;
     });
   },
 
   computed: {
-    percentageScore () {
-      if (this.sections?.length == 0 || !this.score?.id) return 0
-      const scores = this.sections?.map(section => section.max_score)
-      const section_scores = this.sections?.map(section => this.score[section.name] || 0)
-      console.log(section_scores)
-      const total_section_scores = section_scores.reduce((acc,curr) => acc + curr, 0)
-      const total = scores.reduce((acc,curr) => acc + curr, 0)
-      return Math.round((total_section_scores/total) * 100)
+    percentageScore() {
+      if (this.sections?.length == 0 || !this.score?.id) return 0;
+      const scores = this.sections?.map((section) => section.max_score);
+      const section_scores = this.sections?.map(
+        (section) => this.score[section.name] || 0
+      );
+      console.log(section_scores);
+      const total_section_scores = section_scores.reduce(
+        (acc, curr) => acc + curr,
+        0
+      );
+      const total = scores.reduce((acc, curr) => acc + curr, 0);
+      return Math.round((total_section_scores / total) * 100);
     },
     scoresAreValid() {
       if (this.score && this.sections) {
@@ -162,12 +162,16 @@ export default {
 
   methods: {
     getProposal() {
+      this.$utilsStore.setLoading(true);
       this.$api
         .get(`proposals/${this.$route.params.proposal_id}/`)
         .then((res) => {
           this.proposal = res.data;
           this.$proposalStore.setProposal(this.proposal);
           this.getScore();
+        })
+        .finally(() => {
+          this.$utilsStore.setLoading(false);
         });
     },
 
@@ -189,7 +193,7 @@ export default {
       this.$api.get(`sections/`).then((res) => {
         this.sections = res.data;
 
-        setTimeout(this.calculateTotalPercentageScore, 1000)
+        setTimeout(this.calculateTotalPercentageScore, 1000);
       });
     },
   },

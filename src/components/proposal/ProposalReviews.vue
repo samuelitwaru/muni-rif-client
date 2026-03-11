@@ -40,10 +40,14 @@ export default {
   },
   methods: {
     getScores() {
+      this.$utilsStore.setLoading(true);
       this.$api
         .get(`scores/?proposal=${this.$route.params.proposal_id}`)
         .then((res) => {
           this.scores = res.data;
+        })
+        .finally(() => {
+          this.$utilsStore.setLoading(false);
         });
     },
 

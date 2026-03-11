@@ -96,6 +96,10 @@ const routes = [
         component: () => import("components/proposal/SubmittedProposals.vue"),
       },
       {
+        path: "screening/:proposal_id",
+        component: () => import("components/proposal/ProposalScreening.vue"),
+      },
+      {
         path: ":proposal_id",
         component: () => import("components/proposal/ProposalEditor.vue"),
       },
@@ -121,6 +125,10 @@ const routes = [
       {
         path: "submitted",
         component: () => import("components/proposal/SubmittedProposals.vue"),
+      },
+      {
+        path: "reviews",
+        component: () => import("components/proposal/ScreenedProposals.vue"),
       },
       {
         path: "reviewed",
@@ -219,6 +227,10 @@ const routes = [
   {
     path: "/unauthorised",
     component: () => import("pages/ErrorUnauthorised.vue"),
+  },
+  {
+    path: "/session-expired",
+    component: () => import("pages/ErrorSessionExpired.vue"),
   },
   {
     path: "/:catchAll(.*)*",

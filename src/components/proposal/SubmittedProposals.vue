@@ -9,115 +9,79 @@
     <q-separator spaced />
     <!-- filters section -->
     <!-- other controls -->
-    <div class="q-ma-sm row items-center">
-      <q-card class="my-card q-pa-xs" flat bordered>
-      <div class="flex border">
-        <label class="row items-center q-pr-xs">Bulk Upload</label>
-        <q-btn color="primary" icon="download" dense flat @click="downloadTemplate"  label="template" />
-        <FileUploader2 @file-uploaded="getProposals({})" uploadUrl="/proposals/upload-bulk/" :multiple="false" :formData="{}" />
-      </div>
-      </q-card>
-      <div class="col">
-      </div>
-      <div class="col">
-        <div>
-          <q-popup-proxy v-model="show" :breakpoint="1000">
-            <AssignReviewers2
-              :reviewers="reviewers"
-              @reviewers-selected="
-                createScores($event);
-                show = false;
-              "
-            />
-          </q-popup-proxy>
-        </div>
-        <!-- <router-link to="/go/proposals/reviewed">
-          <q-btn color="primary" flat label="Go To Reviews" class="q-mr-sm" />
-        </router-link> -->
-      </div>
-    </div>
-    <ProposalFilter @filter="getProposals($event)"/>
+
+    <ProposalFilter @filter="getProposals($event)" />
 
     <div v-if="view === 'proposals'">
-      <q-markup-table class="q-ma-sm" separator="cell" flat bordered>
+      <q-markup-table wrap-cells class="q-ma-sm" separator="cell" flat bordered>
         <thead>
           <tr>
-            <th align="left">
-              <input
-                :checked="allSelected"
-                type="checkbox"
-                @click="selectAllProposals($event)"
-              />
-            </th>
             <th align="left">Title</th>
             <th align="left">Theme</th>
             <th align="left">Date Submitted</th>
             <th align="left">PI</th>
-            <!-- <th align="left">Reviewers</th> -->
             <th align="left">Status</th>
-            <th align="left"></th>
+            <th align="left">Screening Score</th>
+            <th align="left">Passed Screening</th>
           </tr>
         </thead>
         <tbody>
           <template v-for="item in proposals" :key="item.id">
-            <tr >
+            <tr>
               <td>
-                <input
-                  :checked="selectedProposals.includes(item.id)"
-                  type="checkbox"
-                  @click="selectProposal(item.id)"
-                />
+                <router-link :to="`/proposals/screening/${item.id}`"
+                  ><b>{{ item.title }}</b></router-link
+                >
               </td>
-              <td><router-link :to="`/proposals/${item.id}`">{{ item.title }}</router-link></td>
-              <td>{{ item.theme_title }}</td>
+              <td wrap-cells>
+                {{ item.theme_title }}
+              </td>
               <td>{{ item.submission_date }}</td>
               <td>{{ item.user__first_name }} {{ item.user__last_name }}</td>
               <td>{{ item.status }}</td>
               <td>
-                <q-btn
-                  @click="selectProposal2(item.id)"
-                  label="Assign Reviewers"
-                  flat
-                  color="primary"
+                <q-linear-progress
+                  :value="item.screening_score / 100"
+                  class="q-mt-md"
                 />
-
-                <q-chip v-for="score in item.scores" :key="score.id">
-                  {{ score.user__first_name }} {{ score.user__last_name }}
-                  <q-icon
-                    name="close"
-                    color="primary"
-                    @click="deleteScore(score.id)"
-                    class="cursor-pointer"
-                  />
-                </q-chip>
+                <q-badge :label="`${(item.screening_score / 100) * 100}%`" />
+              </td>
+              <td align="center">
+                <q-icon
+                  v-if="item.is_recommended"
+                  size="sm"
+                  color="green"
+                  name="check_circle"
+                />
               </td>
             </tr>
-            <!-- <tr class="q-tr--no-hover" v-if="item.scores && item.scores.length">
-              <td colspan="7">
-                <InlineProposalReviewers :proposal="item" :scores="item.scores"/>
-              </td>
-            </tr> -->
           </template>
         </tbody>
       </q-markup-table>
       <div class="q-pa-sm flex flex-center">
-        <q-pagination direction-links v-model="formData.page" :max="maxPageCount" @update:model-value="getProposals(formData)"/>
+        <q-pagination
+          direction-links
+          v-model="formData.page"
+          :max="maxPageCount"
+          @update:model-value="getProposals(formData)"
+        />
       </div>
     </div>
 
-    <AssignedProposals v-if="view === 'scores'" :proposals="proposals"/>
+    <AssignedProposals v-if="view === 'scores'" :proposals="proposals" />
   </q-page>
 </template>
 
 <script>
-import AssignReviewers2 from "components/proposal/AssignReviewers2.vue";
 import AssignedProposals from "components/proposal/AssignedProposals.vue";
-import FileUploader2 from "components/widgets/FileUploader2.vue";
 import ProposalFilter from "./ProposalFilter.vue";
 // import InlineProposalReviewers from "./InlineProposalReviewers.vue";
 
 export default {
-  components: { AssignReviewers2, FileUploader2, ProposalFilter, AssignedProposals },
+  components: {
+    ProposalFilter,
+    AssignedProposals,
+  },
   name: "ReviewerList",
   data() {
     return {
@@ -129,10 +93,10 @@ export default {
         // submission_date_gte: "2025-01-01",
         call: this.$dataStore.currentCall.id,
         page: 1,
-        limit: 10
+        limit: 20,
       },
       proposals: [],
-      scores:[],
+      scores: [],
       themes: [],
       selectedProposals: [],
       selectedProposal: null,
@@ -148,25 +112,23 @@ export default {
   },
   methods: {
     getProposals(filterData) {
-      console.log('filerdata', filterData)
       this.$utilsStore.setLoading(true);
-      filterData.page = this.formData.page
-      filterData.limit = this.formData.limit
-      filterData.call = this.formData.call
-      filterData["exclude__status"] = "EDITING"
-      this.setView(filterData)
-      let queryString = ''
+      filterData.page = this.formData.page;
+      filterData.limit = this.formData.limit;
+      filterData.call = this.formData.call;
+      filterData["exclude__status"] = "EDITING";
+      this.setView(filterData);
+      let queryString = "";
       if (filterData) {
         queryString = this.$buildURLQuery(filterData);
       }
       this.$api.get(`proposals/?${queryString}`).then((res) => {
         this.proposals = res.data.results;
-        this.page = res.data.page
-        this.maxPageCount = res.data.max_page
+        this.page = res.data.page;
+        this.maxPageCount = res.data.max_page;
         this.getProposalScores();
         this.$utilsStore.setLoading(false);
       });
-
     },
 
     getProposalScores() {
@@ -180,9 +142,12 @@ export default {
     },
 
     setView(filterData) {
-      if (filterData?.status && ["REVIEWING","REVIEWED","SELECTED"].includes(filterData.status)) {
+      if (
+        filterData?.status &&
+        ["REVIEWING", "REVIEWED", "SELECTED"].includes(filterData.status)
+      ) {
         this.view = "scores";
-      }else {
+      } else {
         this.view = "proposals";
       }
     },
@@ -275,15 +240,13 @@ export default {
       }
     },
 
-    downloadTemplate(){
-      this.$api
-        .get(`proposals/bulk-upload-sheet/download/`)
-        .then((res) => {
-          if (res.status == 200) {
-            window.open(res.data.file_url, "_blank");
-          }
-        });
-    }
+    downloadTemplate() {
+      this.$api.get(`proposals/bulk-upload-sheet/download/`).then((res) => {
+        if (res.status == 200) {
+          window.open(res.data.file_url, "_blank");
+        }
+      });
+    },
   },
 };
 </script>

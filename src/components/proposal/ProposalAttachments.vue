@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-markup-table class="q-my-sm" flat bordered>
+    <q-markup-table class="q-my-sm" separator="cell" flat bordered>
       <thead>
         <tr>
           <th align="left">Title</th>
@@ -85,7 +85,6 @@ export default {
             if (index == this.attachments.length - 1) {
               this.$bus.emit("attachments-updated", this.validateAttachments());
             }
-
           });
       }
     },

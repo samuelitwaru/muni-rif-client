@@ -44,6 +44,7 @@
             color="primary"
             icon="download"
             dense
+            outline
             label="download"
             @click="downloadProposal"
           />
@@ -73,12 +74,12 @@
       </q-card>
       <q-separator />
       <q-list>
-        <a
+        <span
           v-for="section in sections"
           :key="section.id"
           :href="`/applicant/proposals/${$route.params.proposal_id}${section.ref}`"
         >
-          <q-item clickable v-ripple>
+          <q-item clickable v-ripple @click="scrollInToView(section.name)">
             <div class="text-caption q-px-sm q-my-auto q-mr-sm">
               <q-icon
                 v-if="validateSection(section)"
@@ -92,7 +93,7 @@
             <q-item-section>{{ section.title }}</q-item-section>
           </q-item>
           <q-separator />
-        </a>
+        </span>
       </q-list>
     </q-drawer>
 
@@ -113,7 +114,6 @@
             label="save and continue later"
           />
         </router-link>
-
         <submit-proposal
           :disabled="!isProposalValid"
           :proposal="$proposalStore.currentProposal"
@@ -131,7 +131,7 @@ import { removeHTMLTags } from "src/utils/helpers";
 
 export default defineComponent({
   components: {
-    ProposalHeader
+    ProposalHeader,
   },
   name: "ProposalLayout",
 
@@ -316,6 +316,16 @@ export default defineComponent({
         this.wordCounts[section.name] <= section.word_limit;
       this.validity[section.name] = isValid;
       return isValid;
+    },
+
+    scrollInToView(section_name) {
+      this.leftDrawerOpen = false;
+      setTimeout(() => {
+        document.getElementById(section_name).scrollIntoView({
+          behavior: "smooth", // enables smooth scrolling
+          block: "start", // align in the middle (you can use 'start', 'center', 'end', or 'nearest')
+        });
+      }, 100);
     },
   },
 });

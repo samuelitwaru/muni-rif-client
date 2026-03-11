@@ -1,4 +1,5 @@
 import { authStore } from "stores/auth";
+import { dataStore } from "src/stores/data";
 
 const fileAccessRoles = {
   ProposalLayout: ["grants_officer"],
@@ -50,14 +51,19 @@ function parseDate(ymdString) {
 }
 
 function removeHTMLTags(htmlString) {
-	// Create a new DOMParser instance
-	const parser = new DOMParser();
-	// Parse the HTML string
-	const doc = parser.parseFromString(htmlString, 'text/html');
-	// Extract text content
-	const textContent = doc.body.textContent || "";
-	// Trim whitespace
-	return textContent.trim();
+  // Create a new DOMParser instance
+  const parser = new DOMParser();
+  // Parse the HTML string
+  const doc = parser.parseFromString(htmlString, "text/html");
+  // Extract text content
+  const textContent = doc.body.textContent || "";
+  // Trim whitespace
+  return textContent.trim();
+}
+
+function getFileNameFromUrl(url) {
+  const splits = url.split("/");
+  return splits[splits.length - 1];
 }
 
 export {
@@ -67,4 +73,5 @@ export {
   converDateToString,
   parseDate,
   removeHTMLTags,
+  getFileNameFromUrl,
 };

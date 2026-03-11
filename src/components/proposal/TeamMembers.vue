@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-markup-table dense class="q-my-sm" flat bordered>
+    <q-markup-table separator="cell" class="q-my-sm" flat bordered>
       <thead>
         <tr>
           <th align="left">Full Name</th>

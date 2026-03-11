@@ -6,7 +6,8 @@
       :icon="'delete'"
       :confirmText="'Delete'"
       :cancelText="'Cancel'"
-      @confirm="deleteItem(selectedCallId)"></ConfirmDialog>
+      @confirm="deleteItem(selectedCallId)"
+    ></ConfirmDialog>
 
     <div class="q-ma-md">
       <q-breadcrumbs>
@@ -34,7 +35,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr style="background-color: #dddddd;" v-if="activeCall">
+        <tr style="background-color: #dddddd" v-if="activeCall">
           <th align="left">{{ activeCall.title }}</th>
           <th align="left">{{ activeCall.date_from }}</th>
           <th align="left">{{ activeCall.submission_date }}</th>
@@ -72,7 +73,10 @@
             />
           </td>
           <td>
-            <router-link :to="`/calls/${item.id}`">
+            <router-link
+              v-if="item.id == activeCall.id"
+              :to="`/calls/${item.id}`"
+            >
               <q-btn icon="edit" flat color="primary" @click="editItem(item)" />
             </router-link>
             <q-btn
@@ -102,11 +106,12 @@
 import { getCalls } from "src/utils/api";
 import CreateCallModal from "./CreateCallModal.vue";
 import ConfirmDialog from "../ConfirmDialog.vue";
-import { Dialog, useQuasar } from 'quasar'
-const $q = useQuasar()
+import { Dialog, useQuasar } from "quasar";
+const $q = useQuasar();
 export default {
   components: {
-    CreateCallModal, ConfirmDialog
+    CreateCallModal,
+    ConfirmDialog,
   },
   name: "DataTable",
   data() {
@@ -125,19 +130,21 @@ export default {
     async getEntity() {
       const res = await this.$api.get(`entities/`);
       this.entity = res.data[0];
-      this.getCalls()
+      this.getCalls();
     },
     getCalls() {
-      this.$api.get('calls/').then(res=>{
+      this.$api.get("calls/").then((res) => {
         this.calls = res.data;
         if (this.calls.length) {
-          this.activeCall = this.getActiveCall()
-          this.items = this.calls.filter(call=>call.id!=this.activeCall.id)
+          this.activeCall = this.getActiveCall();
+          this.items = this.calls.filter(
+            (call) => call.id != this.activeCall.id
+          );
         }
-      })
+      });
     },
-    getActiveCall(){
-      return this.calls.find(call=>call.id==this.entity.current_call)
+    getActiveCall() {
+      return this.calls.find((call) => call.id == this.entity.current_call);
     },
     editItem(item) {
       console.log("Edit item:", item);
@@ -146,19 +153,19 @@ export default {
       this.$utilsStore.setLoading(true);
       this.$api.get(`/calls/${call.id}/set-as-active`).then((res) => {
         if (res.status == 200) {
-          this.getEntity()
+          this.getEntity();
           this.$utilsStore.setLoading(false);
           this.$q.notify({
             type: "positive",
             message: `${call.title} is now active.`,
           });
-          this.$bus.emit('set-active-call', call)
+          this.$bus.emit("set-active-call", call);
         }
       });
     },
     confirmDelete(id) {
       this.selectedCallId = id;
-      console.log(this.$refs.confirmDialog.show = true);
+      console.log((this.$refs.confirmDialog.show = true));
       this.$refs.confirmDialog.show();
     },
     deleteItem(id) {

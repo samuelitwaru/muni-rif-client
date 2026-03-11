@@ -21,8 +21,10 @@
             class="q-my-md"
           />
           <q-select
-            v-model="formData.call"
+            v-model="formData.calls"
             label="Call"
+            multiple
+            use-chips
             outlined
             :options="callOptions"
             option-value="id"
@@ -55,7 +57,7 @@ export default {
       theme: {},
       formData: {
         title: "",
-        call: null,
+        calls: null,
       },
       callOptions: [],
       loading: false,
@@ -74,7 +76,7 @@ export default {
         const response = await this.$api.get(`themes/${this.$route.params.id}`);
         this.theme = response.data;
         this.formData.title = this.theme.title;
-        this.formData.call = this.theme.call;
+        this.formData.calls = this.theme.calls;
       } catch (error) {
         this.$q.notify({
           type: "negative",

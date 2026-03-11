@@ -8,7 +8,6 @@
             {{ section.title }}
           </div>
         </q-toolbar-title>
-
         <q-card
           v-if="$proposalStore.currentProposal?.status == 'EDITING'"
           class="flex no-wrap q-pa-sm"
@@ -23,12 +22,8 @@
           </div>
         </q-card>
         <div class="q-pt-sm">
-          <div v-if="section.ref == '#summary_budget'">
-            <budgeteditor />
-          </div>
-          <div v-else-if="section.ref == '#team'">
-            <teameditor />
-          </div>
+          <div v-if="section.ref == '#summary_budget'"><budgeteditor /></div>
+          <div v-else-if="section.ref == '#team'"><teameditor /></div>
           <div v-else-if="section.ref == '#attachments'">
             <attachmentseditor />
           </div>
@@ -51,13 +46,16 @@
         </div>
       </div>
     </div>
-    <div v-if="this.$authStore.currentUser.id ==
-                    this.$proposalStore.currentProposal.user && this.$proposalStore.currentProposal.is_selected">
+    <div
+      v-if="
+        this.$authStore.currentUser.id ==
+          this.$proposalStore.currentProposal.user &&
+        this.$proposalStore.currentProposal.is_selected
+      "
+    >
       <hr />
-      <ExpenseReports />
-      <ProposalReportsEditor />
+      <ExpenseReports /> <ProposalReportsEditor />
     </div>
-
     <hr id="solution" class="section-separator" />
   </div>
 </template>
@@ -70,7 +68,14 @@ import ExpenseReports from "./ExpenseReports.vue";
 import ProposalReportsEditor from "./ProposalReportsEditor.vue";
 
 export default {
-  components: { budgeteditor, teameditor, sectioneditor2, attachmentseditor, ExpenseReports, ProposalReportsEditor },
+  components: {
+    budgeteditor,
+    teameditor,
+    sectioneditor2,
+    attachmentseditor,
+    ExpenseReports,
+    ProposalReportsEditor,
+  },
   data() {
     return {
       sections: [],
@@ -93,12 +98,16 @@ export default {
 
   methods: {
     getProposal() {
+      this.$utilsStore.setLoading(true);
       this.$api
         .get(`proposals/${this.$route.params.proposal_id}/`)
         .then((res) => {
           this.proposal = res.data;
           this.$proposalStore.setProposal(this.proposal);
           this.getScore();
+        })
+        .finally(() => {
+          this.$utilsStore.setLoading(false);
         });
     },
 

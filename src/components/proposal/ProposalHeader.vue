@@ -5,16 +5,20 @@
       <tbody>
         <tr class="q-tr--no-hover">
           <td class="text-left">
-            <div class="text-h6">Title</div>
+            <div class="">Title:</div>
           </td>
-          <td class="text-left">{{ $proposalStore.currentProposal?.title }}</td>
+          <td class="">
+            <div class="text-h6">
+              {{ $proposalStore.currentProposal?.title }}
+            </div>
+          </td>
         </tr>
         <tr class="q-tr--no-hover">
+          <td class="text-left"><div>Theme:</div></td>
           <td class="text-left">
-            <div class="text-h6">Theme</div>
-          </td>
-          <td class="text-left">
-            {{ $proposalStore.currentProposal?.theme_title }}
+            <div class="text-h6">
+              {{ $proposalStore.currentProposal?.theme_title }}
+            </div>
           </td>
         </tr>
       </tbody>
