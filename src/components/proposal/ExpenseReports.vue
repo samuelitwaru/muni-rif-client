@@ -181,11 +181,9 @@ export default {
 
     createExpenditure() {
       this.isSubmitting = true;
-      console.log("formData: ", this.formData);
       this.$api
         .post(`expenditures/`, this.formData)
         .then((res) => {
-          console.log("res: ", res.status);
           if (res.status == 201) {
             this.expenditures.push(res.data);
             this.resetFormData();
@@ -193,14 +191,12 @@ export default {
           }
         })
         .catch((err) => {
-          console.log("err", err.response.data);
           this.isSubmitting = false;
         });
     },
     deleteExpenditure(expenseId) {
       if (confirm("Confirm Delete?")) {
         this.$api.delete(`expenditures/${expenseId}`).then((res) => {
-          console.log("res: ", res.data);
           this.getExpenditures();
         });
       }
@@ -209,7 +205,6 @@ export default {
       this.$api
         .get(`proposals/${this.$route.params.proposal_id}/expenses/download/`)
         .then((res) => {
-          console.log("res: ", res.data);
           window.open(res.data.file_url, "_blank");
         });
     },

@@ -35,19 +35,29 @@
             readonly
           >
             <template v-slot:append>
-              <q-icon v-if="formData2[field.name]" name="close"
+              <q-icon
+                v-if="formData2[field.name]"
+                name="close"
                 @click="
-                  formData2[field.name]=null;
-                  formData2[field.range_input_name]=null;
+                  formData2[field.name] = null;
+                  formData2[field.range_input_name] = null;
                   setDateRange(
-                        field.name,
-                        field.range_input_name,
-                        field.range_from_name,
-                        field.range_to_name
-                      );
-                  filter();"
-                />
-              <q-icon name="event" class="cursor-pointer q-my-xs" icon="event" flat dense color="primary">
+                    field.name,
+                    field.range_input_name,
+                    field.range_from_name,
+                    field.range_to_name
+                  );
+                  filter();
+                "
+              />
+              <q-icon
+                name="event"
+                class="cursor-pointer q-my-xs"
+                icon="event"
+                flat
+                dense
+                color="primary"
+              >
                 <q-popup-proxy
                   cover
                   transition-show="scale"
@@ -71,7 +81,6 @@
               </q-icon>
             </template>
           </q-input>
-
         </div>
         <!-- </q-card> -->
       </div>
@@ -104,6 +113,7 @@ export default {
     };
   },
   created() {
+    this.setFormData();
     this.getThemes();
     this.getUsers();
     this.getStatusOptions();
@@ -141,15 +151,21 @@ export default {
     setDateRange(name, range_input_name, range_from_name, range_to_name) {
       this.formData[range_from_name] = this.formData2[name]?.from;
       this.formData[range_to_name] = this.formData2[name]?.to;
-      this.formData2[
-        range_input_name
-      ] = `${this.formData2[name]?.from || ''} - ${this.formData2[name]?.to || ''}`;
+      this.formData2[range_input_name] = `${
+        this.formData2[name]?.from || ""
+      } - ${this.formData2[name]?.to || ""}`;
       this.popups[name] = false;
     },
 
     filter() {
       console.log("filter", this.formData);
       this.$emit("filter", this.formData);
+    },
+
+    setFormData() {
+      if (this.$tableStore.screeningData) {
+        this.formData = this.$tableStore.screeningData;
+      }
     },
   },
 };

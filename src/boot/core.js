@@ -3,12 +3,14 @@ import { proposalStore } from "src/stores/proposal";
 import { dataStore } from "src/stores/data";
 import { authStore } from "stores/auth";
 import { utilsStore } from "stores/utils";
+import { tableStore } from "src/stores/table";
 
 export default boot(({ app }) => {
   const useAuthStore = authStore();
   const useProposalStore = proposalStore();
   const useDataStore = dataStore();
   const useUtilsStore = utilsStore();
+  const useTableStore = tableStore();
 
   const userHasGroups = (groups) => {
     var userGroups = authStore().currentUser.groups;
@@ -51,4 +53,5 @@ export default boot(({ app }) => {
   app.config.globalProperties.$dataStore = useDataStore;
   app.config.globalProperties.$proposalStore = useProposalStore;
   app.config.globalProperties.$utilsStore = useUtilsStore;
+  app.config.globalProperties.$tableStore = useTableStore;
 });

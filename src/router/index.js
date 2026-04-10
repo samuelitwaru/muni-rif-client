@@ -37,8 +37,6 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from) => {
-    console.log("to" + "-" + to.fullPath);
-    console.log("from" + "-" + from.fullPath);
     if (!dataStore().currentCall?.id) {
       if (
         to.fullPath == "/" ||

@@ -106,12 +106,10 @@ export default {
   },
   methods: {
     allocateBudget() {
-      console.log(this.formData);
       this.$utilsStore.setLoading(true);
       this.$api
         .patch(`proposals/${this.proposal.id}/`, this.formData)
         .then((res) => {
-          console.log("res: ", res);
           this.$utilsStore.setLoading(false);
           this.showDialog = false;
           this.$emit("budget-allocated", res.data);

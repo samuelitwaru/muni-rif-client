@@ -26,7 +26,8 @@
       </div>
     </div>
     <hr />
-    <ProposalScoreSheets /> <ExpenseReports /> <ProposalReportsEditor />
+    <ProposalScoreSheets :proposal_id="$route.params.proposal_id" />
+    <ExpenseReports /> <ProposalReportsEditor />
     <hr id="solution" class="section-separator" />
   </div>
 </template>

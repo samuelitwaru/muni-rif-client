@@ -6,37 +6,60 @@
         <q-breadcrumbs-el label="Screened Proposals" icon="list" />
       </q-breadcrumbs>
     </div>
+    {{ proposal?.title }}
     <ScoreSheetDialog
       :show="showScoreSheet"
-      v-if="proposal"
       :proposal="proposal"
-      @close-dialog="showScoreSheet = false"
+      @close-dialog="
+        showScoreSheet = false;
+        proposal = null;
+      "
     />
 
     <q-separator spaced />
     <!-- filters section -->
-    <!-- other controls -->
-    <div class="q-ma-sm row items-center">
+    <div align="right" class="q-ma-sm row">
       <div class="col"></div>
+      <!-- other controls -->
       <div class="col">
-        <div>
-          <!-- <q-popup-proxy v-model="show" :breakpoint="1000"> -->
-          <AssignReviewers2
-            @reviewers-selected="
-              createScores($event);
-              show = false;
-            "
-            @close-dialog="show = false"
-            :show-dialog="show"
-          />
-          <!-- </q-popup-proxy> -->
-        </div>
-        <!-- <router-link to="/go/proposals/reviewed">
-          <q-btn color="primary" flat label="Go To Reviews" class="q-mr-sm" />
-        </router-link> -->
+        <AssignReviewers2
+          @reviewers-selected="
+            createScores($event);
+            show = false;
+          "
+          @close-dialog="show = false"
+          :show-dialog="show"
+        />
       </div>
     </div>
     <ProposalFilter @filter="getProposals($event)" />
+
+    <div class="row">
+      <div class="col q-px-sm">
+        <q-select
+          v-model="formData.theme"
+          dense
+          outlined
+          :options="[{ id: null, title: 'All' }].concat(themes)"
+          label="Select Theme"
+          option-value="id"
+          option-label="title"
+          map-options
+          emit-value
+          @update:model-value="getProposals(formData)"
+        />
+      </div>
+      <div class="flex justify-end col">
+        <q-btn
+          flat
+          icon="download"
+          class="q-ma-sm"
+          color="primary"
+          label="EXPORT REVIEWS"
+          @click="exportReviews"
+        />
+      </div>
+    </div>
 
     <div v-if="view === 'proposals'">
       <q-markup-table wrap-cells class="q-ma-sm" separator="cell" flat bordered>
@@ -50,6 +73,8 @@
             <!-- <th align="left">Reviewers</th> -->
             <th align="left">Status</th>
             <th align="left">Reviewers</th>
+            <th align="left">Review Score</th>
+            <th align="left"></th>
           </tr>
         </thead>
         <tbody>
@@ -67,14 +92,16 @@
               <td>{{ item.submission_date }}</td>
               <td>{{ item.user__first_name }} {{ item.user__last_name }}</td>
               <td>{{ item.status }}</td>
+
               <td>
                 <q-btn
                   @click="selectProposal2(item.id)"
-                  label="+"
+                  icon="add"
+                  dense
                   flat
+                  size="sm"
                   color="primary"
                 />
-
                 <q-chip size="md" v-for="score in item.scores" :key="score.id">
                   <span v-if="score.user"
                     >{{ score.user__first_name }}
@@ -137,12 +164,42 @@
                   </q-btn>
                 </q-chip>
               </td>
-            </tr>
-            <!-- <tr class="q-tr--no-hover" v-if="item.scores && item.scores.length">
-              <td colspan="7">
-                <InlineProposalReviewers :proposal="item" :scores="item.scores"/>
+
+              <td>
+                <q-linear-progress
+                  :value="item.average_score / 100"
+                  color="secondary"
+                  class="q-mt-md"
+                />
+                <q-badge
+                  color="secondary"
+                  :label="`${Math.round((item.average_score / 100) * 100)}%`"
+                />
               </td>
-            </tr> -->
+
+              <td>
+                <div class="flex">
+                  <q-btn
+                    dense
+                    flat
+                    size="sm"
+                    :icon="expanded[item.id] ? 'expand_less' : 'expand_more'"
+                    @click="toggle(item.id)"
+                  />
+                </div>
+              </td>
+            </tr>
+
+            <tr
+              v-show="expanded[item.id]"
+              class="q-tr--no-hover"
+              v-if="item.scores && item.scores.length"
+            >
+              <td></td>
+              <td colspan="8">
+                <ProposalScorePivotTable :proposal_id="item.id" />
+              </td>
+            </tr>
           </template>
         </tbody>
       </q-markup-table>
@@ -164,14 +221,14 @@
 import AssignReviewers2 from "components/proposal/AssignReviewers2.vue";
 import AssignedProposals from "components/proposal/AssignedProposals.vue";
 import ScoreSheetDialog from "./ScoreSheetDialog.vue";
-
-// import InlineProposalReviewers from "./InlineProposalReviewers.vue";
+import ProposalScorePivotTable from "./ProposalScorePivotTable.vue";
 
 export default {
   components: {
     AssignReviewers2,
     AssignedProposals,
     ScoreSheetDialog,
+    ProposalScorePivotTable,
   },
   name: "ReviewerList",
   data() {
@@ -180,12 +237,11 @@ export default {
       showScoreSheet: false,
       formData: {
         theme: null,
-        exclude__status: "EDITING",
-        // submission_date_lte: "2025-06-24",
-        // submission_date_gte: "2025-01-01",
+        is_done_screening: true,
+        is_recommended: true,
         call: this.$dataStore.currentCall.id,
         page: 1,
-        limit: 10,
+        limit: 20,
       },
       proposals: [],
       scores: [],
@@ -195,6 +251,7 @@ export default {
       allSelected: false,
       maxPageCount: 0,
       view: "proposals", // can be "proposals" or "scores"
+      expanded: {},
     };
   },
   created() {
@@ -205,12 +262,8 @@ export default {
   methods: {
     getProposals(filterData) {
       this.$utilsStore.setLoading(true);
-      filterData = {
-        is_done_screening: true,
-        is_recommended: true,
-        call: this.$dataStore.currentCall.id,
-      };
       var queryString = this.$buildURLQuery(filterData);
+
       this.$api.get(`proposals/?${queryString}`).then((res) => {
         this.proposals = res.data.results;
         this.page = res.data.page;
@@ -218,6 +271,25 @@ export default {
         this.getProposalScores();
         this.$utilsStore.setLoading(false);
       });
+    },
+
+    exportReviews() {
+      const filterData = {
+        is_done_screening: true,
+        is_recommended: true,
+        call: this.$dataStore.currentCall.id,
+      };
+      this.$utilsStore.setLoading(true);
+      let queryString = "";
+      if (filterData) {
+        queryString = this.$buildURLQuery(filterData);
+      }
+      this.$api
+        .get(`proposals/export-reviews-pdf/?${queryString}`)
+        .then((res) => {
+          this.$utilsStore.setLoading(false);
+          window.open(res.data.file_url, "_blank");
+        });
     },
 
     getProposalScores() {
@@ -230,7 +302,12 @@ export default {
       }
     },
 
+    toggle(id) {
+      this.expanded[id] = !this.expanded[id];
+    },
+
     viewScore(proposal) {
+      console.log(proposal);
       this.proposal = proposal;
       this.showScoreSheet = true;
     },
@@ -258,7 +335,6 @@ export default {
       for (let i = 0; i < selectedReviewers.length; i++) {
         const revId = selectedReviewers[i];
         const email = this.reviewers.find((item) => item.id == revId).email;
-
         for (let j = 0; j < this.selectedProposals.length; j++) {
           const propId = this.selectedProposals[j];
           this.$api
@@ -312,6 +388,7 @@ export default {
 
     selectProposal2(proposalId) {
       this.selectAllProposals = [];
+      this.selectedProposals = [];
       this.selectedProposals.push(proposalId);
       this.selectedProposal = proposalId;
       this.show = true;

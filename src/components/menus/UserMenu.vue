@@ -222,9 +222,7 @@ export default {
           }
         });
       this.$api
-        .get(
-          `proposals/count/?call=${this.$dataStore.currentCall.id}&status=REVIEWED`
-        )
+        .get(`proposals/reviewed/count/?call=${this.$dataStore.currentCall.id}`)
         .then((res) => {
           if ((res.status = 200)) {
             this.counts.REVIEWED = res.data.count;

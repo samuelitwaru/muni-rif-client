@@ -22,7 +22,16 @@
           @update:model-value="getProposals"
         />
       </div>
-      <div class="col"></div>
+      <div class="col">
+        <q-btn
+          flat
+          icon="download"
+          class="q-ma-sm"
+          color="primary"
+          label="EXPORT REVIEWS"
+          @click="exportReviews"
+        />
+      </div>
     </div>
     <q-markup-table
       class="q-ma-sm my-sticky-column-table"
@@ -115,7 +124,6 @@
 <script>
 // import { useQuasar } from "quasar";
 import { useQuasar } from "quasar";
-import router from "src/router";
 export default {
   name: "ReviewerList",
   data() {
@@ -146,11 +154,12 @@ export default {
       this.$utilsStore.setLoading(true);
 
       var queryString = this.$buildURLQuery(this.formData);
+
       this.$api
-        .get(`proposals/?${queryString}`)
+        .get(`proposals/reviewed/?${queryString}`)
         .then((res) => {
-          console.log("proposals", res.data);
-          this.proposals = res.data.results;
+          this.proposals = res.data;
+          console.log("proposals", this.proposals);
           this.getProposalScores();
         })
         .finally(() => {
@@ -170,6 +179,26 @@ export default {
       this.$api.get("themes/").then((res) => {
         this.themes = res.data;
       });
+    },
+
+    exportReviews() {
+      const filterData = {
+        call: this.$dataStore.currentCall.id,
+      };
+      if (this.formData.theme) {
+        filterData.theme = this.formData.theme;
+      }
+      this.$utilsStore.setLoading(true);
+      let queryString = "";
+      if (filterData) {
+        queryString = this.$buildURLQuery(filterData);
+      }
+      this.$api
+        .get(`proposals/reviewed/export/pdf/?${queryString}`)
+        .then((res) => {
+          this.$utilsStore.setLoading(false);
+          window.open(res.data.file_url, "_blank");
+        });
     },
 
     selectProposal($event, ProposalId) {

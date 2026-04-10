@@ -80,6 +80,20 @@
                     </q-card>
                   </td>
                 </tr>
+                <tr class="q-tr--no-hover">
+                  <td class="text-left">Strengths</td>
+                  <td v-for="score in scores" :key="score" class="text-left">
+                    {{ score.strengths }}
+                  </td>
+                </tr>
+
+                <tr class="q-tr--no-hover">
+                  <td class="text-left">Weaknesses</td>
+                  <td v-for="score in scores" :key="score" class="text-left">
+                    {{ score.weaknesses }}
+                  </td>
+                </tr>
+
                 <!-- </tfoot> -->
               </tbody>
             </q-markup-table>
@@ -114,6 +128,7 @@ export default {
     };
   },
   created() {
+    console.log("proposal", this.proposal);
     if (this.proposal) {
       this.getScores();
       this.getSections();
@@ -132,6 +147,7 @@ export default {
         )
         .then((res) => {
           this.scores = res.data;
+          console.log("scores", this.scores);
         });
     },
 
@@ -153,6 +169,14 @@ export default {
 
     close() {
       this.$emit("close-dialog");
+    },
+  },
+  watch: {
+    show(newValue, oldValue) {
+      if (newValue) {
+        this.getScores();
+        this.getSections();
+      }
     },
   },
 };

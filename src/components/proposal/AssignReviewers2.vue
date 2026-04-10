@@ -41,23 +41,26 @@
                   style="width: 500px; max-height: 280px; overflow-y: auto"
                 >
                   <q-item
+                    class="flex justify-between items-center"
                     @click="selectReviewer(item.id)"
                     clickable
                     :active="selectedReviewers.includes(item.id)"
                     v-for="item in activeReviewers"
                     :key="item.id"
                   >
-                    <input
-                      class="q-ma-sm"
-                      style="width: 10px"
-                      type="checkbox"
-                      :checked="selectedReviewers.includes(item.id)"
-                    />
-                    <q-item-section
-                      >{{ item.first_name }} {{ item.last_name }} ({{
-                        item.email
-                      }})</q-item-section
-                    >
+                    <div class="row flex items-center">
+                      <input
+                        class="q-ma-sm"
+                        style="width: 10px"
+                        type="checkbox"
+                        :checked="selectedReviewers.includes(item.id)"
+                      />
+                      <span>{{ item.first_name }} {{ item.last_name }}</span>
+                    </div>
+
+                    <span class="text-grey q-mx-lg">
+                      ({{ item.score_count }} assigned)
+                    </span>
                   </q-item>
 
                   <div v-if="activeReviewers?.length == 0">
@@ -192,7 +195,27 @@ export default {
         .get(`users/?${queryString}&groups__name__in=reviewer`)
         .then((res) => {
           this.reviewers = res.data;
+          this.getScoreCounts();
         });
+    },
+
+    getScoreCounts() {
+      this.reviewers.forEach((reviewer) => {
+        this.$api
+          .get(
+            `scores/count/?user=${reviewer.id}&proposal__call=${this.$dataStore.currentCall.id}`
+          )
+          .then((res) => {
+            const count = res.data.count;
+            this.reviewers.map((rev) => {
+              if (rev.id === reviewer.id) {
+                rev.score_count = count;
+                return rev;
+              }
+            });
+            return reviewer;
+          });
+      });
     },
 
     selectReviewer(reviewerId) {
@@ -203,6 +226,15 @@ export default {
       } else {
         this.selectedReviewers.push(reviewerId);
       }
+    },
+  },
+
+  watch: {
+    show: function (newVal, oldVal) {
+      if (newVal == true) {
+        this.getScoreCounts();
+      }
+      // console.log(oldVal, newVal);
     },
   },
 };

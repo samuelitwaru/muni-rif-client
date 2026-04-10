@@ -66,6 +66,20 @@
             </q-card>
           </td>
         </tr>
+
+        <tr class="q-tr--no-hover">
+          <td class="text-left">Strengths</td>
+          <td v-for="score in scores" :key="score" class="text-left">
+            {{ score.strengths }}
+          </td>
+        </tr>
+
+        <tr class="q-tr--no-hover">
+          <td class="text-left">Weaknesses</td>
+          <td v-for="score in scores" :key="score" class="text-left">
+            {{ score.weaknesses }}
+          </td>
+        </tr>
         <!-- </tfoot> -->
       </tbody>
     </q-markup-table>
@@ -74,6 +88,12 @@
 
 <script>
 export default {
+  props: {
+    proposal_id: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       loading: false,
@@ -95,7 +115,7 @@ export default {
     getScores() {
       this.$api
         .get(
-          `scores/?proposal=${this.$route.params.proposal_id}&status_includes=IN PROGRESS|COMPLETED`
+          `scores/?proposal=${this.proposal_id}&status_includes=IN PROGRESS|COMPLETED`
         )
         .then((res) => {
           this.scores = res.data;
@@ -110,9 +130,7 @@ export default {
 
     downloadScoreSheet() {
       this.$api
-        .get(
-          `proposals/${this.$route.params.proposal_id}/score-sheet/download/`
-        )
+        .get(`proposals/${this.proposal_id}/score-sheet/download/`)
         .then((res) => {
           if (res.status == 200) {
             window.open(res.data.file_url, "_blank");

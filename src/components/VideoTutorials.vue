@@ -38,6 +38,11 @@ export default {
           url: "https://www.youtube.com/embed/ymK2nyyXbwg?si=HXQaNNraKy2eovEv",
           roles: ["applicant"],
         },
+        {
+          title: "Proposal External Reviews",
+          url: "https://www.youtube.com/embed/zyYkEYtRa4A?si=9xa-7BP9iCJXSH8P",
+          roles: ["reviewer"],
+        },
       ],
     };
   },

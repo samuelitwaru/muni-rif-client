@@ -207,6 +207,10 @@ const routes = [
         component: () => import("components/account/UserSignin.vue"),
       },
       {
+        path: "account/signin/:token",
+        component: () => import("components/account/TokenSignin.vue"),
+      },
+      {
         path: "account/password-reset",
         component: () => import("components/account/PasswordReset.vue"),
       },

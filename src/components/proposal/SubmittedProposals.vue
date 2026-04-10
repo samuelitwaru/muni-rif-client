@@ -10,7 +10,18 @@
     <!-- filters section -->
     <!-- other controls -->
 
-    <ProposalFilter @filter="getProposals($event)" />
+    <!--<ProposalFilter @filter="getProposals($event)" />-->
+
+    <div class="flex justify-end">
+      <q-btn
+        flat
+        icon="download"
+        class="q-ma-sm"
+        color="primary"
+        label="EXPORT"
+        @click="exportToExcel"
+      />
+    </div>
 
     <div v-if="view === 'proposals'">
       <q-markup-table wrap-cells class="q-ma-sm" separator="cell" flat bordered>
@@ -74,12 +85,12 @@
 
 <script>
 import AssignedProposals from "components/proposal/AssignedProposals.vue";
-import ProposalFilter from "./ProposalFilter.vue";
+// import ProposalFilter from "./ProposalFilter.vue";
 // import InlineProposalReviewers from "./InlineProposalReviewers.vue";
 
 export default {
   components: {
-    ProposalFilter,
+    // ProposalFilter,
     AssignedProposals,
   },
   name: "ReviewerList",
@@ -106,12 +117,14 @@ export default {
     };
   },
   created() {
+    this.setFormData();
     this.getProposals(this.formData);
     this.getThemes();
     this.getReviewers();
   },
   methods: {
     getProposals(filterData) {
+      this.$tableStore.setScreening(filterData);
       this.$utilsStore.setLoading(true);
       filterData.page = this.formData.page;
       filterData.limit = this.formData.limit;
@@ -128,6 +141,22 @@ export default {
         this.maxPageCount = res.data.max_page;
         this.getProposalScores();
         this.$utilsStore.setLoading(false);
+      });
+    },
+
+    exportToExcel() {
+      const filterData = {
+        exclude__status: "EDITING",
+        call: this.$dataStore.currentCall.id,
+      };
+      this.$utilsStore.setLoading(true);
+      let queryString = "";
+      if (filterData) {
+        queryString = this.$buildURLQuery(filterData);
+      }
+      this.$api.get(`proposals/export/?${queryString}`).then((res) => {
+        this.$utilsStore.setLoading(false);
+        window.open(res.data.file_url, "_blank");
       });
     },
 
@@ -165,6 +194,12 @@ export default {
         .then((res) => {
           this.reviewers = res.data;
         });
+    },
+
+    setFormData() {
+      if (this.$tableStore.screeningData) {
+        this.formData = this.$tableStore.screeningData;
+      }
     },
 
     createScores(selectedReviewers) {

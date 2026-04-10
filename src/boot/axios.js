@@ -15,7 +15,9 @@ const useUtilsStore = utilsStore();
 
 var baseURL = process.env.DEBUG
   ? "http://127.0.0.1:8000"
-  : "https://munirif.ecdouganda.org";
+  : // "http://192.168.0.102:8000"
+    "https://munirif.ecdouganda.org";
+// "http://127.0.0.1:8080";
 
 var apiURL = `${baseURL}/api`;
 
