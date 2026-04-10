@@ -1,6 +1,14 @@
 <template>
-  <div v-if="score && score.status == 'IN PROGRESS' && $userHasAnyGroups(['reviewer'])">
-    <q-btn color="primary" label="Submit Review" @click="startDialog" />
+  <div
+    v-if="
+      score && score.status == 'IN PROGRESS' && $userHasAnyGroups(['reviewer'])
+    "
+  >
+    <p class="text-red" v-if="!allScoresAreValid">
+      Please score all required sections before submit.
+    </p>
+    <q-btn color="primary" label="Submit Review" @click="getScore(true)" />
+
     <q-dialog v-model="showDialog" persistent full-height>
       <q-card style="min-width: 22rem">
         <q-card-section class="flex justify-between">
@@ -15,7 +23,7 @@
         </q-card-section>
         <q-separator />
         <q-card-section class="scroll">
-          <q-markup-table separator="cell" flat dense bordered >
+          <q-markup-table separator="cell" wrap-cells flat dense bordered>
             <thead>
               <tr>
                 <th class="text-left">Section</th>
@@ -26,7 +34,16 @@
             <tbody>
               <template v-for="section in sections" :key="section.id">
                 <tr v-if="section.max_score > 0">
-                  <td class="text-left">{{ section.title }}</td>
+                  <td class="text-left">
+                    {{ section.title }}
+
+                    <div v-if="score[section.name] == null">
+                      <small class="text-red flex items-center gap-1">
+                        <q-icon name="error" color="red" />
+                        You have not scored this section!
+                      </small>
+                    </div>
+                  </td>
                   <td
                     class="text-center"
                     :class="{
@@ -97,7 +114,12 @@
             label="Cancel"
             @click="showDialog = false"
           />
-          <q-btn color="primary" label="Submit Review" @click="submitScore" />
+          <q-btn
+            color="primary"
+            :disabled="!allScoresAreValid"
+            label="Submit Review"
+            @click="submitScore"
+          />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -126,16 +148,34 @@ export default {
   },
   computed: {
     percentageScore() {
-      const scores = this.sections?.map(section => section.max_score)
-      const section_scores = this.sections?.map(section => this.score[section.name] || 0)
-      console.log(section_scores)
-      const total_section_scores = section_scores.reduce((acc,curr) => acc + curr, 0)
-      const total = scores.reduce((acc,curr) => acc + curr, 0)
-      return Math.round((total_section_scores/total) * 100)
-    }
+      const scores = this.sections?.map((section) => section.max_score);
+      const section_scores = this.sections?.map(
+        (section) => this.score[section.name] || 0
+      );
+      const total_section_scores = section_scores.reduce(
+        (acc, curr) => acc + curr,
+        0
+      );
+      const total = scores.reduce((acc, curr) => acc + curr, 0);
+      return Math.round((total_section_scores / total) * 100);
+    },
+
+    allScoresAreValid() {
+      if (this.score && this.sections) {
+        for (let index = 0; index < this.sections.length; index++) {
+          const section = this.sections[index];
+          if (section.max_score > 0) {
+            if (this.score[section.name] === null) {
+              return false;
+            }
+          }
+        }
+      }
+      return true;
+    },
   },
   methods: {
-    getScore() {
+    getScore(submit = false) {
       this.$api
         .get(
           `scores/?user=${this.$authStore.currentUser?.id || 0}&proposal=${
@@ -147,6 +187,10 @@ export default {
             this.score = res.data[0];
             this.formData.strengths = this.score.strengths;
             this.formData.weaknesses = this.score.weaknesses;
+            if (submit) {
+              const isValid = this.verifyAllSectionsAreScored();
+              this.showDialog = isValid;
+            }
           }
         });
     },
@@ -157,11 +201,28 @@ export default {
       });
     },
 
-    startDialog() {
-      this.getScore();
-      this.showDialog = true;
+    verifyAllSectionsAreScored() {
+      if (this.score && this.sections) {
+        for (let index = 0; index < this.sections.length; index++) {
+          const section = this.sections[index];
+          if (section.max_score > 0) {
+            if (this.score[section.name] === null) {
+              this.$q.notify({
+                type: "negative",
+                message: `Please score the section: ${section.title}`,
+              });
+              // scroll to the section
+              const sectionElement = document.getElementById(`${section.name}`);
+              if (sectionElement) {
+                sectionElement.scrollIntoView({ behavior: "smooth" });
+              }
+              return false;
+            }
+          }
+        }
+      }
+      return true;
     },
-
     submitScore() {
       if (
         confirm(
